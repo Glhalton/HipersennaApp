@@ -1,23 +1,17 @@
 //Importação do react e dos componentes do react-native
 import React from "react";
 import { View, Text, StyleSheet, TextInput, Pressable} from "react-native";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
 
-type RootStackParamList = {
-  LoginScreen: undefined;
-  HomeScreen: undefined;
-}
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'LoginScreen'>;
+import { useRouter } from "expo-router";
 
 //Função principal que será executada no aplicativo
-export default function LoginScreen() {
-  const navigation = useNavigation<NavigationProp>();
+export default function Login() {
+  const router = useRouter();
+
   const [username, onChangeUsername] = React.useState('');
   const [password, onChangePassword] = React.useState('');
   
-  const botaoPressionado = () => {navigation.navigate('HomeScreen')}
+  const botaoPressionado = () => { router.replace("/home")}
 
 
   return (
