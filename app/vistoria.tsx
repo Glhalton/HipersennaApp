@@ -28,8 +28,7 @@ export default function Vistoria(){
                 <Text style={styles.text}>
                     Data
                 </Text>
-                <Input placeholder="Insira a data desejada"/>         
-                   
+                <Input placeholder="Insira a data desejada"/>            
             </View>
             <LargeButton  title="Entrar" onPress={botaoEntrar}/>    
         </View>
@@ -45,8 +44,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#205072",
         paddingLeft: 30,
-        width: "100%"
-        
+        width: "100%",
+        fontWeight: "bold",
+         
     },
     inputContainer:{
         width: "100%",
