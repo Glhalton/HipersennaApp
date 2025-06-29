@@ -1,6 +1,6 @@
 //Importação do react e dos componentes do react-native
 import React from "react";
-import { View, Text, StyleSheet, TextInput} from "react-native";
+import { View, Text, StyleSheet, TextInput,} from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
@@ -44,7 +44,7 @@ export default function Login() {
         />
         
 
-        <Text style={{ color:"#205072", paddingTop: 13, paddingBottom: 25, width: 358, fontSize: 14}}>
+        <Text style={{ color:"#205072", paddingTop: 13, paddingBottom: 25, width: 358, fontSize: 14 }}>
           Esqueceu a sua senha?
         </Text>
         
@@ -69,6 +69,7 @@ const styles = StyleSheet.create({
   textTitle:{
     color: "#205072",
     fontSize: 28,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+
   },
 })
