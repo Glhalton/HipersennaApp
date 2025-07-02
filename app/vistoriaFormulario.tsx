@@ -1,6 +1,6 @@
 import React from "react";
 
-import { View, Text, TouchableOpacity, StyleSheet, Button, Platform } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Button, Platform, Pressable } from "react-native";
 import { TopBar } from "@/components/topBar";
 import { Input } from "@/components/input";
 
@@ -37,6 +37,11 @@ export default function VistoriaFormulario(){
     const inserirPress = () => {
         
     }
+
+
+
+
+
     
 
     return(
@@ -84,25 +89,29 @@ export default function VistoriaFormulario(){
                 value={codBonus}
                 onChangeText={setCodBonus}
             />
-            
+
             <Text style={styles.text}>
                 Vencimento
             </Text>
- <View style={{ padding: 20 }}>
-      <Button title="Selecionar data" onPress={() => setShow(true)} />
-      <Text style={{ marginTop: 10 }}>
-        Data selecionada: {date.toLocaleDateString()}
-      </Text>
+           
 
-      {show && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-          onChange={onChange}
-        />
-      )}
-    </View>
+
+            <Pressable style={styles.inputData} onPress={() => setShow(true)}>
+                <Text style={styles.inputDataText}>
+                {date.toLocaleDateString('pt-BR')}
+                </Text>
+            </Pressable>
+
+            {show && (
+                <DateTimePicker
+                    value={date}
+                    mode="date"
+                    display="spinner"
+                    onChange={onChange}
+                />
+            )}
+
+
 
             <Text style={styles.text}>
                 Quantidade
@@ -194,8 +203,24 @@ const styles = StyleSheet.create({
         width: 386,
         margin: 12,
         borderColor: "gray"
-
-        
-    }
+    },
+    containerData: {
+        padding: 20
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 8 
+    },
+    inputData: {
+        backgroundColor: "#F4F6F8",
+        height: 56,
+        minWidth: 358,
+        borderRadius: 8,
+        margin: 12,
+        padding: 16,
+    },
+    inputDataText: {
+        fontSize: 16,
+    },
     
 })

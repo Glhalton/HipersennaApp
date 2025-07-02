@@ -25,7 +25,7 @@ export default function Home(){
 
             <View style={styles.containerBemVindo}>
                 <Text style={styles.tituloBemVindo}>
-                    Bem vindo de volta, Sophia
+                    Bem vindo de volta, XXX
                 </Text>
                 <View style={styles.containerbuttons}>
                     <SmallButton title="Add" onPress={botaoAddPress}/>

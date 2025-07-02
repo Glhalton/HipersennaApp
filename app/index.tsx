@@ -1,6 +1,6 @@
 //Importação do react e dos componentes do react-native
 import React from "react";
-import { View, Text, StyleSheet, TextInput,} from "react-native";
+import { View, Text, StyleSheet, Alert,} from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
@@ -8,19 +8,35 @@ import { router } from "expo-router";
 //Função principal que será executada no aplicativo
 export default function Login() {
 
-  //Valores Input
+  //Valores Input Login
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
   
   //Funcao verificar login
-  const botaoPressionado = () => {
-    /*if(username.trim() === "" || password.trim() === ""){
-      alert("Preencha todos os campos")
-    } else{
-        router.push("/home")
-    }*/
-   router.push("/home")
-  }
+  const fazerLogin = async () => {
+      try {
+          
+
+          const resposta = await fetch("http://10.0.2.2/API/autenticacao/login.php",{
+              method : "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify({username, password})
+          });
+          
+          const resultado = await resposta.json();
+
+          if (resultado.sucesso){
+            router.push("/home")
+          } else{
+            Alert.alert("Erro", resultado.mensagem);
+          }
+      } catch (erro){
+          Alert.alert("Erro", "Não foi possível conectar ao servidor")
+      }
+  };
+  
 
 
   return (
@@ -48,14 +64,14 @@ export default function Login() {
           Esqueceu a sua senha?
         </Text>
         
-        <LargeButton title="Login" onPress={botaoPressionado}/>
+        <LargeButton title="Login" onPress={fazerLogin}/>
   
       </View>
     </View>
   )
 }
 
-//Estilizaçoes utilizadas dentro da função principal:
+
 const styles = StyleSheet.create({
   container:{
     flex:1,
@@ -70,6 +86,5 @@ const styles = StyleSheet.create({
     color: "#205072",
     fontSize: 28,
     fontWeight: 'bold',
-
   },
 })
