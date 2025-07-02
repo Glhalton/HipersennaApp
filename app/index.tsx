@@ -1,6 +1,6 @@
 //Importação do react e dos componentes do react-native
 import React from "react";
-import { View, Text, StyleSheet, Alert,} from "react-native";
+import { View, Text, StyleSheet, Alert, Pressable,} from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
@@ -15,8 +15,6 @@ export default function Login() {
   //Funcao verificar login
   const fazerLogin = async () => {
       try {
-          
-
           const resposta = await fetch("http://10.0.2.2/API/autenticacao/login.php",{
               method : "POST",
               headers: {
@@ -36,6 +34,10 @@ export default function Login() {
           Alert.alert("Erro", "Não foi possível conectar ao servidor")
       }
   };
+
+  const botaoCadastro = () => {
+    router.push("/createProfile")
+  }
   
 
 
@@ -65,8 +67,17 @@ export default function Login() {
         </Text>
         
         <LargeButton title="Login" onPress={fazerLogin}/>
-  
+
       </View>
+
+      <View style={styles.containerCadastro}>
+        <Pressable style={styles.botaoCadastro} onPress={botaoCadastro} >
+          <Text style={styles.textoCadastro}>
+            Não tem uma conta? Cadastre-se
+          </Text>
+        </Pressable>
+      </View>
+
     </View>
   )
 }
@@ -87,4 +98,18 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
   },
+  containerCadastro:{
+    flex: 1,
+    justifyContent:"flex-end",
+  },
+  botaoCadastro:{
+    padding: 20, 
+    width: 358, 
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  textoCadastro:{
+    color:"#205072", 
+    fontSize: 14 
+  }
 })
