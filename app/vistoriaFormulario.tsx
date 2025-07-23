@@ -1,51 +1,78 @@
-import React from "react";
+import React, {useState} from "react";
 
-import { View, Text, TouchableOpacity, StyleSheet, Button, Platform, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { TopBar } from "@/components/topBar";
 import { Input } from "@/components/input";
+import { DateInput } from "@/components/dateInput";
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
+import { router } from "expo-router";
 
 export default function VistoriaFormulario(){
 
+    //Codigo do produto
     const [codProd, setCodProd] = React.useState('');
 
-    const[open, setOpen] = React.useState(false);
+    //Tipo de insercao.
     const[tipoInsercao, setTipoInsercao] = React.useState(null);
+
+    const[open, setOpen] = React.useState(false);
     const [tiposInsecao, setTiposInsercao] = React.useState([
         {label: 'Tipo1', value: 'tipo1'},
         {label: 'Tipo2', value: 'tipo2'},
         {label: 'Tipo3', value: 'tipo3'}
     ]);
-    
-    const[date, setDate] = React.useState(new Date());
-    const[show, setShow] = React.useState(false);
 
+    //Data de Vencimento
+    const [dataVencimento, setDataVencimento] = useState(new Date());
     
-    const onChange = (event: any, selectedDate: any) => {
-        setShow(false);
-        if (selectedDate) setDate(selectedDate);
-    };
-
+    //Codigo do Bonus
     const [codBonus, setCodBonus] = React.useState('');
-    const [dataVencimento, setDataVencimento] = React.useState('');
+
+    //Quantidade
     const [quantidade, setQuantidade] = React.useState('');
+
+    //Texto de observacao
     const [observacao, setObservacao] = React.useState('');
 
-    const inserirPress = () => {
-        
+    const historicoPress = () => {
+        console.log(dataVencimento);
     }
 
+    const inserirValidade = async () => {
+        try {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php",{
+                method : "POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    codProd,
+                    tipoInsercao, 
+                    dataVencimento, 
+                    codBonus,
+                    quantidade,
+                    observacao
+                })
+            });
 
+            const resultado = await resposta.json();
 
-
-
-    
+            if(resultado.sucesso){
+                Alert.alert("Sucesso", resultado.mensagem);
+                router.push("/")
+            } else {
+                Alert.alert("Erro", resultado.mensagem)
+            }
+        } catch(erro){
+            Alert.alert("Erro", "Não foi possivel conectar ao sevidor")
+        }
+    };
 
     return(
         <View style={styles.container}>
+
             <TopBar text="Vistoria"/> 
 
             <Text style={styles.text}>
@@ -94,23 +121,11 @@ export default function VistoriaFormulario(){
                 Vencimento
             </Text>
            
-
-
-            <Pressable style={styles.inputData} onPress={() => setShow(true)}>
-                <Text style={styles.inputDataText}>
-                {date.toLocaleDateString('pt-BR')}
-                </Text>
-            </Pressable>
-
-            {show && (
-                <DateTimePicker
-                    value={date}
-                    mode="date"
-                    display="spinner"
-                    onChange={onChange}
-                />
-            )}
-
+            <DateInput
+                label = "Data de Vencimento"
+                value={dataVencimento}
+                onChange={(novaData) => setDataVencimento(novaData)}
+            />
 
 
             <Text style={styles.text}>
@@ -133,19 +148,20 @@ export default function VistoriaFormulario(){
             />
             
             <View style={styles.containerBotoes}>
-                <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5}>
+                <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={historicoPress}>
                     <Text style={styles.textButton}>
                         Resumo
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonInserir} activeOpacity={0.5} onPress={inserirPress}>
+                <TouchableOpacity style={styles.buttonInserir} activeOpacity={0.5} onPress={inserirValidade}>
                     <Text style={styles.textButton}>
                         Inserir
                     </Text>
-                </TouchableOpacity>
-                
+                </TouchableOpacity>    
             </View>
-            
+            <Text>
+                
+            </Text>
             
         </View>
     )
@@ -204,23 +220,10 @@ const styles = StyleSheet.create({
         margin: 12,
         borderColor: "gray"
     },
-    containerData: {
-        padding: 20
-    },
+
     label: {
         fontSize: 16,
         marginBottom: 8 
-    },
-    inputData: {
-        backgroundColor: "#F4F6F8",
-        height: 56,
-        minWidth: 358,
-        borderRadius: 8,
-        margin: 12,
-        padding: 16,
-    },
-    inputDataText: {
-        fontSize: 16,
     },
     
 })

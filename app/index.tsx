@@ -15,7 +15,7 @@ export default function Login() {
   //Funcao verificar login
   const fazerLogin = async () => {
       try {
-          const resposta = await fetch("http://10.0.2.2/API/autenticacao/login.php",{
+          const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/autenticacao/login.php",{
               method : "POST",
               headers: {
                   "Content-Type": "application/json"
