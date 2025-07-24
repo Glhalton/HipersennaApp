@@ -1,34 +1,24 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { TopBar } from "@/components/topBar";
 import { Input } from "@/components/input";
 import { DateInput } from "@/components/dateInput";
-
-import DropDownPicker from 'react-native-dropdown-picker';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { router } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function VistoriaFormulario(){
+    //Id do usuario
+    const [userId, setUserId] = useState<string | null>(null);
+
+    //Codigo da filial
+    const [codFilial, setCodFilial] = React.useState('');
 
     //Codigo do produto
     const [codProd, setCodProd] = React.useState('');
 
-    //Tipo de insercao.
-    const[tipoInsercao, setTipoInsercao] = React.useState(null);
-
-    const[open, setOpen] = React.useState(false);
-    const [tiposInsecao, setTiposInsercao] = React.useState([
-        {label: 'Tipo1', value: 'tipo1'},
-        {label: 'Tipo2', value: 'tipo2'},
-        {label: 'Tipo3', value: 'tipo3'}
-    ]);
-
     //Data de Vencimento
-    const [dataVencimento, setDataVencimento] = useState(new Date());
-    
-    //Codigo do Bonus
-    const [codBonus, setCodBonus] = React.useState('');
+    const [dataVencimento, setDataVencimento] = useState<Date | undefined>(undefined);
 
     //Quantidade
     const [quantidade, setQuantidade] = React.useState('');
@@ -36,9 +26,27 @@ export default function VistoriaFormulario(){
     //Texto de observacao
     const [observacao, setObservacao] = React.useState('');
 
-    const historicoPress = () => {
+
+    const resumoPress = () => {
         console.log(dataVencimento);
     }
+
+    const pegarUserId = async () => {
+        try{
+            const id = await AsyncStorage.getItem("@user_id");
+            if(id !==null){
+                setUserId(id);
+            }
+        } catch (e){
+            console.error("Erro ao recuperar userId", e);
+        }
+        return null;
+    }
+
+    useEffect(() => {
+        pegarUserId();
+    }, []);
+
 
     const inserirValidade = async () => {
         try {
@@ -48,12 +56,12 @@ export default function VistoriaFormulario(){
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    codProd,
-                    tipoInsercao, 
+                    codFilial,
+                    codProd, 
                     dataVencimento, 
-                    codBonus,
                     quantidade,
-                    observacao
+                    observacao,
+                    userId
                 })
             });
 
@@ -61,12 +69,12 @@ export default function VistoriaFormulario(){
 
             if(resultado.sucesso){
                 Alert.alert("Sucesso", resultado.mensagem);
-                router.push("/")
+                router.push("/home")
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
         } catch(erro){
-            Alert.alert("Erro", "Não foi possivel conectar ao sevidor")
+            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro)
         }
     };
 
@@ -76,7 +84,17 @@ export default function VistoriaFormulario(){
             <TopBar text="Vistoria"/> 
 
             <Text style={styles.text}>
-                Código do produto
+                Filial *
+            </Text>
+            <Input
+                placeholder="Código da Filial"
+                keyboardType="numeric"
+                value={codFilial}
+                onChangeText={setCodFilial}
+            />
+
+            <Text style={styles.text}>
+                Código do produto *
             </Text>
             <Input
                 placeholder="Código"
@@ -86,53 +104,20 @@ export default function VistoriaFormulario(){
             />
 
             <Text style={styles.text}>
-                Tipo de inserção
+                Data de Validade *
             </Text>
-            <DropDownPicker
-                open={open}
-                value={tipoInsercao}
-                items={tiposInsecao}
-                setOpen={setOpen}
-                setValue={setTipoInsercao}
-                setItems={setTiposInsercao}
-                placeholder="Selecione o tipo de inserção"
-                style={styles.dropdownInsercao}
-                dropDownContainerStyle={styles.dropdownContainer}
-                textStyle={{
-                    fontSize: 16,
-                }}
-                placeholderStyle={{
-                    opacity: 0.6
-                }}
-            />
-
-
-            <Text style={styles.text}>
-                Bônus
-            </Text>
-            <Input 
-                placeholder="Selecionar o bônus" 
-                keyboardType="numeric"
-                value={codBonus}
-                onChangeText={setCodBonus}
-            />
-
-            <Text style={styles.text}>
-                Vencimento
-            </Text>
-           
             <DateInput
                 label = "Data de Vencimento"
                 value={dataVencimento}
-                onChange={(novaData) => setDataVencimento(novaData)}
+                onChange={setDataVencimento}
             />
 
 
             <Text style={styles.text}>
-                Quantidade
+                Quantidade *
             </Text>
             <Input 
-                placeholder="Insira a quant."
+                placeholder="Insira a quantidade"
                 keyboardType="numeric"
                 value={quantidade}
                 onChangeText={setQuantidade}
@@ -142,13 +127,14 @@ export default function VistoriaFormulario(){
                 Observação
             </Text>
             <Input 
-                placeholder="Digite a sua obs."
+                placeholder="Digite a sua observação"
                 value={observacao}
                 onChangeText={setObservacao}
             />
             
+
             <View style={styles.containerBotoes}>
-                <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={historicoPress}>
+                <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={resumoPress}>
                     <Text style={styles.textButton}>
                         Resumo
                     </Text>
@@ -159,10 +145,7 @@ export default function VistoriaFormulario(){
                     </Text>
                 </TouchableOpacity>    
             </View>
-            <Text>
-                
-            </Text>
-            
+
         </View>
     )
 }
@@ -183,6 +166,12 @@ const styles = StyleSheet.create({
         justifyContent: "space-around"
     
     },
+    textButton:{
+        fontSize: 16,
+        color: "white",
+        fontWeight: "bold",
+        
+    },
     buttonResumo:{
        backgroundColor: "#4A5A6A",
        height: 48,
@@ -201,29 +190,5 @@ const styles = StyleSheet.create({
        alignItems: "center",
        
     },
-    textButton:{
-        fontSize: 16,
-        color: "white",
-        fontWeight: "bold",
 
-    },
-    dropdownInsercao:{
-        borderWidth: 0,
-        backgroundColor: "#F4F6F8",
-        height: 56,
-        width: 386,
-        margin: 12,
-    },
-    dropdownContainer:{
-        backgroundColor: "#F4F6F8",
-        width: 386,
-        margin: 12,
-        borderColor: "gray"
-    },
-
-    label: {
-        fontSize: 16,
-        marginBottom: 8 
-    },
-    
 })

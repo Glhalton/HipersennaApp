@@ -1,18 +1,37 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Text, View, StyleSheet, Image } from "react-native"
 import { router } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {LargeButton} from "../components/largeButton";
 import { SmallButton } from "@/components/smallButton";
 
 export default function Home(){
+    const [userId, setUserId] = useState<string | null>(null);
+
     const botaoAddPress = () => {
-        router.push("/vistoria");
+        router.push("/vistoriaFormulario");
     }
 
     const botaoHistoricPress = () => {
         router.push("/historico");
     }
+
+    const pegarUserId = async () => {
+        try{
+            const id = await AsyncStorage.getItem("@user_id");
+            if(id !==null){
+                setUserId(id);
+            }
+        } catch (e){
+            console.error("Erro ao recuperar userId", e);
+        }
+        return null;
+    }
+
+    useEffect(() => {
+        pegarUserId();
+    }, []);
     
 
     return(
@@ -25,11 +44,12 @@ export default function Home(){
 
             <View style={styles.containerBemVindo}>
                 <Text style={styles.tituloBemVindo}>
-                    Bem vindo de volta, XXX
+                    Bem vindo de volta, ID: {userId}
+                    
                 </Text>
                 <View style={styles.containerbuttons}>
-                    <SmallButton title="Add" onPress={botaoAddPress}/>
                     <SmallButton title="Histórico" onPress={botaoHistoricPress}/>
+                    <SmallButton title="Add" onPress={botaoAddPress}/>                    
                 </View>
             </View>
 

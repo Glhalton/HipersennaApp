@@ -5,7 +5,7 @@ import { styles } from "./styles"
 
 interface DateInputProps {
     label?: string;
-    value: Date;
+    value?: Date;
     onChange: (date: Date) => void;
 }
 
@@ -25,13 +25,13 @@ export function DateInput({label, value, onChange} : DateInputProps){
         <View style={styles.container}>
             <Pressable style={styles.inputData} onPress={() => setShow(true)}>
                 <Text style={styles.inputDataText}>
-                    {value.toLocaleDateString('pt-BR')}
+                    {value ? value.toLocaleDateString('pt-BR') : "Selecionar data"}
                 </Text>
             </Pressable>
 
             {show && (
                 <DateTimePicker
-                    value={value}
+                    value={value || new Date()}
                     mode="date"
                     display="spinner"
                     onChange={handleChange}

@@ -11,9 +11,10 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         color: "#205072",
         fontWeight: "bold",
-        paddingLeft: 130
+        textAlign: "center",
+        width: 340,
     },
     arrowImg:{
-        marginLeft: 20
+        marginLeft: 20,
     }
 })

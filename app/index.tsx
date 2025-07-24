@@ -4,6 +4,8 @@ import { View, Text, StyleSheet, Alert, Pressable,} from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 //Função principal que será executada no aplicativo
 export default function Login() {
@@ -26,6 +28,9 @@ export default function Login() {
           const resultado = await resposta.json();
 
           if (resultado.sucesso){
+
+            await AsyncStorage.setItem('@user_id', resultado.userId.toString());
+            
             router.push("/home")
           } else{
             Alert.alert("Erro", resultado.mensagem);
@@ -39,8 +44,6 @@ export default function Login() {
     router.push("/createProfile")
   }
   
-
-
   return (
     <View style={styles.container}>
       <View style={styles.containerLogin}>
