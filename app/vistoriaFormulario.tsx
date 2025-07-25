@@ -50,6 +50,12 @@ export default function VistoriaFormulario(){
 
     const inserirValidade = async () => {
         try {
+
+            if (!dataVencimento || isNaN(dataVencimento.getTime())) {
+                Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
+                return;
+            }
+
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php",{
                 method : "POST",
                 headers:{
@@ -74,7 +80,7 @@ export default function VistoriaFormulario(){
                 Alert.alert("Erro", resultado.mensagem)
             }
         } catch(erro){
-            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro)
+            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
         }
     };
 

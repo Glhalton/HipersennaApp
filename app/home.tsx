@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { Text, View, StyleSheet, Image } from "react-native"
+import { Text, View, StyleSheet, Image, Alert } from "react-native"
 import { router } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -32,6 +32,30 @@ export default function Home(){
     useEffect(() => {
         pegarUserId();
     }, []);
+
+    const buscarDadosUsuario = async () => {
+        try{
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php",{
+                method : "POST",
+                headers:{
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId
+                })
+            });
+
+            const resultado = await resposta.json();
+
+            if(resultado.sucesso){
+                await AsyncStorage.setItem('@quantidade_vistoria', resultado.quantidadeVistorias.toString());
+            } else {
+                Alert.alert("Erro", resultado.mensagem);
+            }
+        } catch(erro){
+            Alert.alert("Erro", "Não foi possivel conectar ao servidor: " + erro);
+        }
+    }
     
 
     return(
