@@ -1,13 +1,13 @@
-import React, {useEffect, useState} from "react";
-import { Text, View, StyleSheet, Image, Alert } from "react-native"
-import { router } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import {LargeButton} from "../components/largeButton";
 import { SmallButton } from "@/components/smallButton";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from "expo-router";
+import React, { Suspense, useEffect, useState } from "react";
+import { Alert, Image, StyleSheet, Text, View, } from "react-native";
 
 export default function Home(){
     const [userId, setUserId] = useState<string | null>(null);
+
+    const [count, setCount] = useState(0);
 
     const botaoAddPress = () => {
         router.push("/vistoriaFormulario");
@@ -25,6 +25,7 @@ export default function Home(){
             }
         } catch (e){
             console.error("Erro ao recuperar userId", e);
+            Alert.alert("Erro ao recuperar userId");
         }
         return null;
     }
@@ -33,42 +34,56 @@ export default function Home(){
         pegarUserId();
     }, []);
 
-    const buscarDadosUsuario = async () => {
-        try{
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php",{
-                method : "POST",
-                headers:{
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    userId
-                })
-            });
 
-            const resultado = await resposta.json();
+    useEffect(() => {
+        const fetchCount = async () => {
+            try {
+                const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php",{
+                    method : "POST",
+                    headers:{
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        userId
+                    })
+                });
 
-            if(resultado.sucesso){
-                await AsyncStorage.setItem('@quantidade_vistoria', resultado.quantidadeVistorias.toString());
-            } else {
-                Alert.alert("Erro", resultado.mensagem);
+                const resultado = await resposta.json();
+
+                if(resultado.sucesso){
+                    setCount(resultado.quantidade_vistorias);
+                }
+            
+            } catch (error){
+                console.error("Erro ao buscar contagem: ", error);
             }
-        } catch(erro){
-            Alert.alert("Erro", "Não foi possivel conectar ao servidor: " + erro);
-        }
-    }
+        };
+
+        fetchCount();
+
+        const interval = setInterval(fetchCount, 10000);
+
+        return () => clearInterval(interval);
+    
+    }, [userId]);
     
 
     return(
-        <View style={styles.container}>
+
+       
+            <View style={styles.container}>
 
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <Image style={styles.engrenagemImg} source={require("../assets/images/Engrenagem.png")}/>
+                <Image style={styles.engrenagemImg} source={require("../../assets/images/Engrenagem.png")}/>
             </View>
 
             <View style={styles.containerBemVindo}>
                 <Text style={styles.tituloBemVindo}>
-                    Bem vindo de volta, ID: {userId}
+                    <Suspense fallback="Loading">
+                        Bem vindo de volta, ID: {userId}
+                    </Suspense>
+                    
                     
                 </Text>
                 <View style={styles.containerbuttons}>
@@ -84,7 +99,10 @@ export default function Home(){
                 <View style={styles.dashboardRowItens}>
                     <View style={styles.dashboardItem}>
                         <Text style={styles.dashboardItemText}>Total de {"\n"}vistorias: </Text>
-                        <Text style={styles.dashboardItemValue}>12</Text>
+                        <Suspense fallback="Loading">
+                            <Text style={styles.dashboardItemValue}>{count}</Text>
+                        </Suspense>
+                        
                     </View>
                     <View style={styles.dashboardItem}>
                         <Text style={styles.dashboardItemText}>Vencerão em {"\n"}breve</Text>
@@ -99,10 +117,14 @@ export default function Home(){
                 </View>
             </View>
             <View style={styles.containerAcessoRapido}>
-
+                <Text>
+                    Acesso rápido
+                </Text>
             </View>
             
         </View>
+
+        
     )
 }
 

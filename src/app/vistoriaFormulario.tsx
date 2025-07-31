@@ -1,11 +1,10 @@
-import React, {useState, useEffect} from "react";
-
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import { TopBar } from "@/components/topBar";
-import { Input } from "@/components/input";
 import { DateInput } from "@/components/dateInput";
-import { router } from "expo-router";
+import { Input } from "@/components/input";
+import { TopBar } from "@/components/topBar";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function VistoriaFormulario(){
     //Id do usuario
@@ -153,7 +152,7 @@ export default function VistoriaFormulario(){
             </View>
 
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -197,4 +196,4 @@ const styles = StyleSheet.create({
        
     },
 
-})
+});
