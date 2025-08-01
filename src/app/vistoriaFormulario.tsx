@@ -1,7 +1,7 @@
 import { DateInput } from "@/components/dateInput";
+import { Header } from "@/components/header";
 import { Input } from "@/components/input";
-import { TopBar } from "@/components/topBar";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -11,19 +11,19 @@ export default function VistoriaFormulario(){
     const [userId, setUserId] = useState<string | null>(null);
 
     //Codigo da filial
-    const [codFilial, setCodFilial] = React.useState('');
+    const [codFilial, setCodFilial] = React.useState("");
 
     //Codigo do produto
-    const [codProd, setCodProd] = React.useState('');
+    const [codProd, setCodProd] = React.useState("");
 
     //Data de Vencimento
     const [dataVencimento, setDataVencimento] = useState<Date | undefined>(undefined);
 
     //Quantidade
-    const [quantidade, setQuantidade] = React.useState('');
+    const [quantidade, setQuantidade] = React.useState("");
 
     //Texto de observacao
-    const [observacao, setObservacao] = React.useState('');
+    const [observacao, setObservacao] = React.useState("");
 
 
     const resumoPress = () => {
@@ -86,7 +86,6 @@ export default function VistoriaFormulario(){
     return(
         <View style={styles.container}>
 
-            <TopBar text="Vistoria"/> 
 
             <Text style={styles.text}>
                 Filial *
@@ -158,6 +157,8 @@ export default function VistoriaFormulario(){
 const styles = StyleSheet.create({
     container:{
         flex: 1,
+        backgroundColor: "white",
+        paddingTop: 30,
     },
     text:{
         color: "#205072",

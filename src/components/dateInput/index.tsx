@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import { Pressable, Text, View } from "react-native"
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { styles } from "./styles"
+import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { styles } from "./styles";
 
 interface DateInputProps {
     label?: string;
@@ -24,8 +24,8 @@ export function DateInput({label, value, onChange} : DateInputProps){
     return(
         <View style={styles.container}>
             <Pressable style={styles.inputData} onPress={() => setShow(true)}>
-                <Text style={[styles.inputDataText, !value && { color: '#555' }]}>
-                    {value ? value.toLocaleDateString('pt-BR') : "Selecionar data"}
+                <Text style={[styles.inputDataText, !value && { color: "#555" }]}>
+                    {value ? value.toLocaleDateString("pt-BR") : "Selecionar data"}
                 </Text>
             </Pressable>
 

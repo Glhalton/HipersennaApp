@@ -1,5 +1,5 @@
 import { SmallButton } from "@/components/smallButton";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { Suspense, useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, Text, View, } from "react-native";
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         alignItems: "flex-start",
+        backgroundColor: "white",
         color:"#205072",
     },
     header:{

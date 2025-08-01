@@ -1,16 +1,16 @@
-import React, { Suspense } from "react";
-import { Alert, Pressable, StyleSheet, Text, View, } from "react-native";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
+import React from "react";
+import { Alert, TouchableOpacity, StyleSheet, Text, View, } from "react-native";
 
 //Função principal que será executada no aplicativo
 export default function Login() {
 
   //Valores Input Login
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   //Funcao verificar login
   const fazerLogin = async () => {
@@ -27,62 +27,68 @@ export default function Login() {
 
       if (resultado.sucesso) {
 
-        await AsyncStorage.setItem('@user_id', resultado.userId.toString());
+        await AsyncStorage.setItem("@user_id", resultado.userId.toString());
 
         router.push("/home");
+        setUsername("");
+        setPassword("");
 
       } else {
         Alert.alert("Erro", resultado.mensagem);
+        setPassword("");
       }
     } catch (erro) {
-      Alert.alert("Erro", "Não foi possível conectar ao servidor");
+        Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro  );
+        setUsername("");
+        setPassword("");
     }
   };
 
   const signup = () => {
     router.push("/sign-up");
+    setUsername("");
+    setPassword("");
   }
 
   return (
 
-    <Suspense fallback="Carregando">
-      <View style={styles.container}>
-        <View style={styles.containerLogin}>
-          <Text style={styles.title}>
-            Bem vindo de volta!
-          </Text>
+    <View style={styles.container}>
 
-          <Input
-            placeholder="Username"
-            onChangeText={setUsername}
-            value={username}
-          />
+      <Text style={styles.title}>
+        Bem vindo de volta!
+      </Text>
 
-          <Input
-            placeholder="Senha"
-            onChangeText={setPassword}
-            value={password}
-            secureTextEntry={true}
-          />
+      <Input
+        placeholder="Username"
+        onChangeText={setUsername}
+        value={username}
+        autoCapitalize="none"
+      />
 
-          <Text style={styles.text}>
-            Esqueceu a sua senha?
-          </Text>
+      <Input
+        placeholder="Senha"
+        onChangeText={setPassword}
+        value={password}
+        secureTextEntry={true}
+        autoCapitalize="none"
+      />
 
-          <LargeButton title="Login" onPress={fazerLogin} />
+      <TouchableOpacity style={styles.buttonEsquecerSenha}>
+        <Text style={styles.textEsquecerSenha}>
+          Esqueceu a sua senha?
+        </Text>
+      </TouchableOpacity>
 
-        </View>
 
-        <View style={styles.containerCadastro}>
-          <Pressable style={styles.botaoCadastro} onPress={signup}>
-            <Text style={styles.textoCadastro}>
-              Não tem uma conta? Cadastre-se
-            </Text>
-          </Pressable>
-        </View>
+      <LargeButton title="Login" onPress={fazerLogin} />
 
-      </View>
-    </Suspense>
+      <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
+        <Text style={styles.textCadastro}>
+          Não tem uma conta? Cadastre-se
+        </Text>
+      </TouchableOpacity>
+
+    </View>
 
   )
 }
@@ -91,29 +97,23 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  containerLogin: {
-    marginTop: 80,
-    alignItems: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "white",
   },
   title: {
     color: "#205072",
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+    marginBottom: 15,
   },
-  text: {
-    color: "#205072",
-    paddingTop: 13,
-    paddingBottom: 13,
-    width: 358,
-    fontSize: 14,
+  buttonEsquecerSenha:{
     marginBottom: 50,
+    left: 100
   },
-  containerCadastro: {
-    flex: 1,
-    justifyContent: "flex-end",
+  textEsquecerSenha: {
+    color: "#205072",
+    fontSize: 14,
   },
   botaoCadastro: {
     padding: 20,
@@ -121,8 +121,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 80,
   },
-  textoCadastro: {
+  textCadastro: {
     color: "#205072",
-    fontSize: 14
+    fontSize: 14,
+    textDecorationLine: "underline"
   }
 })

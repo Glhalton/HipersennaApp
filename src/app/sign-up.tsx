@@ -1,6 +1,6 @@
+
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
-import { TopBar } from "@/components/topBar";
 import { router } from "expo-router";
 import React from "react";
 import { Alert, StyleSheet, View } from "react-native";
@@ -38,7 +38,6 @@ export default function signup() {
 
     return (
         <View style={styles.container}>
-            <TopBar text="Criar Usuario" />
 
             <Input
                 placeholder="Nome completo"
@@ -47,12 +46,16 @@ export default function signup() {
             />
             <Input
                 placeholder="Email"
+                inputMode="email"
                 value={email}
                 onChangeText={setEmail}
+                
             />
             <Input
                 placeholder="Telefone"
-                keyboardType="numeric"
+                inputMode="tel"
+                keyboardType="phone-pad"
+                maxLength={11}
                 value={telefone}
                 onChangeText={setTelefone}
             />
@@ -66,6 +69,7 @@ export default function signup() {
                 placeholder="Usuario"
                 value={username}
                 onChangeText={setUsername}
+                autoCapitalize="none"
             />
 
             <Input
@@ -73,12 +77,12 @@ export default function signup() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={true}
+                autoCapitalize="none"
             />
+
             <View style={styles.containerBotao}>
                 <LargeButton title="Criar usuario" onPress={criarUsuario} />
             </View>
-
-
 
         </View>
     )
@@ -87,6 +91,8 @@ export default function signup() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "white",
+        paddingTop: 20,
     },
     containerBotao: {
         flex: 1,

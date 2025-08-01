@@ -2,19 +2,25 @@ import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
     container:{
-        flexDirection: "row",
         width: "100%",
-        paddingTop: 40,
-        paddingBottom: 40,
+        height: 80,
+        flexDirection: "row",
+        backgroundColor: "gray",
+        
+    },
+    containerTitle:{
+        width: "100%",
+        alignItems: "flex-end",
+        backgroundColor: "blue"
     },
     title:{
         fontSize: 18,
         color: "#205072",
         fontWeight: "bold",
-        textAlign: "center",
-        width: 340,
+        backgroundColor: "red"
     },
     arrowImg:{
-        marginLeft: 20,
+        backgroundColor: "green",
+        
     }
 })

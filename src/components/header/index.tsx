@@ -6,7 +6,7 @@ type Prop = {
     text: string;
 }
 
-export function TopBar({text}: Prop){
+export function Header({text}: Prop){
 
     const botaoVoltar = () => {
         router.back();
@@ -14,12 +14,17 @@ export function TopBar({text}: Prop){
 
     return(
         <View style={styles.container}>
+
             <TouchableOpacity onPress={botaoVoltar}>
                 <Image style={styles.arrowImg} source={require("../../../assets/images/LeftArrow.png")}/>
             </TouchableOpacity>
-            <Text style={styles.title}>
-                {text}
-            </Text>
+
+            <View style={styles.containerTitle}>
+                <Text style={styles.title}>
+                    {text}
+                </Text>
+            </View>
+
         </View>
     )
 }

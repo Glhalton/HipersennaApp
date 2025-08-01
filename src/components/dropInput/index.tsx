@@ -1,6 +1,6 @@
 import React from "react";
-import {styles} from "./styles";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
+import { styles } from "./styles";
 
 export function DropInput(){
 
@@ -8,9 +8,9 @@ export function DropInput(){
 
     const[open, setOpen] = React.useState(false);
     const [tiposInsecao, setTiposInsercao] = React.useState([
-        {label: 'Tipo1', value: 'tipo1'},
-        {label: 'Tipo2', value: 'tipo2'},
-        {label: 'Tipo3', value: 'tipo3'}
+        {label: "Tipo1", value: "tipo1"},
+        {label: "Tipo2", value: "tipo2"},
+        {label: "Tipo3", value: "tipo3"}
     ]);
 
     return(
