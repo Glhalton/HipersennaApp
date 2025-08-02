@@ -25,7 +25,7 @@ export function DateInput({label, value, onChange} : DateInputProps){
         <View style={styles.container}>
             <Pressable style={styles.inputData} onPress={() => setShow(true)}>
                 <Text style={[styles.inputDataText, !value && { color: "#555" }]}>
-                    {value ? value.toLocaleDateString("pt-BR") : "Selecionar data"}
+                    {value ? value.toLocaleDateString("pt-BR") : "Selecione uma data"}
                 </Text>
             </Pressable>
 

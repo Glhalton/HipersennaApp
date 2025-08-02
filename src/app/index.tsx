@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
 import { Alert, TouchableOpacity, StyleSheet, Text, View, } from "react-native";
+import colors from "../../constants/colors";
 
 //Função principal que será executada no aplicativo
 export default function Login() {
@@ -38,9 +39,9 @@ export default function Login() {
         setPassword("");
       }
     } catch (erro) {
-        Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro  );
-        setUsername("");
-        setPassword("");
+      Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
+      setUsername("");
+      setPassword("");
     }
   };
 
@@ -53,40 +54,51 @@ export default function Login() {
   return (
 
     <View style={styles.container}>
-
-      <Text style={styles.title}>
-        Bem vindo de volta!
-      </Text>
-
-      <Input
-        placeholder="Username"
-        onChangeText={setUsername}
-        value={username}
-        autoCapitalize="none"
-      />
-
-      <Input
-        placeholder="Senha"
-        onChangeText={setPassword}
-        value={password}
-        secureTextEntry={true}
-        autoCapitalize="none"
-      />
-
-      <TouchableOpacity style={styles.buttonEsquecerSenha}>
-        <Text style={styles.textEsquecerSenha}>
-          Esqueceu a sua senha?
+      <View style={styles.header}>
+        <Text style={styles.title}>
+          Bem vindo de volta!
         </Text>
-      </TouchableOpacity>
+      </View>
 
 
-      <LargeButton title="Login" onPress={fazerLogin} />
+      <View style={styles.form}>
+        <View>
+          <Text style={styles.label}>Usuário</Text>
+          <Input
+            placeholder="Digite o seu usuário"
+            onChangeText={setUsername}
+            value={username}
+            autoCapitalize="none"
+          />
+        </View>
 
-      <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
-        <Text style={styles.textCadastro}>
-          Não tem uma conta? Cadastre-se
-        </Text>
-      </TouchableOpacity>
+
+        <View>
+          <Text style={styles.label}>Senha</Text>
+          <Input
+            placeholder="Digite a sua senha"
+            onChangeText={setPassword}
+            value={password}
+            secureTextEntry={true}
+            autoCapitalize="none"
+          />
+        </View>
+
+        <TouchableOpacity style={styles.buttonEsquecerSenha}>
+          <Text style={styles.textEsquecerSenha}>
+            Esqueceu a sua senha?
+          </Text>
+        </TouchableOpacity>
+
+
+        <LargeButton title="Login" onPress={fazerLogin} />
+
+        <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
+          <Text style={styles.textCadastro}>
+            Não tem uma conta? Cadastre-se
+          </Text>
+        </TouchableOpacity>
+      </View>
 
     </View>
 
@@ -97,29 +109,38 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 200,
     backgroundColor: "white",
   },
+  header: {
+    alignItems: "center",
+  },
   title: {
-    color: "#205072",
+    color: colors.blue,
     fontSize: 28,
     fontWeight: "bold",
-    marginBottom: 15,
   },
-  buttonEsquecerSenha:{
+  form: {
+    flex: 1,
+    paddingHorizontal: 14,
+    paddingTop: 30,
+  },
+  label: {
+    color: colors.blue,
+    marginBottom: 4,
+    fontWeight: "bold"
+  },
+  buttonEsquecerSenha: {
+    alignItems: "flex-end",
     marginBottom: 50,
-    left: 100
-  },
-  textEsquecerSenha: {
-    color: "#205072",
-    fontSize: 14,
   },
   botaoCadastro: {
     padding: 20,
-    width: 358,
     alignItems: "center",
     marginBottom: 80,
+  },
+  textEsquecerSenha: {
+    color: "#205072",
   },
   textCadastro: {
     color: "#205072",

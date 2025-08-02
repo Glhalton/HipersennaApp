@@ -7,10 +7,9 @@ export const styles = StyleSheet.create({
     inputData: {
         backgroundColor: "#F4F6F8",
         height: 56,
-        minWidth: 358,
         borderRadius: 8,
-        margin: 12,
         padding: 16,
+        marginBottom: 16,
     },
     inputDataText: {
         fontSize: 16,
