@@ -4,7 +4,7 @@ import { Input } from "@/components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView } from "react-native";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 
@@ -16,25 +16,30 @@ export default function VistoriaFormulario() {
     const [codFilial, setCodFilial] = React.useState<string | null>(null);;
 
     const filiais = [
-        {label: "Matriz", value: "1"},
-        {label: "Faruk", value: "2"},
-        {label: "Carajás", value: "3"},
-        {label: "VS10", value: "4"},
-        {label: "Xinguara", value: "5"},
-        {label: "Cidade Jardim", value: "7"},
+        { label: "Matriz", value: "1" },
+        { label: "Faruk", value: "2" },
+        { label: "Carajás", value: "3" },
+        { label: "VS10", value: "4" },
+        { label: "Xinguara", value: "5" },
+        { label: "Cidade Jardim", value: "7" },
     ];
 
     //Codigo do produto
-    const [codProd, setCodProd] = React.useState("");
+    const [codProd, setCodProd] = useState("");
+
+    const [produto, setProduto] = useState<{ descricao: string } | null>(null);
+
+
+    const [timer, setTimer] = useState<number | null>(null);
 
     //Data de Vencimento
     const [dataVencimento, setDataVencimento] = useState<Date | undefined>(undefined);
 
     //Quantidade
-    const [quantidade, setQuantidade] = React.useState("");
+    const [quantidade, setQuantidade] = useState("");
 
     //Texto de observacao
-    const [observacao, setObservacao] = React.useState("");
+    const [observacao, setObservacao] = useState("");
 
 
     const resumoPress = () => {
@@ -94,6 +99,47 @@ export default function VistoriaFormulario() {
         }
     };
 
+    useEffect(() => {
+        if (codProd.trim() === "") {
+            setProduto(null);
+            return;
+        }
+
+
+        if (timer) clearTimeout(timer);
+
+        const newTimer = setTimeout(() => {
+            buscarProduto();
+        }, 500);
+
+        setTimer(newTimer);
+    }, [codProd]);
+
+    const buscarProduto = async () => {
+        try {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ codProd })
+            });
+
+            //const texto = await resposta.text();
+            //console.log("RESPOSTA BRUTA DA API:", texto);
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                setProduto(resultado.produto);
+            } else {
+                setProduto(resultado.mensagem);
+            }
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+        }
+    };
+
     return (
         <View style={styles.container}>
 
@@ -103,11 +149,10 @@ export default function VistoriaFormulario() {
                         Filial *
                     </Text>
                     <DropdownInput
-                        label="Escolha uma opção"
                         value={codFilial}
                         items={filiais}
                         onChange={(val) => setCodFilial(val)}
-                    
+
                     />
 
                 </View>
@@ -116,12 +161,28 @@ export default function VistoriaFormulario() {
                     <Text style={styles.label}>
                         Código do produto *
                     </Text>
-                    <Input
-                        placeholder="Digite o código do produto"
-                        keyboardType="numeric"
-                        value={codProd}
-                        onChangeText={setCodProd}
-                    />
+                    <View style={styles.produtoContainer}>
+                        <View style={styles.codigoProdutoInput}>
+                            <Input
+                                placeholder="Produto"
+                                keyboardType="numeric"
+                                value={codProd}
+                                onChangeText={setCodProd}
+                            />
+                        </View>
+                        <View style={styles.nomeProdutoContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+
+
+                                <Text style={styles.nomeProduto}>
+                                    {produto?.descricao || "Produto não encontrado"}
+                                </Text>
+                            </ScrollView>
+                        </View>
+
+                    </View>
+
+
                 </View>
 
                 <View>
@@ -190,6 +251,25 @@ const styles = StyleSheet.create({
     label: {
         color: colors.blue,
         marginBottom: 4,
+        fontWeight: "bold"
+    },
+    produtoContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between"
+    },
+    codigoProdutoInput: {
+        width: "30%"
+    },
+    nomeProdutoContainer: {
+        backgroundColor: "#b7def0ff",
+        marginBottom: 16,
+        padding: 16,
+        borderRadius: 8,
+        width: "65%"
+    },
+    nomeProduto: {
+        fontSize: 15,
+        color: colors.blue,
         fontWeight: "bold"
     },
     containerBotoes: {

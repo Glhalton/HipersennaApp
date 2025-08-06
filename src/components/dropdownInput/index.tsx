@@ -4,19 +4,17 @@ import DropDownPicker from "react-native-dropdown-picker";
 import { styles } from "./styles";
 
 interface DropDownInputProps {
-    label?: string;
     value: string | null;
     items: { value: string }[];
     onChange: (value: string) => void;
 }
 
-export function DropdownInput({label, value, items, onChange }: DropDownInputProps) {
+export function DropdownInput({value, items, onChange }: DropDownInputProps) {
     const [open, setOpen] = React.useState(false);
     const [dropDownItems, setDropDownItems] = React.useState(items);
 
     return (
-        <View>
-            {label && <Text style={styles.label}>{label}</Text>}
+        <View>           
             <DropDownPicker
                 open={open}
                 value={value}

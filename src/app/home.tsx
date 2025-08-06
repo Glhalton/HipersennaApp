@@ -1,7 +1,7 @@
 import { SmallButton } from "@/components/smallButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import colors from "../../constants/colors";
 
@@ -12,6 +12,10 @@ export default function Home() {
 
     const botaoAddPress = () => {
         router.push("/vistoriaFormulario");
+    }
+
+    const relatorios = () =>{
+        router.push("/relatorios")
     }
 
     const botaoHistoricPress = () => {
@@ -70,14 +74,14 @@ export default function Home() {
 
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
 
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Validade</Text>
-                    <Image style={styles.engrenagemImg} source={require("../../assets/images/Engrenagem.png")} />
-                </View>
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>Validade</Text>
+                <Image style={styles.engrenagemImg} source={require("../../assets/images/Engrenagem.png")} />
+            </View>
 
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.containerBemVindo}>
                     <Text style={styles.tituloBemVindo}>
                         Bem vindo de volta, ID: {userId}
@@ -134,19 +138,16 @@ export default function Home() {
                             </View >
                         </TouchableOpacity>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={relatorios}>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.engrenagemImg} source={require("../../assets/images/ArquivoIcon.png")} />
                                 <Text style={styles.textOptions}>Gerar relatórios</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
-
                 </View>
-
-            </View>
-        </ScrollView>
-
+            </ScrollView>
+        </View>
     )
 }
 
@@ -154,15 +155,23 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",
+
+    },
+    scrollContainer: {
         color: colors.blue,
         paddingHorizontal: 14,
-        paddingTop: 50,
+        paddingTop: 10,
         paddingBottom: 40,
     },
     header: {
-        width: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
+        paddingTop: 50,
+        paddingBottom: 15,
+        paddingHorizontal: 14,
+        backgroundColor: "white",
+        elevation: 3,
     },
     headerText: {
         fontSize: 18,
