@@ -1,10 +1,9 @@
 import { DateInput } from "@/components/dateInput";
-import { Header } from "@/components/header";
 import { Input } from "@/components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, TextInput, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 
@@ -181,8 +180,6 @@ export default function VistoriaFormulario() {
                         </View>
 
                     </View>
-
-
                 </View>
 
                 <View>

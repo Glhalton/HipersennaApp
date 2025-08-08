@@ -1,24 +1,24 @@
-import { SmallButton } from "@/components/smallButton";
+import React, { useEffect, useState } from "react";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler, ToastAndroid } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Alert, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { SmallButton } from "@/components/smallButton";
 import colors from "../../constants/colors";
 
 export default function Home() {
     const [userId, setUserId] = useState<string | null>(null);
-
     const [count, setCount] = useState(0);
+    const [backPressedOnce, setBackPressedOnce] = useState(false);
 
-    const botaoAddPress = () => {
+    const goToVistoria = () => {
         router.push("/vistoriaFormulario");
     }
 
-    const relatorios = () =>{
+    const goToRelatorios = () =>{
         router.push("/relatorios")
     }
 
-    const botaoHistoricPress = () => {
+    const goToHistorico = () => {
         router.push("/historico");
     }
 
@@ -30,7 +30,6 @@ export default function Home() {
             }
         } catch (e) {
             console.error("Erro ao recuperar userId", e);
-            Alert.alert("Erro ao recuperar userId");
         }
         return null;
     }
@@ -41,6 +40,8 @@ export default function Home() {
 
 
     useEffect(() => {
+        if (!userId) return;
+        
         const fetchCount = async () => {
             try {
                 const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
@@ -72,13 +73,35 @@ export default function Home() {
 
     }, [userId]);
 
+    useEffect(() => {
+        const onBackPress = () => {
+            if (backPressedOnce){
+                BackHandler.exitApp();
+                return true;
+            }
+
+            setBackPressedOnce(true);
+            ToastAndroid.show("Pressione voltar novamente para sair", ToastAndroid.SHORT);
+
+            const timer = setTimeout(() => {
+                setBackPressedOnce(false);
+            }, 2000);
+
+            return true;
+        };
+
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+        return () => backHandler.remove();
+    }, [backPressedOnce]);
+
 
     return (
 
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <Image style={styles.engrenagemImg} source={require("../../assets/images/Engrenagem.png")} />
+                <Image style={styles.imgIcon} source={require("../../assets/images/Engrenagem.png")} />
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -87,8 +110,8 @@ export default function Home() {
                         Bem vindo de volta, ID: {userId}
                     </Text>
                     <View style={styles.containerbuttons}>
-                        <SmallButton title="Histórico" onPress={botaoHistoricPress} />
-                        <SmallButton title="Add" onPress={botaoAddPress} />
+                        <SmallButton title="Histórico" onPress={goToHistorico} />
+                        <SmallButton title="Add" onPress={goToVistoria} />
                     </View>
                 </View>
 
@@ -119,28 +142,28 @@ export default function Home() {
                     <View>
                         <TouchableOpacity>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.engrenagemImg} source={require("../../assets/images/SinoIcon.png")} />
+                                <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
                                 <Text style={styles.textOptions}>Solicitações de Vistoria</Text>
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.engrenagemImg} source={require("../../assets/images/MenuIcon.png")} />
+                                <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.engrenagemImg} source={require("../../assets/images/GraficosIcon.png")} />
+                                <Image style={styles.imgIcon} source={require("../../assets/images/GraficosIcon.png")} />
                                 <Text style={styles.textOptions}>Monitor de metas</Text>
                             </View >
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={relatorios}>
+                        <TouchableOpacity onPress={goToRelatorios}>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.engrenagemImg} source={require("../../assets/images/ArquivoIcon.png")} />
+                                <Image style={styles.imgIcon} source={require("../../assets/images/ArquivoIcon.png")} />
                                 <Text style={styles.textOptions}>Gerar relatórios</Text>
                             </View>
                         </TouchableOpacity>
@@ -178,7 +201,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "#205072",
     },
-    engrenagemImg: {
+    imgIcon: {
     },
 
     containerBemVindo: {

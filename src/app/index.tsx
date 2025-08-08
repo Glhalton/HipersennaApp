@@ -2,7 +2,7 @@ import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import { Alert, TouchableOpacity, StyleSheet, Text, View, } from "react-native";
 import colors from "../../constants/colors";
 
@@ -10,8 +10,8 @@ import colors from "../../constants/colors";
 export default function Login() {
 
   //Valores Input Login
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   //Funcao verificar login
   const fazerLogin = async () => {
@@ -39,7 +39,7 @@ export default function Login() {
         setPassword("");
       }
     } catch (erro) {
-      Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
+      Alert.alert("Erro", "Não foi possível conectar ao servidor " +  erro);
       setUsername("");
       setPassword("");
     }
@@ -59,7 +59,6 @@ export default function Login() {
           Bem vindo de volta!
         </Text>
       </View>
-
 
       <View style={styles.form}>
         <View>
@@ -105,12 +104,12 @@ export default function Login() {
   )
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 200,
     backgroundColor: "white",
+    fontFamily: "Lexend-Bold",
   },
   header: {
     alignItems: "center",
