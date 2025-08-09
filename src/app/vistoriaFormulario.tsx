@@ -6,8 +6,19 @@ import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
+import { LargeButton } from "@/components/largeButton";
+import { DataTable } from "react-native-paper";
 
 export default function VistoriaFormulario() {
+
+    type FormDataItem = {
+        codProd: string;
+        codFilial: string;
+        dataVencimento: Date;
+        quantidade: string;
+        observacao: string;
+    }
+
     //Id do usuario
     const [userId, setUserId] = useState<string | null>(null);
 
@@ -26,9 +37,10 @@ export default function VistoriaFormulario() {
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
 
-    const [produto, setProduto] = useState<{ descricao: string } | null>(null);
+    //Nome do produto
+    const [nomeProduto, setNomeProduto] = useState<{ descricao: string } | null>(null);
 
-
+    //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
 
     //Data de Vencimento
@@ -40,9 +52,27 @@ export default function VistoriaFormulario() {
     //Texto de observacao
     const [observacao, setObservacao] = useState("");
 
+    //Lista de items do Formulario
+    const [lista, setLista] = useState<FormDataItem[]>([]);
 
-    const resumoPress = () => {
-        console.log(dataVencimento);
+    //Função para adicionar item do formulario na lista
+    const adicionarItem = () => {
+        if (!codProd || !codFilial || !dataVencimento || !quantidade) {
+            Alert.alert("Erro", "Preencha todos os campos obrigatórios!")
+            return;
+        }
+
+        setLista([...lista, { codProd, codFilial, dataVencimento, quantidade, observacao }]);
+        setCodProd("");
+        setCodFilial("");
+        setDataVencimento(undefined);
+        setQuantidade("");
+        setObservacao("");
+
+    }
+
+    const goToResumo = () => {
+        router.navigate("/resumo");
     }
 
     const pegarUserId = async () => {
@@ -100,7 +130,7 @@ export default function VistoriaFormulario() {
 
     useEffect(() => {
         if (codProd.trim() === "") {
-            setProduto(null);
+            setNomeProduto(null);
             return;
         }
 
@@ -130,9 +160,9 @@ export default function VistoriaFormulario() {
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                setProduto(resultado.produto);
+                setNomeProduto(resultado.produto);
             } else {
-                setProduto(resultado.mensagem);
+                setNomeProduto(resultado.mensagem);
             }
         } catch (erro) {
             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
@@ -151,7 +181,6 @@ export default function VistoriaFormulario() {
                         value={codFilial}
                         items={filiais}
                         onChange={(val) => setCodFilial(val)}
-
                     />
 
                 </View>
@@ -174,7 +203,7 @@ export default function VistoriaFormulario() {
 
 
                                 <Text style={styles.nomeProduto}>
-                                    {produto?.descricao || "Produto não encontrado"}
+                                    {nomeProduto?.descricao || "Produto não encontrado"}
                                 </Text>
                             </ScrollView>
                         </View>
@@ -216,8 +245,8 @@ export default function VistoriaFormulario() {
                     />
                 </View>
 
-                <View style={styles.containerBotoes}>
-                    <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={resumoPress}>
+                {/*<View style={styles.containerBotoes}>
+                    <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={goToResumo}>
                         <Text style={styles.textButton}>
                             Resumo
                         </Text>
@@ -227,8 +256,57 @@ export default function VistoriaFormulario() {
                             Inserir
                         </Text>
                     </TouchableOpacity>
+                </View> */}
+
+                <View style={styles.inserirButton}>
+                    <LargeButton
+                        title="Inserir"
+                        backgroundColor="#737f85ff"
+                        onPress={adicionarItem}
+                    />
                 </View>
 
+                <View style={styles.tableContainer}>
+                    <ScrollView horizontal>
+                        <DataTable>
+                            <DataTable.Header>
+                                <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>
+                                <DataTable.Title style={styles.cell}>Data de Validade</DataTable.Title>
+                                <DataTable.Title style={styles.cell}>Filial</DataTable.Title>
+                                <DataTable.Title style={styles.cell}>Quantidade</DataTable.Title>
+                                <DataTable.Title style={styles.cell}>Observacao</DataTable.Title>
+                                <DataTable.Title style={styles.cell}>Ações</DataTable.Title>
+
+                            </DataTable.Header>
+
+                            {lista.map((item, index) => (
+                                <DataTable.Row key={index}>
+                                    <DataTable.Cell style={styles.cell}>{item.codProd}</DataTable.Cell>
+                                    <DataTable.Cell style={styles.cell}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
+                                    <DataTable.Cell style={styles.cell}>{item.codFilial}</DataTable.Cell>
+                                    <DataTable.Cell style={styles.cell}>{item.quantidade}</DataTable.Cell>
+                                    <DataTable.Cell style={styles.cell}>{item.observacao}</DataTable.Cell>
+                                    <DataTable.Cell>
+                                        <TouchableOpacity style={styles.removerButton}>
+                                            <Text style={styles.removerText}>
+                                                Remover
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                    </DataTable.Cell>
+                                </DataTable.Row>
+                            ))}
+                        </DataTable>
+                    </ScrollView>
+                </View>
+
+                {lista.length > 0 && (
+                    <View style={styles.salvarButton}>
+                        <LargeButton
+                            title="Salvar"
+                        />
+                    </View>
+                )}
             </View>
 
         </View>
@@ -269,6 +347,12 @@ const styles = StyleSheet.create({
         color: colors.blue,
         fontWeight: "bold"
     },
+    inserirButton: {
+        marginBottom: 20,
+    },
+    salvarButton: {
+        marginTop: 30,
+    },
     containerBotoes: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -279,6 +363,25 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: "bold",
 
+    },
+
+    tableContainer: {
+        paddingHorizontal: 14,
+
+    },
+    cell: {
+        paddingHorizontal: 10,
+        minWidth: 120, //
+        justifyContent: "center",
+    },
+
+    removerButton: {
+        backgroundColor: "red",
+        padding: 5,
+        borderRadius: 7
+    },
+    removerText: {
+        color: "white"
     },
     buttonResumo: {
         backgroundColor: "#4A5A6A",

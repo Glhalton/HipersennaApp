@@ -107,7 +107,7 @@ export default function Home() {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.containerBemVindo}>
                     <Text style={styles.tituloBemVindo}>
-                        Bem vindo de volta, ID: {userId}
+                        Bem vindo de volta!
                     </Text>
                     <View style={styles.containerbuttons}>
                         <SmallButton title="Histórico" onPress={goToHistorico} />
@@ -126,12 +126,12 @@ export default function Home() {
                         </View>
                         <View style={styles.dashboardItem}>
                             <Text style={styles.dashboardItemText}>Vencerão em {"\n"}breve</Text>
-                            <Text style={styles.dashboardItemValue}>2</Text>
+                            <Text style={styles.dashboardItemValue}>0</Text>
                         </View>
                     </View>
                     <View style={styles.dashboardLargeItem}>
                         <Text style={styles.dashboardItemText}>Vencidos </Text>
-                        <Text style={styles.dashboardItemValue}>1</Text>
+                        <Text style={styles.dashboardItemValue}>0</Text>
                     </View>
                 </View>
 

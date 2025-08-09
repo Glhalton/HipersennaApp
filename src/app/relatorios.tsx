@@ -30,6 +30,7 @@ export default function Relatorios() {
                     <LargeButton
                         title="Relatório de Bônus"
                         onPress={relatorioBonus}
+                        
                     />
                 </View>
             </View>

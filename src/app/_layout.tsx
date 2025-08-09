@@ -10,6 +10,7 @@ export default function Layout() {
       <Stack.Screen name="relatorios" options={{title: "Relatórios"}}/>
       <Stack.Screen name="relatorioVencimento" options={{title: "Relatório Vencimento"}}/>
       <Stack.Screen name="relatorioBonus" options={{title: "Relatório Bônus"}}/>
+      <Stack.Screen name="resumo" options={{title: "Resumo"}}/>
     </Stack>
   )
 }

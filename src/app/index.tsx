@@ -90,7 +90,7 @@ export default function Login() {
         </TouchableOpacity>
 
 
-        <LargeButton title="Login" onPress={fazerLogin} />
+        <LargeButton title="Login" onPress={fazerLogin}  />
 
         <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
           <Text style={styles.textCadastro}>

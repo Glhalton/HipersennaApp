@@ -230,7 +230,7 @@ export default function relatorioVencimento() {
                 <ScrollView horizontal>
                     <DataTable>
                         <DataTable.Header>
-                            <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>
+                            <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>   
                             <DataTable.Title style={styles.cell}>Data de Validade</DataTable.Title>
                             <DataTable.Title style={styles.cell}>Filial</DataTable.Title>
                             <DataTable.Title style={styles.cell}>Tratativa</DataTable.Title>
