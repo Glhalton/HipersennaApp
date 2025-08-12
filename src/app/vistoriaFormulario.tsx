@@ -160,86 +160,86 @@ export default function VistoriaFormulario() {
             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
         }
     };
-  
+
 
     return (
         <View style={styles.container}>
-            <ScrollView   contentContainerStyle={styles.scrollContainer}>
-
-                <View style={styles.form}>
-                    <View>
-                        <Text style={styles.label}>
-                            Filial *
-                        </Text>
-                        <DropdownInput
-                            value={codFilial}
-                            items={filiais}
-                            onChange={(val) => setCodFilial(val)}
-                        />
-
-                    </View>
-
-                    <View>
-                        <Text style={styles.label}>
-                            Código do produto *
-                        </Text>
-                        <View style={styles.produtoContainer}>
-                            <View style={styles.codigoProdutoInput}>
-                                <Input
-                                    placeholder="Produto"
-                                    keyboardType="numeric"
-                                    value={codProd}
-                                    onChangeText={setCodProd}
-                                />
-                            </View>
-                            <View style={styles.nomeProdutoContainer}>
-                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
 
-                                    <Text style={styles.nomeProduto}>
-                                        {nomeProduto?.descricao || "Produto não encontrado"}
-                                    </Text>
-                                </ScrollView>
-                            </View>
+            <View style={styles.form}>
+                <View>
+                    <Text style={styles.label}>
+                        Filial *
+                    </Text>
+                    <DropdownInput
+                        value={codFilial}
+                        items={filiais}
+                        onChange={(val) => setCodFilial(val)}
+                    />
 
+                </View>
+
+                <View>
+                    <Text style={styles.label}>
+                        Código do produto *
+                    </Text>
+                    <View style={styles.produtoContainer}>
+                        <View style={styles.codigoProdutoInput}>
+                            <Input
+                                placeholder="Produto"
+                                keyboardType="numeric"
+                                value={codProd}
+                                onChangeText={setCodProd}
+                            />
                         </View>
-                    </View>
+                        <View style={styles.nomeProdutoContainer}>
+                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-                    <View>
-                        <Text style={styles.label}>
-                            Data de Validade *
-                        </Text>
-                        <DateInput
-                            label="Data de Vencimento"
-                            value={dataVencimento}
-                            onChange={setDataVencimento}
-                        />
-                    </View>
 
-                    <View>
-                        <Text style={styles.label}>
-                            Quantidade *
-                        </Text>
-                        <Input
-                            placeholder="Insira a quantidade"
-                            keyboardType="numeric"
-                            value={quantidade}
-                            onChangeText={setQuantidade}
-                        />
-                    </View>
+                                <Text style={styles.nomeProduto}>
+                                    {nomeProduto?.descricao || "Produto não encontrado"}
+                                </Text>
+                            </ScrollView>
+                        </View>
 
-                    <View>
-                        <Text style={styles.label}>
-                            Observação
-                        </Text>
-                        <Input
-                            placeholder="Digite a sua observação"
-                            value={observacao}
-                            onChangeText={setObservacao}
-                        />
                     </View>
+                </View>
 
-                    {/*<View style={styles.containerBotoes}>
+                <View>
+                    <Text style={styles.label}>
+                        Data de Validade *
+                    </Text>
+                    <DateInput
+                        label="Data de Vencimento"
+                        value={dataVencimento}
+                        onChange={setDataVencimento}
+                    />
+                </View>
+
+                <View>
+                    <Text style={styles.label}>
+                        Quantidade *
+                    </Text>
+                    <Input
+                        placeholder="Insira a quantidade"
+                        keyboardType="numeric"
+                        value={quantidade}
+                        onChangeText={setQuantidade}
+                    />
+                </View>
+
+                <View>
+                    <Text style={styles.label}>
+                        Observação
+                    </Text>
+                    <Input
+                        placeholder="Digite a sua observação"
+                        value={observacao}
+                        onChangeText={setObservacao}
+                    />
+                </View>
+
+                {/*<View style={styles.containerBotoes}>
                     <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={goToResumo}>
                         <Text style={styles.textButton}>
                             Resumo
@@ -252,63 +252,67 @@ export default function VistoriaFormulario() {
                     </TouchableOpacity>
                 </View> */}
 
-                    <View style={styles.inserirButton}>
-                        <LargeButton
-                            title="Inserir"
-                            backgroundColor="#737f85ff"
-                            onPress={adicionarItem}
-                        />
-                    </View>
-
-                    <View style={styles.tableContainer}>
-                        <ScrollView horizontal={true}>
-                            <DataTable>
-                                <DataTable.Header>
-                                    <DataTable.Title style={styles.colNumero}>#</DataTable.Title>
-                                    <DataTable.Title style={styles.colFilial}>Filial</DataTable.Title>
-                                    <DataTable.Title style={styles.colCodigo}>Código</DataTable.Title>
-                                    <DataTable.Title style={styles.colDescricao}>Descrição</DataTable.Title>
-                                    <DataTable.Title style={styles.colDataValidade}>Data Validade</DataTable.Title>
-                                    <DataTable.Title style={styles.colQuantidade}>Quantidade</DataTable.Title>
-                                    <DataTable.Title style={styles.colObservacao}>Observação</DataTable.Title>
-                                    <DataTable.Title style={styles.colAcoes}>Ações</DataTable.Title>
-
-                                </DataTable.Header>
-
-                                {lista.map((item, index) => (
-                                    <DataTable.Row key={index}>
-                                        <DataTable.Cell style={styles.colNumero}>{index + 1}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colFilial}>{item.codFilial}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colCodigo}>{item.codProd}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colDescricao}>{item.nomeProduto}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colDataValidade}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colQuantidade}>{item.quantidade}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colObservacao}>{item.observacao}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.colAcoes}>
-                                            <TouchableOpacity style={styles.removerButton} onPress={() => setLista(lista.filter((_, i) => i !== index))}>
-                                                <Text style={styles.removerText}>
-                                                    Remover
-                                                </Text>
-                                            </TouchableOpacity>
-
-                                        </DataTable.Cell>
-                                    </DataTable.Row>
-                                ))}
-                            </DataTable>
-                        </ScrollView>
-                    </View>
-                    
-
-                    {lista.length > 0 && (
-                        <View style={styles.salvarButton}>
-                            <LargeButton
-                                title="Salvar"
-                                onPress={inserirValidade}
-                            />
-                        </View>
-                    )}
+                <View style={styles.inserirButton}>
+                    <LargeButton
+                        title="Inserir"
+                        backgroundColor="#737f85ff"
+                        onPress={adicionarItem}
+                    />
                 </View>
-            </ScrollView>
+                <View style={{height: 250}}>
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
+
+                        <View style={styles.tableContainer}>
+                            <ScrollView horizontal={true}>
+                                <DataTable>
+                                    <DataTable.Header>
+                                        <DataTable.Title style={styles.colNumero}>#</DataTable.Title>
+                                        <DataTable.Title style={styles.colFilial}>Filial</DataTable.Title>
+                                        <DataTable.Title style={styles.colCodigo}>Código</DataTable.Title>
+                                        <DataTable.Title style={styles.colDescricao}>Descrição</DataTable.Title>
+                                        <DataTable.Title style={styles.colDataValidade}>Data Validade</DataTable.Title>
+                                        <DataTable.Title style={styles.colQuantidade}>Quantidade</DataTable.Title>
+                                        <DataTable.Title style={styles.colObservacao}>Observação</DataTable.Title>
+                                        <DataTable.Title style={styles.colAcoes}>Ações</DataTable.Title>
+
+                                    </DataTable.Header>
+
+                                    {lista.map((item, index) => (
+                                        <DataTable.Row key={index}>
+                                            <DataTable.Cell style={styles.colNumero}>{index + 1}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colFilial}>{item.codFilial}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colCodigo}>{item.codProd}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colDescricao}>{item.nomeProduto}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colDataValidade}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colQuantidade}>{item.quantidade}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colObservacao}>{item.observacao}</DataTable.Cell>
+                                            <DataTable.Cell style={styles.colAcoes}>
+                                                <TouchableOpacity style={styles.removerButton} onPress={() => setLista(lista.filter((_, i) => i !== index))}>
+                                                    <Text style={styles.removerText}>
+                                                        Remover
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </DataTable.Cell>
+                                        </DataTable.Row>
+                                    ))}
+                                </DataTable>
+                            </ScrollView>
+                        </View>
+
+
+
+                        {lista.length > 0 && (
+                            <View style={styles.salvarButton}>
+                                <LargeButton
+                                    title="Salvar"
+                                    onPress={inserirValidade}
+                                />
+                            </View>
+                        )}
+
+                    </ScrollView>
+                </View>
+            </View>
 
         </View>
     );
@@ -319,13 +323,9 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
-    scrollContainer: {
-        color: colors.blue,
-        paddingHorizontal: 14,
-        paddingTop: 40,
-        paddingBottom: 100,
-    },
     form: {
+        paddingHorizontal: 14,
+        paddingTop: 20,
     },
     label: {
         color: colors.blue,
@@ -370,6 +370,12 @@ const styles = StyleSheet.create({
 
     tableContainer: {
     },
+
+    scrollContainer: {
+        color: colors.blue,
+        paddingHorizontal: 14,
+        paddingBottom: 150,
+    },
     colNumero: {
         width: 50,
     },
@@ -390,7 +396,6 @@ const styles = StyleSheet.create({
     },
     colObservacao: {
         width: 350,
-
     },
     colAcoes: {
         width: 120,
@@ -412,7 +417,6 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: "center",
         alignItems: "center",
-
     },
     buttonInserir: {
         backgroundColor: "#DA0100",
