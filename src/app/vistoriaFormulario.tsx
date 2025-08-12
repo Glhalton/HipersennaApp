@@ -17,6 +17,7 @@ export default function VistoriaFormulario() {
         dataVencimento: Date;
         quantidade: string;
         observacao: string;
+        nomeProduto: string;
     }
 
     //Id do usuario
@@ -62,7 +63,7 @@ export default function VistoriaFormulario() {
             return;
         }
 
-        setLista([...lista, { codProd, codFilial, dataVencimento, quantidade, observacao }]);
+        setLista([...lista, { codProd, codFilial, dataVencimento, quantidade, observacao, nomeProduto: nomeProduto?.descricao || "" }]);
         setCodProd("");
         setCodFilial("");
         setDataVencimento(undefined);
@@ -95,23 +96,14 @@ export default function VistoriaFormulario() {
     const inserirValidade = async () => {
         try {
 
-            if (!dataVencimento || isNaN(dataVencimento.getTime())) {
-                Alert.alert("Erro", "Preencha todos os campos obrigatórios.");
-                return;
-            }
-
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    codFilial,
-                    codProd,
-                    dataVencimento,
-                    quantidade,
-                    observacao,
-                    userId
+                    userId,
+                    itens: lista
                 })
             });
 
@@ -119,7 +111,7 @@ export default function VistoriaFormulario() {
 
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
-                router.push("/home")
+                setLista([]);
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
@@ -168,84 +160,86 @@ export default function VistoriaFormulario() {
             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
         }
     };
+  
 
     return (
         <View style={styles.container}>
+            <ScrollView   contentContainerStyle={styles.scrollContainer}>
 
-            <View style={styles.form}>
-                <View>
-                    <Text style={styles.label}>
-                        Filial *
-                    </Text>
-                    <DropdownInput
-                        value={codFilial}
-                        items={filiais}
-                        onChange={(val) => setCodFilial(val)}
-                    />
-
-                </View>
-
-                <View>
-                    <Text style={styles.label}>
-                        Código do produto *
-                    </Text>
-                    <View style={styles.produtoContainer}>
-                        <View style={styles.codigoProdutoInput}>
-                            <Input
-                                placeholder="Produto"
-                                keyboardType="numeric"
-                                value={codProd}
-                                onChangeText={setCodProd}
-                            />
-                        </View>
-                        <View style={styles.nomeProdutoContainer}>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-
-
-                                <Text style={styles.nomeProduto}>
-                                    {nomeProduto?.descricao || "Produto não encontrado"}
-                                </Text>
-                            </ScrollView>
-                        </View>
+                <View style={styles.form}>
+                    <View>
+                        <Text style={styles.label}>
+                            Filial *
+                        </Text>
+                        <DropdownInput
+                            value={codFilial}
+                            items={filiais}
+                            onChange={(val) => setCodFilial(val)}
+                        />
 
                     </View>
-                </View>
 
-                <View>
-                    <Text style={styles.label}>
-                        Data de Validade *
-                    </Text>
-                    <DateInput
-                        label="Data de Vencimento"
-                        value={dataVencimento}
-                        onChange={setDataVencimento}
-                    />
-                </View>
+                    <View>
+                        <Text style={styles.label}>
+                            Código do produto *
+                        </Text>
+                        <View style={styles.produtoContainer}>
+                            <View style={styles.codigoProdutoInput}>
+                                <Input
+                                    placeholder="Produto"
+                                    keyboardType="numeric"
+                                    value={codProd}
+                                    onChangeText={setCodProd}
+                                />
+                            </View>
+                            <View style={styles.nomeProdutoContainer}>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-                <View>
-                    <Text style={styles.label}>
-                        Quantidade *
-                    </Text>
-                    <Input
-                        placeholder="Insira a quantidade"
-                        keyboardType="numeric"
-                        value={quantidade}
-                        onChangeText={setQuantidade}
-                    />
-                </View>
 
-                <View>
-                    <Text style={styles.label}>
-                        Observação
-                    </Text>
-                    <Input
-                        placeholder="Digite a sua observação"
-                        value={observacao}
-                        onChangeText={setObservacao}
-                    />
-                </View>
+                                    <Text style={styles.nomeProduto}>
+                                        {nomeProduto?.descricao || "Produto não encontrado"}
+                                    </Text>
+                                </ScrollView>
+                            </View>
 
-                {/*<View style={styles.containerBotoes}>
+                        </View>
+                    </View>
+
+                    <View>
+                        <Text style={styles.label}>
+                            Data de Validade *
+                        </Text>
+                        <DateInput
+                            label="Data de Vencimento"
+                            value={dataVencimento}
+                            onChange={setDataVencimento}
+                        />
+                    </View>
+
+                    <View>
+                        <Text style={styles.label}>
+                            Quantidade *
+                        </Text>
+                        <Input
+                            placeholder="Insira a quantidade"
+                            keyboardType="numeric"
+                            value={quantidade}
+                            onChangeText={setQuantidade}
+                        />
+                    </View>
+
+                    <View>
+                        <Text style={styles.label}>
+                            Observação
+                        </Text>
+                        <Input
+                            placeholder="Digite a sua observação"
+                            value={observacao}
+                            onChangeText={setObservacao}
+                        />
+                    </View>
+
+                    {/*<View style={styles.containerBotoes}>
                     <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={goToResumo}>
                         <Text style={styles.textButton}>
                             Resumo
@@ -258,56 +252,63 @@ export default function VistoriaFormulario() {
                     </TouchableOpacity>
                 </View> */}
 
-                <View style={styles.inserirButton}>
-                    <LargeButton
-                        title="Inserir"
-                        backgroundColor="#737f85ff"
-                        onPress={adicionarItem}
-                    />
-                </View>
-
-                <View style={styles.tableContainer}>
-                    <ScrollView horizontal>
-                        <DataTable>
-                            <DataTable.Header>
-                                <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>
-                                <DataTable.Title style={styles.cell}>Data de Validade</DataTable.Title>
-                                <DataTable.Title style={styles.cell}>Filial</DataTable.Title>
-                                <DataTable.Title style={styles.cell}>Quantidade</DataTable.Title>
-                                <DataTable.Title style={styles.cell}>Observacao</DataTable.Title>
-                                <DataTable.Title style={styles.cell}>Ações</DataTable.Title>
-
-                            </DataTable.Header>
-
-                            {lista.map((item, index) => (
-                                <DataTable.Row key={index}>
-                                    <DataTable.Cell style={styles.cell}>{item.codProd}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.cell}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.cell}>{item.codFilial}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.cell}>{item.quantidade}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.cell}>{item.observacao}</DataTable.Cell>
-                                    <DataTable.Cell>
-                                        <TouchableOpacity style={styles.removerButton}>
-                                            <Text style={styles.removerText}>
-                                                Remover
-                                            </Text>
-                                        </TouchableOpacity>
-
-                                    </DataTable.Cell>
-                                </DataTable.Row>
-                            ))}
-                        </DataTable>
-                    </ScrollView>
-                </View>
-
-                {lista.length > 0 && (
-                    <View style={styles.salvarButton}>
+                    <View style={styles.inserirButton}>
                         <LargeButton
-                            title="Salvar"
+                            title="Inserir"
+                            backgroundColor="#737f85ff"
+                            onPress={adicionarItem}
                         />
                     </View>
-                )}
-            </View>
+
+                    <View style={styles.tableContainer}>
+                        <ScrollView horizontal={true}>
+                            <DataTable>
+                                <DataTable.Header>
+                                    <DataTable.Title style={styles.colNumero}>#</DataTable.Title>
+                                    <DataTable.Title style={styles.colFilial}>Filial</DataTable.Title>
+                                    <DataTable.Title style={styles.colCodigo}>Código</DataTable.Title>
+                                    <DataTable.Title style={styles.colDescricao}>Descrição</DataTable.Title>
+                                    <DataTable.Title style={styles.colDataValidade}>Data Validade</DataTable.Title>
+                                    <DataTable.Title style={styles.colQuantidade}>Quantidade</DataTable.Title>
+                                    <DataTable.Title style={styles.colObservacao}>Observação</DataTable.Title>
+                                    <DataTable.Title style={styles.colAcoes}>Ações</DataTable.Title>
+
+                                </DataTable.Header>
+
+                                {lista.map((item, index) => (
+                                    <DataTable.Row key={index}>
+                                        <DataTable.Cell style={styles.colNumero}>{index + 1}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colFilial}>{item.codFilial}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colCodigo}>{item.codProd}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colDescricao}>{item.nomeProduto}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colDataValidade}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colQuantidade}>{item.quantidade}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colObservacao}>{item.observacao}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.colAcoes}>
+                                            <TouchableOpacity style={styles.removerButton} onPress={() => setLista(lista.filter((_, i) => i !== index))}>
+                                                <Text style={styles.removerText}>
+                                                    Remover
+                                                </Text>
+                                            </TouchableOpacity>
+
+                                        </DataTable.Cell>
+                                    </DataTable.Row>
+                                ))}
+                            </DataTable>
+                        </ScrollView>
+                    </View>
+                    
+
+                    {lista.length > 0 && (
+                        <View style={styles.salvarButton}>
+                            <LargeButton
+                                title="Salvar"
+                                onPress={inserirValidade}
+                            />
+                        </View>
+                    )}
+                </View>
+            </ScrollView>
 
         </View>
     );
@@ -318,10 +319,13 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
-    form: {
-        flex: 1,
-        paddingTop: 30,
+    scrollContainer: {
+        color: colors.blue,
         paddingHorizontal: 14,
+        paddingTop: 40,
+        paddingBottom: 100,
+    },
+    form: {
     },
     label: {
         color: colors.blue,
@@ -362,16 +366,34 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "white",
         fontWeight: "bold",
-
     },
 
     tableContainer: {
-        paddingHorizontal: 14,
+    },
+    colNumero: {
+        width: 50,
+    },
+    colFilial: {
+        width: 60,
+    },
+    colCodigo: {
+        width: 80,
+    },
+    colDescricao: {
+        width: 350,
+    },
+    colDataValidade: {
+        width: 110,
+    },
+    colQuantidade: {
+        width: 90,
+    },
+    colObservacao: {
+        width: 350,
 
     },
-    cell: {
-        paddingHorizontal: 10,
-        minWidth: 120, //
+    colAcoes: {
+        width: 120,
         justifyContent: "center",
     },
 
