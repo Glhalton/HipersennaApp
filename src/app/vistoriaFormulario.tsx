@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
@@ -26,6 +26,7 @@ export default function VistoriaFormulario() {
     //Codigo da filial
     const [codFilial, setCodFilial] = React.useState<string | null>(null);;
 
+    //Opções do select de filial
     const filiais = [
         { label: "Matriz", value: "1" },
         { label: "Faruk", value: "2" },
@@ -50,10 +51,10 @@ export default function VistoriaFormulario() {
     //Quantidade
     const [quantidade, setQuantidade] = useState("");
 
-    //Texto de observacao
+    //Texto de observação
     const [observacao, setObservacao] = useState("");
 
-    //Lista de items do Formulario
+    //Lista de itens inseridos do Formulário
     const [lista, setLista] = useState<FormDataItem[]>([]);
 
     //Função para adicionar item do formulario na lista
@@ -63,7 +64,10 @@ export default function VistoriaFormulario() {
             return;
         }
 
+
         setLista([...lista, { codProd, codFilial, dataVencimento, quantidade, observacao, nomeProduto: nomeProduto?.descricao || "" }]);
+
+        //Zerar valores após inserir na lista
         setCodProd("");
         setCodFilial("");
         setDataVencimento(undefined);
@@ -72,10 +76,7 @@ export default function VistoriaFormulario() {
 
     }
 
-    const goToResumo = () => {
-        router.navigate("/resumo");
-    }
-
+    //Pegar ID do usuário que vêm de outra tela na hora que renderizar
     const pegarUserId = async () => {
         try {
             const id = await AsyncStorage.getItem("@user_id");
@@ -93,6 +94,8 @@ export default function VistoriaFormulario() {
     }, []);
 
 
+
+    //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
         try {
 
@@ -120,22 +123,7 @@ export default function VistoriaFormulario() {
         }
     };
 
-    useEffect(() => {
-        if (codProd.trim() === "") {
-            setNomeProduto(null);
-            return;
-        }
-
-
-        if (timer) clearTimeout(timer);
-
-        const newTimer = setTimeout(() => {
-            buscarProduto();
-        }, 500);
-
-        setTimer(newTimer);
-    }, [codProd]);
-
+    //Busca o produto no banco via API
     const buscarProduto = async () => {
         try {
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
@@ -161,6 +149,26 @@ export default function VistoriaFormulario() {
         }
     };
 
+    useEffect(() => {
+        if (codProd.trim() === "") {
+            setNomeProduto(null);
+            return;
+        }
+
+        if (timer) clearTimeout(timer);
+
+        const newTimer = setTimeout(() => {
+            buscarProduto();
+        }, 500);
+
+        setTimer(newTimer);
+    }, [codProd]);
+
+    
+
+    const goToResumo = () => {
+        router.navigate("/resumo");
+    }
 
     return (
         <View style={styles.container}>
@@ -259,7 +267,7 @@ export default function VistoriaFormulario() {
                         onPress={adicionarItem}
                     />
                 </View>
-                <View style={{height: 250}}>
+                <View style={{ height: 250 }}>
                     <ScrollView contentContainerStyle={styles.scrollContainer}>
 
                         <View style={styles.tableContainer}>
@@ -340,7 +348,7 @@ const styles = StyleSheet.create({
         width: "30%"
     },
     nomeProdutoContainer: {
-        backgroundColor: "#b7def0ff",
+        backgroundColor: "#9db1bbff",
         marginBottom: 16,
         padding: 16,
         borderRadius: 8,
@@ -348,7 +356,7 @@ const styles = StyleSheet.create({
     },
     nomeProduto: {
         fontSize: 15,
-        color: colors.blue,
+        color: "#113b58ff",
         fontWeight: "bold"
     },
     inserirButton: {
