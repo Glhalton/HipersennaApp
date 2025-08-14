@@ -115,6 +115,32 @@ export default function VistoriaFormulario() {
         }
     };
 
+    // Consumindo API em python para consulta de produto:
+    const buscarProduto2 = async () => {
+        try {
+            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd , {
+                method: "GET",
+                headers: {
+                    /* "Content-Type": "application/json", */
+                    "Authorization": "Bearer fbf722488af02d0a7c596872aec73db9"
+                },
+            });
+
+            // const texto = await resposta.text();
+            // console.log("RESPOSTA BRUTA DA API:", texto);
+
+            const resultado = await resposta.json();
+
+            if (Array.isArray(resultado) && resultado.length > 0 && resultado[0].descricao){
+                setNomeProduto(resultado[0].descricao);
+            } else {
+                setNomeProduto(resultado.mensagem);
+            }
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+        }
+    };
+
     useEffect(() => {
         if (codProd.trim() === "") {
             setNomeProduto(null);
@@ -124,7 +150,7 @@ export default function VistoriaFormulario() {
         if (timer) clearTimeout(timer);
 
         const newTimer = setTimeout(() => {
-            buscarProduto();
+            buscarProduto2();
         }, 500);
 
         setTimer(newTimer);

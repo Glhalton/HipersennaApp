@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
@@ -6,6 +6,9 @@ import colors from "../../constants/colors";
 import { DataTable } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router"
 import { useVistoriaStore } from "../../store/useVistoriaStore";
+
+
+const numberOfItemsPerPageList = [5];
 
 export default function Resumo() {
     //Lista de itens inseridos do Formulário
@@ -15,6 +18,14 @@ export default function Resumo() {
     const userId = useVistoriaStore((state) => state.userId);
     const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
 
+    const [page, setPage] = useState(0);
+    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(numberOfItemsPerPageList[0]);
+    const from = page * numberOfItemsPerPage;
+    const to = Math.min((page + 1) * numberOfItemsPerPage, lista.length);
+
+    useEffect(() => {
+        setPage(0);
+    }, [numberOfItemsPerPage]);
 
 
     //Requisição para inserir validade no banco via API
@@ -51,31 +62,31 @@ export default function Resumo() {
     return (
         <View style={styles.container}>
             <View style={styles.tableContainer}>
-                <ScrollView horizontal>
+                <ScrollView horizontal style={{ height: "60%" }}>
                     <DataTable>
-                        <DataTable.Header>
-                            <DataTable.Title style={styles.colNumero}>#</DataTable.Title>
-                            <DataTable.Title style={styles.colFilial}>Filial</DataTable.Title>
-                            <DataTable.Title style={styles.colCodigo}>Código</DataTable.Title>
-                            <DataTable.Title style={styles.colDescricao}>Descrição</DataTable.Title>
-                            <DataTable.Title style={styles.colDataValidade}>Data Validade</DataTable.Title>
-                            <DataTable.Title style={styles.colQuantidade}>Quantidade</DataTable.Title>
-                            <DataTable.Title style={styles.colObservacao}>Observação</DataTable.Title>
-                            <DataTable.Title style={styles.colAcoes}>Ações</DataTable.Title>
+                        <DataTable.Header style={styles.headerTable}>
+                            <DataTable.Title style={styles.colNumero}><Text style={styles.textHeader}>#</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colFilial}><Text style={styles.textHeader}>Filial</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colCodigo}><Text style={styles.textHeader}>Código</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colDescricao}><Text style={styles.textHeader}>Descrição</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colDataValidade}><Text style={styles.textHeader}>Data Validade</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colQuantidade}><Text style={styles.textHeader}>Quantidade</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colObservacao}><Text style={styles.textHeader}>Observação</Text></DataTable.Title>
+                            <DataTable.Title style={styles.colAcoes}><Text style={styles.textHeader}>Ações</Text></DataTable.Title>
 
                         </DataTable.Header>
 
-                        {lista.map((item, index) => (
-                            <DataTable.Row key={index}>
-                                <DataTable.Cell style={styles.colNumero}>{index + 1}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colFilial}>{item.codFilial}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colCodigo}>{item.codProd}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colDescricao}>{item.nomeProduto}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colDataValidade}>{new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colQuantidade}>{item.quantidade}</DataTable.Cell>
-                                <DataTable.Cell style={styles.colObservacao}>{item.observacao}</DataTable.Cell>
+                        {lista.slice(from, to).map((item, index) => (
+                            <DataTable.Row key={from + index}>
+                                <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{from + index + 1}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colFilial}><Text style={styles.textcell}>{item.codFilial}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colCodigo}><Text style={styles.textcell}>{item.codProd}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colDescricao}><Text style={styles.textcell}>{item.nomeProduto}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colDataValidade}><Text style={styles.textcell}>{new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colQuantidade}><Text style={styles.textcell}>{item.quantidade}</Text></DataTable.Cell>
+                                <DataTable.Cell style={styles.colObservacao}><Text style={styles.textcell}>{item.observacao}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colAcoes}>
-                                    <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(index)}>
+                                    <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(from + index)}>
                                         <Text style={styles.removerText}>
                                             Remover
                                         </Text>
@@ -83,8 +94,28 @@ export default function Resumo() {
                                 </DataTable.Cell>
                             </DataTable.Row>
                         ))}
+
+
                     </DataTable>
+
                 </ScrollView>
+
+                <DataTable.Pagination
+                    style={{backgroundColor: colors.blue, justifyContent: "center"}}
+                    paginationControlRippleColor= "black"
+                    selectPageDropdownRippleColor= "black"
+                    page={page}
+                    numberOfPages={Math.ceil(lista.length / numberOfItemsPerPage)}
+                    onPageChange={setPage}
+                    label={`${from + 1}-${to} de ${lista.length}`}
+                    showFastPaginationControls
+                    numberOfItemsPerPageList={numberOfItemsPerPageList}
+                    numberOfItemsPerPage={numberOfItemsPerPage}
+                    onItemsPerPageChange={(newPerPage) => {
+                        if (newPerPage) setNumberOfItemsPerPage(newPerPage);
+                    }}
+                    selectPageDropdownLabel={'Itens por página'}
+                />
             </View>
 
             <View style={styles.inserirButton}>
@@ -107,6 +138,7 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         alignItems: "center",
+
     },
     title: {
         color: colors.blue,
@@ -116,7 +148,23 @@ const styles = StyleSheet.create({
     tableContainer: {
         marginBottom: 20
     },
+    headerTable: {
+        backgroundColor: colors.blue,
 
+    },
+    textHeader: {
+        color: "white",
+        fontWeight: "bold",
+        fontSize: 15,
+    },
+    textcell: {
+        fontSize: 14,
+        color: "black"
+    },
+    pagination: {
+        color: "black",
+
+    },
     colNumero: {
         width: 50,
     },
