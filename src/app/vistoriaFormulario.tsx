@@ -3,28 +3,25 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "rea
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
 import { DataTable } from "react-native-paper";
+import { useVistoriaStore } from "../../store/useVistoriaStore";
 
 export default function VistoriaFormulario() {
 
-    type FormDataItem = {
-        codProd: string;
-        codFilial: string;
-        dataVencimento: Date;
-        quantidade: string;
-        observacao: string;
-        nomeProduto: string;
-    }
-
-    //Id do usuario
-    const [userId, setUserId] = useState<string | null>(null);
+    //Dados do Store
+    const lista = useVistoriaStore((state) => state.lista);
+    const adicionarItem = useVistoriaStore((state) => state.adicionarItem);
+    const resetarLista = useVistoriaStore((state) => state.resetarLista);
+    const setUserId = useVistoriaStore((state) => state.setUserId);
+    const setNomeProduto = useVistoriaStore((state) => state.setNomeProduto);
+    const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
 
     //Codigo da filial
-    const [codFilial, setCodFilial] = React.useState<string | null>(null);;
+    const [codFilial, setCodFilial] = React.useState<string | null>(null);
 
     //Opções do select de filial
     const filiais = [
@@ -39,9 +36,6 @@ export default function VistoriaFormulario() {
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
 
-    //Nome do produto
-    const [nomeProduto, setNomeProduto] = useState<{ descricao: string } | null>(null);
-
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
 
@@ -54,20 +48,22 @@ export default function VistoriaFormulario() {
     //Texto de observação
     const [observacao, setObservacao] = useState("");
 
-    //Lista de itens inseridos do Formulário
-    const [lista, setLista] = useState<FormDataItem[]>([]);
-
-    //Função para adicionar item do formulario na lista
-    const adicionarItem = () => {
+    //Função de adicionar item na lista
+    function handlerAdicionar() {
         if (!codProd || !codFilial || !dataVencimento || !quantidade) {
             Alert.alert("Erro", "Preencha todos os campos obrigatórios!")
             return;
         }
 
+        adicionarItem({
+            codProd,
+            codFilial,
+            dataVencimento: new Date(),
+            quantidade,
+            observacao: "",
+            nomeProduto: nomeProduto || "",
+        });
 
-        setLista([...lista, { codProd, codFilial, dataVencimento, quantidade, observacao, nomeProduto: nomeProduto?.descricao || "" }]);
-
-        //Zerar valores após inserir na lista
         setCodProd("");
         setCodFilial("");
         setDataVencimento(undefined);
@@ -93,36 +89,6 @@ export default function VistoriaFormulario() {
         pegarUserId();
     }, []);
 
-
-
-    //Requisição para inserir validade no banco via API
-    const inserirValidade = async () => {
-        try {
-
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    userId,
-                    itens: lista
-                })
-            });
-
-            const resultado = await resposta.json();
-
-            if (resultado.sucesso) {
-                Alert.alert("Sucesso", resultado.mensagem);
-                setLista([]);
-            } else {
-                Alert.alert("Erro", resultado.mensagem)
-            }
-        } catch (erro) {
-            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
-        }
-    };
-
     //Busca o produto no banco via API
     const buscarProduto = async () => {
         try {
@@ -140,7 +106,7 @@ export default function VistoriaFormulario() {
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                setNomeProduto(resultado.produto);
+                setNomeProduto(resultado.produto.descricao);
             } else {
                 setNomeProduto(resultado.mensagem);
             }
@@ -164,15 +130,14 @@ export default function VistoriaFormulario() {
         setTimer(newTimer);
     }, [codProd]);
 
-    
+
 
     const goToResumo = () => {
-        router.navigate("/resumo");
-    }
+        router.push("/resumo");
+    };
 
     return (
         <View style={styles.container}>
-
 
             <View style={styles.form}>
                 <View>
@@ -202,10 +167,8 @@ export default function VistoriaFormulario() {
                         </View>
                         <View style={styles.nomeProdutoContainer}>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-
-
                                 <Text style={styles.nomeProduto}>
-                                    {nomeProduto?.descricao || "Produto não encontrado"}
+                                    {nomeProduto || "Produto não encontrado"}
                                 </Text>
                             </ScrollView>
                         </View>
@@ -247,79 +210,24 @@ export default function VistoriaFormulario() {
                     />
                 </View>
 
-                {/*<View style={styles.containerBotoes}>
-                    <TouchableOpacity style={styles.buttonResumo} activeOpacity={0.5} onPress={goToResumo}>
-                        <Text style={styles.textButton}>
-                            Resumo
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.buttonInserir} activeOpacity={0.5} onPress={inserirValidade}>
-                        <Text style={styles.textButton}>
-                            Inserir
-                        </Text>
-                    </TouchableOpacity>
-                </View> */}
-
                 <View style={styles.inserirButton}>
                     <LargeButton
                         title="Inserir"
                         backgroundColor="#737f85ff"
-                        onPress={adicionarItem}
+                        onPress={handlerAdicionar}
                     />
                 </View>
-                <View style={{ height: 250 }}>
-                    <ScrollView contentContainerStyle={styles.scrollContainer}>
 
-                        <View style={styles.tableContainer}>
-                            <ScrollView horizontal={true}>
-                                <DataTable>
-                                    <DataTable.Header>
-                                        <DataTable.Title style={styles.colNumero}>#</DataTable.Title>
-                                        <DataTable.Title style={styles.colFilial}>Filial</DataTable.Title>
-                                        <DataTable.Title style={styles.colCodigo}>Código</DataTable.Title>
-                                        <DataTable.Title style={styles.colDescricao}>Descrição</DataTable.Title>
-                                        <DataTable.Title style={styles.colDataValidade}>Data Validade</DataTable.Title>
-                                        <DataTable.Title style={styles.colQuantidade}>Quantidade</DataTable.Title>
-                                        <DataTable.Title style={styles.colObservacao}>Observação</DataTable.Title>
-                                        <DataTable.Title style={styles.colAcoes}>Ações</DataTable.Title>
+                {lista.length > 0 && (
 
-                                    </DataTable.Header>
-
-                                    {lista.map((item, index) => (
-                                        <DataTable.Row key={index}>
-                                            <DataTable.Cell style={styles.colNumero}>{index + 1}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colFilial}>{item.codFilial}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colCodigo}>{item.codProd}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colDescricao}>{item.nomeProduto}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colDataValidade}>{item.dataVencimento.toLocaleDateString("pt-BR")}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colQuantidade}>{item.quantidade}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colObservacao}>{item.observacao}</DataTable.Cell>
-                                            <DataTable.Cell style={styles.colAcoes}>
-                                                <TouchableOpacity style={styles.removerButton} onPress={() => setLista(lista.filter((_, i) => i !== index))}>
-                                                    <Text style={styles.removerText}>
-                                                        Remover
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            </DataTable.Cell>
-                                        </DataTable.Row>
-                                    ))}
-                                </DataTable>
-                            </ScrollView>
-                        </View>
-
-
-
-                        {lista.length > 0 && (
-                            <View style={styles.salvarButton}>
-                                <LargeButton
-                                    title="Salvar"
-                                    onPress={inserirValidade}
-                                />
-                            </View>
-                        )}
-
-                    </ScrollView>
-                </View>
+                    <View style={styles.inserirButton}>
+                        <LargeButton
+                            title="Resumo"
+                            onPress={goToResumo}
+                        />
+                    </View>
+                )}
+               
             </View>
 
         </View>
@@ -362,78 +270,6 @@ const styles = StyleSheet.create({
     inserirButton: {
         marginBottom: 20,
     },
-    salvarButton: {
-        marginTop: 30,
-    },
-    containerBotoes: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 20,
-    },
-    textButton: {
-        fontSize: 16,
-        color: "white",
-        fontWeight: "bold",
-    },
 
-    tableContainer: {
-    },
-
-    scrollContainer: {
-        color: colors.blue,
-        paddingHorizontal: 14,
-        paddingBottom: 150,
-    },
-    colNumero: {
-        width: 50,
-    },
-    colFilial: {
-        width: 60,
-    },
-    colCodigo: {
-        width: 80,
-    },
-    colDescricao: {
-        width: 350,
-    },
-    colDataValidade: {
-        width: 110,
-    },
-    colQuantidade: {
-        width: 90,
-    },
-    colObservacao: {
-        width: 350,
-    },
-    colAcoes: {
-        width: 120,
-        justifyContent: "center",
-    },
-
-    removerButton: {
-        backgroundColor: "red",
-        padding: 5,
-        borderRadius: 7
-    },
-    removerText: {
-        color: "white"
-    },
-    buttonResumo: {
-        backgroundColor: "#4A5A6A",
-        height: 48,
-        width: "45%",
-        borderRadius: 8,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonInserir: {
-        backgroundColor: "#DA0100",
-        height: 48,
-        width: "45%",
-        borderRadius: 8,
-        justifyContent: "center",
-        alignItems: "center",
-
-    },
 
 });
