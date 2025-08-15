@@ -1,15 +1,17 @@
 import { Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
-import { styles } from "./styles"; 
+import { styles } from "./styles";
 
-type Props = TouchableOpacityProps &{
+type Props = TouchableOpacityProps & {
     title: string
+    color?: string,
+    backgroundColor?: string
 }
 
-export function SmallButton({title, ...rest} :Props){
+export function SmallButton({ title, color = "white", backgroundColor = "#DA0100", ...rest }: Props) {
 
-    return(
-        <TouchableOpacity activeOpacity={0.5} style={styles.button} {...rest}>
-            <Text style={styles.buttonText}>{title}</Text>
+    return (
+        <TouchableOpacity activeOpacity={0.5} style={[styles.button, {backgroundColor}]} {...rest}>
+            <Text style={[styles.buttonText, {color}]}>{title}</Text>
         </TouchableOpacity>
     )
 }

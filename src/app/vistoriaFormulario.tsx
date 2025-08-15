@@ -9,6 +9,7 @@ import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
 import { DataTable } from "react-native-paper";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function VistoriaFormulario() {
 
@@ -89,7 +90,7 @@ export default function VistoriaFormulario() {
         pegarUserId();
     }, []);
 
-    //Busca o produto no banco via API
+    //Busca o produto no banco via API PHP
     const buscarProduto = async () => {
         try {
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
@@ -118,7 +119,7 @@ export default function VistoriaFormulario() {
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
         try {
-            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd , {
+            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd, {
                 method: "GET",
                 headers: {
                     /* "Content-Type": "application/json", */
@@ -131,7 +132,7 @@ export default function VistoriaFormulario() {
 
             const resultado = await resposta.json();
 
-            if (Array.isArray(resultado) && resultado.length > 0 && resultado[0].descricao){
+            if (Array.isArray(resultado) && resultado.length > 0 && resultado[0].descricao) {
                 setNomeProduto(resultado[0].descricao);
             } else {
                 setNomeProduto(resultado.mensagem);
@@ -163,7 +164,9 @@ export default function VistoriaFormulario() {
     };
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+
+
 
             <View style={styles.form}>
                 <View>
@@ -236,27 +239,29 @@ export default function VistoriaFormulario() {
                     />
                 </View>
 
-                <View style={styles.inserirButton}>
-                    <LargeButton
-                        title="Inserir"
-                        backgroundColor="#737f85ff"
-                        onPress={handlerAdicionar}
-                    />
-                </View>
-
-                {lista.length > 0 && (
-
+                <View style={styles.containerButtons}>
                     <View style={styles.inserirButton}>
                         <LargeButton
-                            title="Resumo"
-                            onPress={goToResumo}
+                            title="Inserir"
+                            backgroundColor={colors.gray}
+                            onPress={handlerAdicionar}
                         />
                     </View>
-                )}
-               
-            </View>
 
-        </View>
+                    {lista.length > 0 && (
+
+                        <View style={styles.inserirButton}>
+                            <LargeButton
+                                title="Resumo"
+                                onPress={goToResumo}
+                            />
+                        </View>
+                    )}
+
+                </View>
+            </View>
+        </SafeAreaView>
+
     );
 }
 
@@ -267,7 +272,7 @@ const styles = StyleSheet.create({
     },
     form: {
         paddingHorizontal: 14,
-        paddingTop: 20,
+
     },
     label: {
         color: colors.blue,
@@ -293,9 +298,11 @@ const styles = StyleSheet.create({
         color: "#113b58ff",
         fontWeight: "bold"
     },
+    containerButtons:{
+        marginTop: 40
+    },
     inserirButton: {
         marginBottom: 20,
     },
-
 
 });

@@ -6,6 +6,7 @@ import colors from "../../constants/colors";
 import { DataTable } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router"
 import { useVistoriaStore } from "../../store/useVistoriaStore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const numberOfItemsPerPageList = [5];
@@ -18,14 +19,7 @@ export default function Resumo() {
     const userId = useVistoriaStore((state) => state.userId);
     const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
 
-    const [page, setPage] = useState(0);
-    const [numberOfItemsPerPage, setNumberOfItemsPerPage] = useState(numberOfItemsPerPageList[0]);
-    const from = page * numberOfItemsPerPage;
-    const to = Math.min((page + 1) * numberOfItemsPerPage, lista.length);
 
-    useEffect(() => {
-        setPage(0);
-    }, [numberOfItemsPerPage]);
 
 
     //Requisição para inserir validade no banco via API
@@ -60,9 +54,9 @@ export default function Resumo() {
 
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.tableContainer}>
-                <ScrollView horizontal style={{ height: "60%" }}>
+                <ScrollView horizontal >
                     <DataTable>
                         <DataTable.Header style={styles.headerTable}>
                             <DataTable.Title style={styles.colNumero}><Text style={styles.textHeader}>#</Text></DataTable.Title>
@@ -76,9 +70,9 @@ export default function Resumo() {
 
                         </DataTable.Header>
 
-                        {lista.slice(from, to).map((item, index) => (
-                            <DataTable.Row key={from + index}>
-                                <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{from + index + 1}</Text></DataTable.Cell>
+                        {lista.map((item, index) => (
+                            <DataTable.Row key={index} >
+                                <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{index + 1}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colFilial}><Text style={styles.textcell}>{item.codFilial}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colCodigo}><Text style={styles.textcell}>{item.codProd}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colDescricao}><Text style={styles.textcell}>{item.nomeProduto}</Text></DataTable.Cell>
@@ -86,7 +80,7 @@ export default function Resumo() {
                                 <DataTable.Cell style={styles.colQuantidade}><Text style={styles.textcell}>{item.quantidade}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colObservacao}><Text style={styles.textcell}>{item.observacao}</Text></DataTable.Cell>
                                 <DataTable.Cell style={styles.colAcoes}>
-                                    <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(from + index)}>
+                                    <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(index)}>
                                         <Text style={styles.removerText}>
                                             Remover
                                         </Text>
@@ -100,22 +94,6 @@ export default function Resumo() {
 
                 </ScrollView>
 
-                <DataTable.Pagination
-                    style={{backgroundColor: colors.blue, justifyContent: "center"}}
-                    paginationControlRippleColor= "black"
-                    selectPageDropdownRippleColor= "black"
-                    page={page}
-                    numberOfPages={Math.ceil(lista.length / numberOfItemsPerPage)}
-                    onPageChange={setPage}
-                    label={`${from + 1}-${to} de ${lista.length}`}
-                    showFastPaginationControls
-                    numberOfItemsPerPageList={numberOfItemsPerPageList}
-                    numberOfItemsPerPage={numberOfItemsPerPage}
-                    onItemsPerPageChange={(newPerPage) => {
-                        if (newPerPage) setNumberOfItemsPerPage(newPerPage);
-                    }}
-                    selectPageDropdownLabel={'Itens por página'}
-                />
             </View>
 
             <View style={styles.inserirButton}>
@@ -125,7 +103,7 @@ export default function Resumo() {
                 />
             </View>
 
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -146,7 +124,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     tableContainer: {
-        marginBottom: 20
+        marginBottom: 20,
+        flex: 1,
     },
     headerTable: {
         backgroundColor: colors.blue,
@@ -167,28 +146,44 @@ const styles = StyleSheet.create({
     },
     colNumero: {
         width: 50,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colFilial: {
         width: 60,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colCodigo: {
         width: 80,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colDescricao: {
         width: 350,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colDataValidade: {
         width: 110,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colQuantidade: {
         width: 90,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colObservacao: {
         width: 350,
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     colAcoes: {
         width: 120,
         justifyContent: "center",
+        borderBottomWidth: 1,
+        borderColor: "#9c9c9cff",
     },
     removerButton: {
         backgroundColor: "red",
@@ -200,8 +195,8 @@ const styles = StyleSheet.create({
     },
     inserirButton: {
         justifyContent: "flex-end",
-        flex: 1,
-        marginBottom: 100
+        marginTop: 20,
+        marginBottom: 20,
 
     }
 })

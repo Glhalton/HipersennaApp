@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { SmallButton } from "@/components/smallButton";
 import colors from "../../constants/colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
     const [userId, setUserId] = useState<string | null>(null);
@@ -14,13 +15,15 @@ export default function Home() {
         router.push("/vistoriaFormulario");
     }
 
-    const goToRelatorios = () =>{
-        router.push("/relatorios")
-    }
-
     const goToHistorico = () => {
         router.push("/historico");
     }
+
+
+    const goToRelatorios = () => {
+        router.push("/relatorios")
+    }
+
 
     const pegarUserId = async () => {
         try {
@@ -41,7 +44,7 @@ export default function Home() {
 
     useEffect(() => {
         if (!userId) return;
-        
+
         const fetchCount = async () => {
             try {
                 const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
@@ -75,7 +78,7 @@ export default function Home() {
 
     useEffect(() => {
         const onBackPress = () => {
-            if (backPressedOnce){
+            if (backPressedOnce) {
                 BackHandler.exitApp();
                 return true;
             }
@@ -98,10 +101,13 @@ export default function Home() {
 
     return (
 
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["bottom"]}>
+
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <Image style={styles.imgIcon} source={require("../../assets/images/Engrenagem.png")} />
+                <TouchableOpacity onPress={() => router.push("/settings")}>
+                    <Image style={styles.gearIcon} source={require("../../assets/images/White-Gear.png")} />
+                </TouchableOpacity>
             </View>
 
             <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -110,8 +116,14 @@ export default function Home() {
                         Bem vindo de volta!
                     </Text>
                     <View style={styles.containerbuttons}>
-                        <SmallButton title="Histórico" onPress={goToHistorico} />
-                        <SmallButton title="Add" onPress={goToVistoria} />
+                        <SmallButton
+                            title="Histórico"
+                            onPress={goToHistorico}
+                            backgroundColor={colors.gray}
+                        />
+                        <SmallButton
+                            title="Add"
+                            onPress={goToVistoria} />
                     </View>
                 </View>
 
@@ -170,7 +182,7 @@ export default function Home() {
                     </View>
                 </View>
             </ScrollView>
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -178,7 +190,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",
-
     },
     scrollContainer: {
         color: colors.blue,
@@ -190,18 +201,23 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingTop: 50,
+        paddingTop: 40,
         paddingBottom: 15,
         paddingHorizontal: 14,
-        backgroundColor: "white",
+        backgroundColor: "red",
         elevation: 3,
     },
     headerText: {
-        fontSize: 18,
+        fontSize: 22,
         fontWeight: "bold",
-        color: "#205072",
+        color: "white",
+    },
+    gearIcon: {
+        width: 25,
+        height: 25,
     },
     imgIcon: {
+
     },
 
     containerBemVindo: {
@@ -209,7 +225,7 @@ const styles = StyleSheet.create({
 
     tituloBemVindo: {
         textAlign: "center",
-        fontSize: 24,
+        fontSize: 32,
         fontWeight: "bold",
         paddingBottom: 20,
         paddingTop: 20,
