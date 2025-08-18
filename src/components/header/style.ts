@@ -1,26 +1,27 @@
 import { StyleSheet } from "react-native"
 
 export const styles = StyleSheet.create({
-    container:{
-        width: "100%",
-        height: 80,
+    header: {
         flexDirection: "row",
-        backgroundColor: "gray",
-        
+        gap: "10%",
+        alignItems: "center",
+        paddingTop: 40,
+        paddingBottom: 15,
+        paddingHorizontal: 14,
+        backgroundColor: "red",
+        elevation: 3,
     },
-    containerTitle:{
-        width: "100%",
-        alignItems: "flex-end",
-        backgroundColor: "blue"
-    },
-    title:{
-        fontSize: 18,
-        color: "#205072",
+    headerText: {
+        fontSize: 22,
         fontWeight: "bold",
-        backgroundColor: "red"
+        color: "white",
     },
-    arrowImg:{
-        backgroundColor: "green",
-        
-    }
+    button:{
+        padding: 5,
+    },
+    gearIcon: {
+        width: 25,
+        height: 25,
+
+    },
 })

@@ -10,6 +10,7 @@ import { LargeButton } from "@/components/largeButton";
 import { DataTable } from "react-native-paper";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "@/components/header";
 
 export default function VistoriaFormulario() {
 
@@ -164,9 +165,12 @@ export default function VistoriaFormulario() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={["bottom"]}>
 
+            <Header
+                title="Vistoria"
 
+            />
 
             <View style={styles.form}>
                 <View>
@@ -272,6 +276,7 @@ const styles = StyleSheet.create({
     },
     form: {
         paddingHorizontal: 14,
+        paddingTop: 20,
 
     },
     label: {
@@ -298,7 +303,7 @@ const styles = StyleSheet.create({
         color: "#113b58ff",
         fontWeight: "bold"
     },
-    containerButtons:{
+    containerButtons: {
         marginTop: 40
     },
     inserirButton: {

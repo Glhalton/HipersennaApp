@@ -76,27 +76,27 @@ export default function Home() {
 
     }, [userId]);
 
-    useEffect(() => {
-        const onBackPress = () => {
-            if (backPressedOnce) {
-                BackHandler.exitApp();
-                return true;
-            }
+    // useEffect(() => {
+    //     const onBackPress = () => {
+    //         if (backPressedOnce) {
+    //             BackHandler.exitApp();
+    //             return true;
+    //         }
 
-            setBackPressedOnce(true);
-            ToastAndroid.show("Pressione voltar novamente para sair", ToastAndroid.SHORT);
+    //         setBackPressedOnce(true);
+    //         ToastAndroid.show("Pressione voltar novamente para sair", ToastAndroid.SHORT);
 
-            const timer = setTimeout(() => {
-                setBackPressedOnce(false);
-            }, 2000);
+    //         const timer = setTimeout(() => {
+    //             setBackPressedOnce(false);
+    //         }, 2000);
 
-            return true;
-        };
+    //         return true;
+    //     };
 
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    //     const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
-        return () => backHandler.remove();
-    }, [backPressedOnce]);
+    //     return () => backHandler.remove();
+    // }, [backPressedOnce]);
 
 
     return (
@@ -105,7 +105,7 @@ export default function Home() {
 
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <TouchableOpacity onPress={() => router.push("/settings")}>
+                <TouchableOpacity style={styles.buttonHeader} onPress={() => router.push("/settings")}>
                     <Image style={styles.gearIcon} source={require("../../assets/images/White-Gear.png")} />
                 </TouchableOpacity>
             </View>
@@ -126,6 +126,8 @@ export default function Home() {
                             onPress={goToVistoria} />
                     </View>
                 </View>
+
+
 
                 <View style={styles.containerDashboard}>
                     <Text style={styles.titulo}>
@@ -195,7 +197,6 @@ const styles = StyleSheet.create({
         color: colors.blue,
         paddingHorizontal: 14,
         paddingTop: 10,
-        paddingBottom: 40,
     },
     header: {
         flexDirection: "row",
@@ -212,6 +213,10 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "white",
     },
+    buttonHeader: {
+        padding: 5,
+
+    },
     gearIcon: {
         width: 25,
         height: 25,
@@ -221,6 +226,9 @@ const styles = StyleSheet.create({
     },
 
     containerBemVindo: {
+        paddingBottom: 30,
+        borderBottomColor: colors.blue,
+        borderBottomWidth: 1,
     },
 
     tituloBemVindo: {
@@ -230,18 +238,22 @@ const styles = StyleSheet.create({
         paddingBottom: 20,
         paddingTop: 20,
         color: "#205072",
+
     },
     containerbuttons: {
         flexDirection: "row",
         justifyContent: "space-between",
     },
     containerDashboard: {
+        paddingTop: 20,
+        paddingBottom: 30,
+        borderBottomColor: colors.blue,
+        borderBottomWidth: 1,
     },
     titulo: {
         fontSize: 22,
         fontWeight: "bold",
         color: colors.blue,
-        marginTop: 40,
         marginBottom: 30,
     },
     dashboardRowItens: {
@@ -277,6 +289,7 @@ const styles = StyleSheet.create({
 
     },
     containerAcessoRapido: {
+        paddingTop: 20,
 
     },
     opcaoMenu: {

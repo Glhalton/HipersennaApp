@@ -1,30 +1,24 @@
 import { View, TouchableOpacity, Image, Text } from "react-native";
-import { router } from "expo-router";
+import { Href, router } from "expo-router";
 import { styles } from "./style";
 
 type Prop = {
-    text: string;
+    title: string,
+    color?: string,
+    backgroundColor?: string,
+    screen?: Href;
 }
 
-export function Header({text}: Prop){
+export function Header({ title, color = "white", backgroundColor = "red", screen = "../../home"  }: Prop) {
 
-    const botaoVoltar = () => {
-        router.back();
-    }
 
-    return(
-        <View style={styles.container}>
+    return (
 
-            <TouchableOpacity onPress={botaoVoltar}>
-                <Image style={styles.arrowImg} source={require("../../../assets/images/LeftArrow.png")}/>
+        <View style={styles.header}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push(screen)}>
+                <Image style={styles.gearIcon} source={require("../../../assets/images/white-arrow-100.png")} />
             </TouchableOpacity>
-
-            <View style={styles.containerTitle}>
-                <Text style={styles.title}>
-                    {text}
-                </Text>
-            </View>
-
+            <Text style={styles.headerText}>{title}</Text>
         </View>
     )
 }

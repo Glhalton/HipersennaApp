@@ -7,6 +7,7 @@ import { DataTable } from "react-native-paper";
 import { router, useLocalSearchParams } from "expo-router"
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "@/components/header";
 
 
 const numberOfItemsPerPageList = [5];
@@ -54,53 +55,61 @@ export default function Resumo() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.tableContainer}>
-                <ScrollView horizontal >
-                    <DataTable>
-                        <DataTable.Header style={styles.headerTable}>
-                            <DataTable.Title style={styles.colNumero}><Text style={styles.textHeader}>#</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colFilial}><Text style={styles.textHeader}>Filial</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colCodigo}><Text style={styles.textHeader}>Código</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colDescricao}><Text style={styles.textHeader}>Descrição</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colDataValidade}><Text style={styles.textHeader}>Data Validade</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colQuantidade}><Text style={styles.textHeader}>Quantidade</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colObservacao}><Text style={styles.textHeader}>Observação</Text></DataTable.Title>
-                            <DataTable.Title style={styles.colAcoes}><Text style={styles.textHeader}>Ações</Text></DataTable.Title>
-
-                        </DataTable.Header>
-
-                        {lista.map((item, index) => (
-                            <DataTable.Row key={index} >
-                                <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{index + 1}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colFilial}><Text style={styles.textcell}>{item.codFilial}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colCodigo}><Text style={styles.textcell}>{item.codProd}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colDescricao}><Text style={styles.textcell}>{item.nomeProduto}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colDataValidade}><Text style={styles.textcell}>{new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colQuantidade}><Text style={styles.textcell}>{item.quantidade}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colObservacao}><Text style={styles.textcell}>{item.observacao}</Text></DataTable.Cell>
-                                <DataTable.Cell style={styles.colAcoes}>
-                                    <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(index)}>
-                                        <Text style={styles.removerText}>
-                                            Remover
-                                        </Text>
-                                    </TouchableOpacity>
-                                </DataTable.Cell>
-                            </DataTable.Row>
-                        ))}
+        <SafeAreaView style={styles.container} edges={["bottom"]}>
+            <Header
+                title="Resumo da vistoria"
+                screen="/vistoriaFormulario"
+            />
+            <View style={styles.resumoContainer}>
 
 
-                    </DataTable>
+                <View style={styles.tableContainer}>
+                    <ScrollView horizontal >
+                        <DataTable>
+                            <DataTable.Header style={styles.headerTable}>
+                                <DataTable.Title style={styles.colNumero}><Text style={styles.textHeader}>#</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colFilial}><Text style={styles.textHeader}>Filial</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colCodigo}><Text style={styles.textHeader}>Código</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colDescricao}><Text style={styles.textHeader}>Descrição</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colDataValidade}><Text style={styles.textHeader}>Data Validade</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colQuantidade}><Text style={styles.textHeader}>Quantidade</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colObservacao}><Text style={styles.textHeader}>Observação</Text></DataTable.Title>
+                                <DataTable.Title style={styles.colAcoes}><Text style={styles.textHeader}>Ações</Text></DataTable.Title>
 
-                </ScrollView>
+                            </DataTable.Header>
 
-            </View>
+                            {lista.map((item, index) => (
+                                <DataTable.Row key={index} >
+                                    <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{index + 1}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colFilial}><Text style={styles.textcell}>{item.codFilial}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colCodigo}><Text style={styles.textcell}>{item.codProd}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colDescricao}><Text style={styles.textcell}>{item.nomeProduto}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colDataValidade}><Text style={styles.textcell}>{new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colQuantidade}><Text style={styles.textcell}>{item.quantidade}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colObservacao}><Text style={styles.textcell}>{item.observacao}</Text></DataTable.Cell>
+                                    <DataTable.Cell style={styles.colAcoes}>
+                                        <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(index)}>
+                                            <Text style={styles.removerText}>
+                                                Remover
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </DataTable.Cell>
+                                </DataTable.Row>
+                            ))}
 
-            <View style={styles.inserirButton}>
-                <LargeButton
-                    title="Salvar dados"
-                    onPress={inserirValidade}
-                />
+
+                        </DataTable>
+
+                    </ScrollView>
+
+                </View>
+
+                <View style={styles.inserirButton}>
+                    <LargeButton
+                        title="Salvar dados"
+                        onPress={inserirValidade}
+                    />
+                </View>
             </View>
 
         </SafeAreaView>
@@ -110,9 +119,11 @@ export default function Resumo() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    resumoContainer: {
         paddingHorizontal: 14,
         paddingTop: 20,
-
+        flex: 1,
     },
     titleContainer: {
         alignItems: "center",
@@ -125,7 +136,6 @@ const styles = StyleSheet.create({
     },
     tableContainer: {
         marginBottom: 20,
-        flex: 1,
     },
     headerTable: {
         backgroundColor: colors.blue,
