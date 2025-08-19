@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import colors from "../../constants/colors";
@@ -10,21 +10,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 
 
-const numberOfItemsPerPageList = [5];
-
 export default function Resumo() {
     //Lista de itens inseridos do Formulário
     const lista = useVistoriaStore((state) => state.lista);
     const removeritem = useVistoriaStore((state) => state.removerItem);
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
     const userId = useVistoriaStore((state) => state.userId);
-    const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
-
-
 
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
+
+        if (lista.length === 0) {
+            Alert.alert("Atenção", "Nenhum item para ser adicionado.");
+            router.push("/vistoriaFormulario");
+            return;
+        }
+
         try {
 
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php", {
@@ -53,56 +55,43 @@ export default function Resumo() {
         }
     };
 
-
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Resumo da vistoria"
                 screen="/vistoriaFormulario"
             />
-            <View style={styles.resumoContainer}>
+            <View style={styles.cardsContainer}>
+
+                <FlatList
+                    data={lista}
+                    keyExtractor={(_, index) => index.toString()}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                    renderItem={({ item, index }) => (
+                        <View style={styles.card}>
+                            <Text style={styles.cardTitle}>#{index + 1} - {item.nomeProduto}</Text>
+                            <View style={styles.dadosItem}>
+                                <View>
+                                    <Text><Text style={styles.label}>Filial:</Text> {item.codFilial}</Text>
+                                    <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
+                                </View>
+                                <View>
+                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
+                                    <Text><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
+                                </View>
+                            </View>
 
 
-                <View style={styles.tableContainer}>
-                    <ScrollView horizontal >
-                        <DataTable>
-                            <DataTable.Header style={styles.headerTable}>
-                                <DataTable.Title style={styles.colNumero}><Text style={styles.textHeader}>#</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colFilial}><Text style={styles.textHeader}>Filial</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colCodigo}><Text style={styles.textHeader}>Código</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colDescricao}><Text style={styles.textHeader}>Descrição</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colDataValidade}><Text style={styles.textHeader}>Data Validade</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colQuantidade}><Text style={styles.textHeader}>Quantidade</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colObservacao}><Text style={styles.textHeader}>Observação</Text></DataTable.Title>
-                                <DataTable.Title style={styles.colAcoes}><Text style={styles.textHeader}>Ações</Text></DataTable.Title>
+                            <TouchableOpacity
+                                style={styles.removerButton}
+                                onPress={() => removeritem(index)}
+                            >
+                                <Text style={styles.removerText}>Remover</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                />
 
-                            </DataTable.Header>
-
-                            {lista.map((item, index) => (
-                                <DataTable.Row key={index} >
-                                    <DataTable.Cell style={styles.colNumero}><Text style={styles.textcell}>{index + 1}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colFilial}><Text style={styles.textcell}>{item.codFilial}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colCodigo}><Text style={styles.textcell}>{item.codProd}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colDescricao}><Text style={styles.textcell}>{item.nomeProduto}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colDataValidade}><Text style={styles.textcell}>{new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colQuantidade}><Text style={styles.textcell}>{item.quantidade}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colObservacao}><Text style={styles.textcell}>{item.observacao}</Text></DataTable.Cell>
-                                    <DataTable.Cell style={styles.colAcoes}>
-                                        <TouchableOpacity style={styles.removerButton} onPress={() => removeritem(index)}>
-                                            <Text style={styles.removerText}>
-                                                Remover
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </DataTable.Cell>
-                                </DataTable.Row>
-                            ))}
-
-
-                        </DataTable>
-
-                    </ScrollView>
-
-                </View>
 
                 <View style={styles.inserirButton}>
                     <LargeButton
@@ -120,93 +109,46 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    resumoContainer: {
+    cardsContainer: {
         paddingHorizontal: 14,
         paddingTop: 20,
         flex: 1,
     },
-    titleContainer: {
-        alignItems: "center",
-
+    card: {
+        backgroundColor: "white",
+        borderRadius: 12,
+        padding: 12,
+        marginBottom: 12,
     },
-    title: {
+    cardTitle: {
+        fontSize: 16,
+        fontFamily: "Lexend-Bold",
+        marginBottom: 6,
         color: colors.blue,
-        fontSize: 30,
-        fontWeight: "bold",
-    },
-    tableContainer: {
-        marginBottom: 20,
-    },
-    headerTable: {
-        backgroundColor: colors.blue,
 
     },
-    textHeader: {
-        color: "white",
-        fontWeight: "bold",
-        fontSize: 15,
+    label: {
+        fontFamily: "Lexend-Regular",
+        color: colors.blue,
     },
-    textcell: {
-        fontSize: 14,
-        color: "black"
-    },
-    pagination: {
-        color: "black",
-
-    },
-    colNumero: {
-        width: 50,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colFilial: {
-        width: 60,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colCodigo: {
-        width: 80,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colDescricao: {
-        width: 350,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colDataValidade: {
-        width: 110,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colQuantidade: {
-        width: 90,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colObservacao: {
-        width: 350,
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
-    },
-    colAcoes: {
-        width: 120,
-        justifyContent: "center",
-        borderBottomWidth: 1,
-        borderColor: "#9c9c9cff",
+    dadosItem: {
+        flexDirection: "row",
+        gap: 60,
+        marginBottom: 8,
     },
     removerButton: {
-        backgroundColor: "red",
+        backgroundColor: "#f72929ff",
         padding: 5,
-        borderRadius: 7
+        borderRadius: 7,
+        alignItems: "center",
     },
     removerText: {
-        color: "white"
+        color: "white",
+        fontFamily: "Lexend-Bold"
     },
     inserirButton: {
         justifyContent: "flex-end",
         marginTop: 20,
         marginBottom: 20,
-
     }
 })

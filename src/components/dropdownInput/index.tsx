@@ -28,12 +28,8 @@ export function DropdownInput({value, items, onChange }: DropDownInputProps) {
                 placeholder="Selecione uma opção"
                 style={styles.dropdownInsercao}
                 dropDownContainerStyle={styles.dropdownContainer}
-                textStyle={{
-                    fontSize: 16,
-                }}
-                placeholderStyle={{
-                    opacity: 0.6
-                }}
+                textStyle={styles.dropdownText}
+                placeholderStyle={styles.placeholder}
             />
         </View>
     )

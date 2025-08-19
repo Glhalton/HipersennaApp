@@ -10,8 +10,10 @@ export const styles = StyleSheet.create({
         borderRadius: 8,
         padding: 16,
         marginBottom: 16,
+        fontFamily: "Lexend-Regular",
     },
     inputDataText: {
         fontSize: 16,
+        fontFamily: "Lexend-Regular",
     },
 })

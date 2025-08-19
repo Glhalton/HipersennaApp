@@ -19,9 +19,16 @@ export default function Home() {
         router.push("/historico");
     }
 
-
     const goToRelatorios = () => {
-        router.push("/relatorios")
+        router.push("/relatorios");
+    }
+
+    const goToVistoriaSolicitacoes = () => {
+        router.push("/vistoriaSolicitacoes");
+    }
+
+    const goToVistoriaDemanda = () => {
+        router.push("/vistoriaDemanda");
     }
 
 
@@ -154,21 +161,21 @@ export default function Home() {
                         Acesso rápido
                     </Text>
                     <View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={goToVistoriaSolicitacoes}>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
                                 <Text style={styles.textOptions}>Solicitações de Vistoria</Text>
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity>
+                        {/* <TouchableOpacity>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/GraficosIcon.png")} />
                                 <Text style={styles.textOptions}>Monitor de metas</Text>
@@ -180,7 +187,7 @@ export default function Home() {
                                 <Image style={styles.imgIcon} source={require("../../assets/images/ArquivoIcon.png")} />
                                 <Text style={styles.textOptions}>Gerar relatórios</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </ScrollView>
@@ -210,12 +217,11 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 22,
-        fontWeight: "bold",
+        fontFamily: "Lexend-Bold",
         color: "white",
     },
     buttonHeader: {
         padding: 5,
-
     },
     gearIcon: {
         width: 25,
@@ -224,21 +230,18 @@ const styles = StyleSheet.create({
     imgIcon: {
 
     },
-
     containerBemVindo: {
         paddingBottom: 30,
         borderBottomColor: colors.blue,
         borderBottomWidth: 1,
     },
-
     tituloBemVindo: {
         textAlign: "center",
-        fontSize: 32,
-        fontWeight: "bold",
+        fontSize: 28,
+        fontFamily: "Lexend-Bold",
         paddingBottom: 20,
         paddingTop: 20,
         color: "#205072",
-
     },
     containerbuttons: {
         flexDirection: "row",
@@ -252,9 +255,9 @@ const styles = StyleSheet.create({
     },
     titulo: {
         fontSize: 22,
-        fontWeight: "bold",
+        fontFamily: "Lexend-Bold",
         color: colors.blue,
-        marginBottom: 30,
+        marginBottom: 15,
     },
     dashboardRowItens: {
         flexDirection: "row",
@@ -268,14 +271,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
     },
     dashboardItemText: {
-        fontSize: 16,
+        fontSize: 14,
         color: "#205072",
         paddingLeft: 20,
+        fontFamily: "Lexend-Regular",
 
     },
     dashboardItemValue: {
-        fontSize: 24,
-        fontWeight: "bold",
+        fontSize: 22,
+        fontFamily: "Lexend-Bold",
         color: "#205072",
         paddingLeft: 20,
     },
@@ -290,7 +294,6 @@ const styles = StyleSheet.create({
     },
     containerAcessoRapido: {
         paddingTop: 20,
-
     },
     opcaoMenu: {
         flexDirection: "row",
@@ -300,6 +303,7 @@ const styles = StyleSheet.create({
     },
     textOptions: {
         color: colors.blue,
-        fontSize: 17,
+        fontSize: 16,
+        fontFamily: "Lexend-Regular",
     }
 })

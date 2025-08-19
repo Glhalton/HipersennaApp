@@ -39,7 +39,7 @@ export default function Login() {
         setPassword("");
       }
     } catch (erro) {
-      Alert.alert("Erro", "Não foi possível conectar ao servidor " +  erro);
+      Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
       setUsername("");
       setPassword("");
     }
@@ -65,7 +65,7 @@ export default function Login() {
           <Text style={styles.label}>Usuário</Text>
           <Input
             placeholder="Digite o seu usuário"
-            onChangeText={setUsername}
+            onChangeText={(username) =>setUsername(username.replace(/\s/g, ""))}
             value={username}
             autoCapitalize="none"
           />
@@ -90,7 +90,7 @@ export default function Login() {
         </TouchableOpacity>
 
 
-        <LargeButton title="Login" onPress={fazerLogin}  />
+        <LargeButton title="Login" onPress={fazerLogin} />
 
         <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
           <Text style={styles.textCadastro}>
@@ -109,15 +109,14 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 200,
     backgroundColor: "white",
-    fontFamily: "Lexend-Bold",
   },
   header: {
     alignItems: "center",
   },
   title: {
+    fontFamily: "Lexend-Bold",
     color: colors.blue,
     fontSize: 28,
-    fontWeight: "bold",
   },
   form: {
     flex: 1,
@@ -127,7 +126,7 @@ const styles = StyleSheet.create({
   label: {
     color: colors.blue,
     marginBottom: 4,
-    fontWeight: "bold"
+    fontFamily: "Lexend-Regular",
   },
   buttonEsquecerSenha: {
     alignItems: "flex-end",
@@ -140,10 +139,12 @@ const styles = StyleSheet.create({
   },
   textEsquecerSenha: {
     color: "#205072",
+    fontFamily: "Lexend-Regular",
   },
   textCadastro: {
     color: "#205072",
     fontSize: 14,
-    textDecorationLine: "underline"
+    textDecorationLine: "underline",
+    fontFamily: "Lexend-Regular",
   }
 })

@@ -3,11 +3,10 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "rea
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router, useLocalSearchParams } from "expo-router";
+import { router} from "expo-router";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
-import { DataTable } from "react-native-paper";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
@@ -50,10 +49,13 @@ export default function VistoriaFormulario() {
     //Texto de observação
     const [observacao, setObservacao] = useState("");
 
-    //Função de adicionar item na lista
+    //Função de adicionar item na lista e limpar os campos
     function handlerAdicionar() {
         if (!codProd || !codFilial || !dataVencimento || !quantidade) {
-            Alert.alert("Erro", "Preencha todos os campos obrigatórios!")
+            Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
+            return;
+        } if (!nomeProduto) {
+            Alert.alert("Erro", "Produto não encontrado!");
             return;
         }
 
@@ -91,31 +93,31 @@ export default function VistoriaFormulario() {
         pegarUserId();
     }, []);
 
-    //Busca o produto no banco via API PHP
-    const buscarProduto = async () => {
-        try {
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ codProd })
-            });
+    // //Busca o produto no banco via API PHP
+    // const buscarProduto = async () => {
+    //     try {
+    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({ codProd })
+    //         });
 
-            //const texto = await resposta.text();
-            //console.log("RESPOSTA BRUTA DA API:", texto);
+    //         //const texto = await resposta.text();
+    //         //console.log("RESPOSTA BRUTA DA API:", texto);
 
-            const resultado = await resposta.json();
+    //         const resultado = await resposta.json();
 
-            if (resultado.sucesso) {
-                setNomeProduto(resultado.produto.descricao);
-            } else {
-                setNomeProduto(resultado.mensagem);
-            }
-        } catch (erro) {
-            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-        }
-    };
+    //         if (resultado.sucesso) {
+    //             setNomeProduto(resultado.produto.descricao);
+    //         } else {
+    //             setNomeProduto(resultado.mensagem);
+    //         }
+    //     } catch (erro) {
+    //         Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+    //     }
+    // };
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -123,7 +125,6 @@ export default function VistoriaFormulario() {
             const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd, {
                 method: "GET",
                 headers: {
-                    /* "Content-Type": "application/json", */
                     "Authorization": "Bearer fbf722488af02d0a7c596872aec73db9"
                 },
             });
@@ -158,15 +159,12 @@ export default function VistoriaFormulario() {
         setTimer(newTimer);
     }, [codProd]);
 
-
-
     const goToResumo = () => {
         router.push("/resumo");
     };
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
-
             <Header
                 title="Vistoria"
 
@@ -195,7 +193,7 @@ export default function VistoriaFormulario() {
                                 placeholder="Produto"
                                 keyboardType="numeric"
                                 value={codProd}
-                                onChangeText={setCodProd}
+                                onChangeText={(codProd) => setCodProd(codProd.replace(/[^0-9]/g, ""))}
                             />
                         </View>
                         <View style={styles.nomeProdutoContainer}>
@@ -228,7 +226,7 @@ export default function VistoriaFormulario() {
                         placeholder="Insira a quantidade"
                         keyboardType="numeric"
                         value={quantidade}
-                        onChangeText={setQuantidade}
+                        onChangeText={(quantidade) => setQuantidade(quantidade.replace(/[^0-9]/g, ""))}
                     />
                 </View>
 
@@ -282,7 +280,7 @@ const styles = StyleSheet.create({
     label: {
         color: colors.blue,
         marginBottom: 4,
-        fontWeight: "bold"
+        fontFamily: "Lexend-Bold",
     },
     produtoContainer: {
         flexDirection: "row",
@@ -301,7 +299,7 @@ const styles = StyleSheet.create({
     nomeProduto: {
         fontSize: 15,
         color: "#113b58ff",
-        fontWeight: "bold"
+        fontFamily: "Lexend-Bold",
     },
     containerButtons: {
         marginTop: 40

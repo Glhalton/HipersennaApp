@@ -10,8 +10,8 @@ export const styles = StyleSheet.create({
         borderRadius: 16,
     },
     buttonText:{
-        fontSize: 16,
+        fontSize: 14,
         color: "white",
-        fontWeight: "bold",
+        fontFamily: "Lexend-Bold",
     }
 })

@@ -13,10 +13,10 @@ export const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 22,
-        fontWeight: "bold",
+        fontFamily: "Lexend-Bold",
         color: "white",
     },
-    button:{
+    button: {
         padding: 5,
     },
     gearIcon: {

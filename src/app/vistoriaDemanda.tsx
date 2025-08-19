@@ -3,11 +3,11 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Settings(){
+export default function VistoriaDemanda() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Configurações"
+                title="Demandas"
                 screen="/home"
             />
         </SafeAreaView>
@@ -15,7 +15,7 @@ export default function Settings(){
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         backgroundColor: "white"
     }
