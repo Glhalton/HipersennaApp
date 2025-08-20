@@ -1,13 +1,17 @@
-import { Input } from "@/components/input";
-import { LargeButton } from "@/components/largeButton";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, TouchableOpacity, StyleSheet, Text, View, } from "react-native";
+import { Input } from "@/components/input";
+import { LargeButton } from "@/components/largeButton";
+import { router } from "expo-router";
 import colors from "../../constants/colors";
+import { useUserDadosStore } from "../../store/useUserDadosStore";
 
 //Função principal que será executada no aplicativo
 export default function Login() {
+
+  const setUserId = useUserDadosStore((state) => state.setUserId);
+  const setNivelAcesso = useUserDadosStore((state) => state.setNivelAcesso);
+  const nivelAcesso = useUserDadosStore((state) => state.nivelAcesso);
 
   //Valores Input Login
   const [username, setUsername] = useState("");
@@ -27,9 +31,9 @@ export default function Login() {
       const resultado = await resposta.json();
 
       if (resultado.sucesso) {
-
-        await AsyncStorage.setItem("@user_id", resultado.userId.toString());
-
+        setUserId(resultado.userId);
+        setNivelAcesso(resultado.nivelAcesso);
+        console.log(nivelAcesso)
         router.push("/home");
         setUsername("");
         setPassword("");
@@ -45,7 +49,7 @@ export default function Login() {
     }
   };
 
-  const signup = () => {
+  const goToSignup = () => {
     router.push("/sign-up");
     setUsername("");
     setPassword("");
@@ -65,7 +69,7 @@ export default function Login() {
           <Text style={styles.label}>Usuário</Text>
           <Input
             placeholder="Digite o seu usuário"
-            onChangeText={(username) =>setUsername(username.replace(/\s/g, ""))}
+            onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
             value={username}
             autoCapitalize="none"
           />
@@ -92,7 +96,7 @@ export default function Login() {
 
         <LargeButton title="Login" onPress={fazerLogin} />
 
-        <TouchableOpacity style={styles.botaoCadastro} onPress={signup}>
+        <TouchableOpacity style={styles.botaoCadastro} onPress={goToSignup}>
           <Text style={styles.textCadastro}>
             Não tem uma conta? Cadastre-se
           </Text>
@@ -107,21 +111,25 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 200,
-    backgroundColor: "white",
+    paddingTop: 150,
+    backgroundColor: "red",
   },
   header: {
     alignItems: "center",
+    marginBottom: 70,
   },
   title: {
     fontFamily: "Lexend-Bold",
-    color: colors.blue,
-    fontSize: 28,
+    color: "white",
+    fontSize: 30,
   },
   form: {
     flex: 1,
-    paddingHorizontal: 14,
+    paddingHorizontal: 30,
     paddingTop: 30,
+    backgroundColor: "white",
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   label: {
     color: colors.blue,

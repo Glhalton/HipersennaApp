@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, BackHandler, ToastAndroid } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import { SmallButton } from "@/components/smallButton";
 import colors from "../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useUserDadosStore } from "../../store/useUserDadosStore";
 
 export default function Home() {
-    const [userId, setUserId] = useState<string | null>(null);
-    const [count, setCount] = useState(0);
-    const [backPressedOnce, setBackPressedOnce] = useState(false);
+
+    const userId = useUserDadosStore((state) => state.userId);
+
+    const [countValidade, setCountValidade] = useState(0);
+    // const [backPressedOnce, setBackPressedOnce] = useState(false);
 
     const goToVistoria = () => {
         router.push("/vistoriaFormulario");
@@ -31,28 +33,14 @@ export default function Home() {
         router.push("/vistoriaDemanda");
     }
 
-
-    const pegarUserId = async () => {
-        try {
-            const id = await AsyncStorage.getItem("@user_id");
-            if (id !== null) {
-                setUserId(id);
-            }
-        } catch (e) {
-            console.error("Erro ao recuperar userId", e);
-        }
-        return null;
+    const goToCriarSolicitacao = () => {
+        router.push("/criarSolicitacao");
     }
-
-    useEffect(() => {
-        pegarUserId();
-    }, []);
-
 
     useEffect(() => {
         if (!userId) return;
 
-        const fetchCount = async () => {
+        const contarVistorias = async () => {
             try {
                 const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
                     method: "POST",
@@ -67,7 +55,8 @@ export default function Home() {
                 const resultado = await resposta.json();
 
                 if (resultado.sucesso) {
-                    setCount(resultado.quantidade_vistorias);
+                    setCountValidade(resultado.quantidade_vistorias);
+                    console.log("Foi buscado a contagem de vistorias")
                 }
 
             } catch (error) {
@@ -75,36 +64,9 @@ export default function Home() {
             }
         };
 
-        fetchCount();
+        contarVistorias();
 
-        const interval = setInterval(fetchCount, 10000);
-
-        return () => clearInterval(interval);
-
-    }, [userId]);
-
-    // useEffect(() => {
-    //     const onBackPress = () => {
-    //         if (backPressedOnce) {
-    //             BackHandler.exitApp();
-    //             return true;
-    //         }
-
-    //         setBackPressedOnce(true);
-    //         ToastAndroid.show("Pressione voltar novamente para sair", ToastAndroid.SHORT);
-
-    //         const timer = setTimeout(() => {
-    //             setBackPressedOnce(false);
-    //         }, 2000);
-
-    //         return true;
-    //     };
-
-    //     const backHandler = BackHandler.addEventListener("hardwareBackPress", onBackPress);
-
-    //     return () => backHandler.remove();
-    // }, [backPressedOnce]);
-
+    }, []);
 
     return (
 
@@ -143,7 +105,7 @@ export default function Home() {
                     <View style={styles.dashboardRowItens}>
                         <View style={styles.dashboardItem}>
                             <Text style={styles.dashboardItemText}>Total de {"\n"}vistorias: </Text>
-                            <Text style={styles.dashboardItemValue}>{count}</Text>
+                            <Text style={styles.dashboardItemValue}>{countValidade}</Text>
                         </View>
                         <View style={styles.dashboardItem}>
                             <Text style={styles.dashboardItemText}>Vencerão em {"\n"}breve</Text>
@@ -172,6 +134,14 @@ export default function Home() {
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
+                            </View>
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity onPress={goToCriarSolicitacao}>
+                            <View style={styles.opcaoMenu}>
+                                <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
+                                <Text style={styles.textOptions}>Criar Solicitação</Text>
                             </View>
                         </TouchableOpacity>
 

@@ -2,64 +2,70 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import colors from "../../constants/colors";
-import { router} from "expo-router"
+import { router } from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { useCriarSolicitacaoStore } from "../../store/useCriarSolicitacaoStore";
 import { useUserDadosStore } from "../../store/useUserDadosStore";
 
+export default function ResumoSolicitacao() {
 
-export default function VistoriaDemanda() {
-
+    //Lista de itens inseridos do Formulário
+    const lista = useCriarSolicitacaoStore((state) => state.lista);
+    const removeritem = useCriarSolicitacaoStore((state) => state.removerItem);
+    const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
     const userId = useUserDadosStore((state) => state.userId);
-    const [codFilial, setCodFilial] = useState("");
-    const [codProd, setCodProd] = useState("");
-    const [dataSolicitacao, setDataSolicitacao] = useState("");
-    const [status, setStatus] = useState("");
-
-    const [dados, setDados] = useState([]);
 
 
+    //Requisição para inserir validade no banco via API
+    const inserirValidade = async () => {
 
-    const consultarSolicitacoes = async () => {
+        if (lista.length === 0) {
+            Alert.alert("Atenção", "Nenhum item para ser adicionado.");
+            router.push("/vistoriaFormulario");
+            return;
+        }
+
         try {
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/vistoria/demanda.php", {
+
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/solicitacao.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({userId})
+                body: JSON.stringify({
+
+                    userId,
+                    itens: lista
+                })
             });
+
+
 
             const resultado = await resposta.json();
 
-            if (resultado.sucesso){
-                setDados(resultado.dados);
-                setCodFilial(resultado.codFilial);
-                setCodProd(resultado.codProd);
-                setDataSolicitacao(resultado.dataSolicitacao);
-                setStatus(resultado.status);
+            if (resultado.sucesso) {
+                Alert.alert("Sucesso", resultado.mensagem);
+                resetarLista();
+                router.push("/criarSolicitacao");
             } else {
-                Alert.alert("Erro", resultado.mensagem);
+                Alert.alert("Erro", resultado.mensagem)
             }
-        } catch (erro){
-            Alert.alert("Erro", "Não foi possível conectar ao servidor: " + erro);
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
         }
     };
-
-    useEffect(() => {
-        consultarSolicitacoes();
-    }, []);
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Demanda"
-                screen="/home"
+                title="Resumo da Solicitação"
+                screen="/criarSolicitacao"
             />
             <View style={styles.cardsContainer}>
 
                 <FlatList
-                    data={dados}
+                    data={lista}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
@@ -70,13 +76,7 @@ export default function VistoriaDemanda() {
                                     <Text><Text style={styles.label}>Filial:</Text> {item.codFilial}</Text>
                                     <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
                                 </View>
-                                <View>
-                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
-                                    <Text><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
-                                </View>
                             </View>
-
-
                             <TouchableOpacity
                                 style={styles.removerButton}
                                 onPress={() => removeritem(index)}

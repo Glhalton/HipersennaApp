@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
-import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import colors from "../../constants/colors";
-import { DataTable } from "react-native-paper";
-import { router, useLocalSearchParams } from "expo-router"
+import { router} from "expo-router"
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { useUserDadosStore } from "../../store/useUserDadosStore";
 
 
-export default function Resumo() {
+export default function ResumoValidade() {
+
     //Lista de itens inseridos do Formulário
     const lista = useVistoriaStore((state) => state.lista);
     const removeritem = useVistoriaStore((state) => state.removerItem);
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
-    const userId = useVistoriaStore((state) => state.userId);
+    const userId = useUserDadosStore((state) => state.userId);
 
 
     //Requisição para inserir validade no banco via API

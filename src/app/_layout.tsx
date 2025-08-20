@@ -42,7 +42,6 @@ export default function Layout() {
           }} />
         <Stack.Screen name="relatorioBonus" options={{ title: "Relatório Bônus" }} />
 
-        <Stack.Screen name="resumo" options={{ title: "Resumo" }} />
 
       </Stack>
     </SafeAreaProvider>

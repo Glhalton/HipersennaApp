@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
-import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
-import { router} from "expo-router";
+import { router } from "expo-router";
 import colors from "../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { useCriarSolicitacaoStore } from "../../store/useCriarSolicitacaoStore";
 
 export default function VistoriaFormulario() {
 
-    //Dados do Store
-    const lista = useVistoriaStore((state) => state.lista);
-    const adicionarItem = useVistoriaStore((state) => state.adicionarItem);
-    const resetarLista = useVistoriaStore((state) => state.resetarLista);
-    const setNomeProduto = useVistoriaStore((state) => state.setNomeProduto);
-    const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
+    const lista = useCriarSolicitacaoStore((state) => state.lista);
+    const adicionarItem = useCriarSolicitacaoStore((state) => state.adicionarItem);
+    const removerItem = useCriarSolicitacaoStore((state) => state.removerItem);
+    const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
+    const setNomeProduto = useCriarSolicitacaoStore((state) => state.setNomeProduto);
+    const nomeProduto = useCriarSolicitacaoStore((state) => state.nomeProduto);
 
     //Codigo da filial
     const [codFilial, setCodFilial] = React.useState<string | null>(null);
@@ -38,69 +37,6 @@ export default function VistoriaFormulario() {
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
 
-    //Data de Vencimento
-    const [dataVencimento, setDataVencimento] = useState<Date | undefined>(undefined);
-
-    //Quantidade
-    const [quantidade, setQuantidade] = useState("");
-
-    //Texto de observação
-    const [observacao, setObservacao] = useState("");
-
-    //Função de adicionar item na lista e limpar os campos
-    function handlerAdicionar() {
-        if (!codProd || !codFilial || !dataVencimento || !quantidade) {
-            Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
-            return;
-        } if (!nomeProduto) {
-            Alert.alert("Erro", "Produto não encontrado!");
-            return;
-        }
-
-        adicionarItem({
-            codProd,
-            codFilial,
-            dataVencimento: new Date(),
-            quantidade,
-            observacao: "",
-            nomeProduto: nomeProduto || "",
-        });
-
-
-        setCodProd("");
-        setCodFilial("");
-        setDataVencimento(undefined);
-        setQuantidade("");
-        setObservacao("");
-
-    }
-
-    // //Busca o produto no banco via API PHP
-    // const buscarProduto = async () => {
-    //     try {
-    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({ codProd })
-    //         });
-
-    //         //const texto = await resposta.text();
-    //         //console.log("RESPOSTA BRUTA DA API:", texto);
-
-    //         const resultado = await resposta.json();
-
-    //         if (resultado.sucesso) {
-    //             setNomeProduto(resultado.produto.descricao);
-    //         } else {
-    //             setNomeProduto(resultado.mensagem);
-    //         }
-    //     } catch (erro) {
-    //         Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-    //     }
-    // };
-
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
         try {
@@ -110,9 +46,6 @@ export default function VistoriaFormulario() {
                     "Authorization": "Bearer fbf722488af02d0a7c596872aec73db9"
                 },
             });
-
-            // const texto = await resposta.text();
-            // console.log("RESPOSTA BRUTA DA API:", texto);
 
             const resultado = await resposta.json();
 
@@ -140,17 +73,35 @@ export default function VistoriaFormulario() {
 
         setTimer(newTimer);
     }, [codProd]);
-    
 
-    const goToResumo = () => {
-        router.push("/resumoValidade");
+    function handlerAdicionar() {
+        if (!codProd || !codFilial) {
+            Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
+            return;
+        } if (!nomeProduto) {
+            Alert.alert("Erro", "Produto não encontrado!");
+            return;
+        }
+
+        adicionarItem({
+            codProd,
+            codFilial,
+            nomeProduto: nomeProduto || "",
+        });
+
+
+        setCodProd("");
+        setCodFilial("");
+    }
+
+    const goToResumoSolicitacao = () => {
+        router.push("/resumoSolicitacao");
     };
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Vistoria"
-
+                title="Solicitação Vistoria"
             />
 
             <View style={styles.form}>
@@ -189,41 +140,6 @@ export default function VistoriaFormulario() {
 
                     </View>
                 </View>
-
-                <View>
-                    <Text style={styles.label}>
-                        Data de Validade *
-                    </Text>
-                    <DateInput
-                        label="Data de Vencimento"
-                        value={dataVencimento}
-                        onChange={setDataVencimento}
-                    />
-                </View>
-
-                <View>
-                    <Text style={styles.label}>
-                        Quantidade *
-                    </Text>
-                    <Input
-                        placeholder="Insira a quantidade"
-                        keyboardType="numeric"
-                        value={quantidade}
-                        onChangeText={(quantidade) => setQuantidade(quantidade.replace(/[^0-9]/g, ""))}
-                    />
-                </View>
-
-                <View>
-                    <Text style={styles.label}>
-                        Observação
-                    </Text>
-                    <Input
-                        placeholder="Digite a sua observação"
-                        value={observacao}
-                        onChangeText={setObservacao}
-                    />
-                </View>
-
                 <View style={styles.containerButtons}>
                     <View style={styles.inserirButton}>
                         <LargeButton
@@ -238,7 +154,7 @@ export default function VistoriaFormulario() {
                         <View style={styles.inserirButton}>
                             <LargeButton
                                 title="Resumo"
-                                onPress={goToResumo}
+                                onPress={goToResumoSolicitacao}
                             />
                         </View>
                     )}
