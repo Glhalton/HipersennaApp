@@ -9,6 +9,7 @@ import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import SelecaoFilial1 from "./selecaoFilial1";
 
 export default function VistoriaFormulario() {
 
@@ -18,19 +19,20 @@ export default function VistoriaFormulario() {
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
     const setNomeProduto = useVistoriaStore((state) => state.setNomeProduto);
     const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
+    const codFilial = useVistoriaStore((state) => state.codFilial);
 
-    //Codigo da filial
-    const [codFilial, setCodFilial] = React.useState<string | null>(null);
+    // //Codigo da filial
+    // const [codFilial, setCodFilial] = React.useState<string | null>(null);
 
-    //Opções do select de filial
-    const filiais = [
-        { label: "Matriz", value: "1" },
-        { label: "Faruk", value: "2" },
-        { label: "Carajás", value: "3" },
-        { label: "VS10", value: "4" },
-        { label: "Xinguara", value: "5" },
-        { label: "Cidade Jardim", value: "7" },
-    ];
+    // //Opções do select de filial
+    // const filiais = [
+    //     { label: "Matriz", value: "1" },
+    //     { label: "Faruk", value: "2" },
+    //     { label: "Carajás", value: "3" },
+    //     { label: "VS10", value: "4" },
+    //     { label: "Xinguara", value: "5" },
+    //     { label: "Cidade Jardim", value: "7" },
+    // ];
 
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
@@ -49,7 +51,7 @@ export default function VistoriaFormulario() {
 
     //Função de adicionar item na lista e limpar os campos
     function handlerAdicionar() {
-        if (!codProd || !codFilial || !dataVencimento || !quantidade) {
+        if (!codProd || !dataVencimento || !quantidade) {
             Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
             return;
         } if (!nomeProduto) {
@@ -59,7 +61,6 @@ export default function VistoriaFormulario() {
 
         adicionarItem({
             codProd,
-            codFilial,
             dataVencimento: new Date(),
             quantidade,
             observacao: "",
@@ -68,38 +69,40 @@ export default function VistoriaFormulario() {
 
 
         setCodProd("");
-        setCodFilial("");
         setDataVencimento(undefined);
         setQuantidade("");
-        setObservacao("");
 
     }
 
+    useEffect(() =>{
+        console.log(codFilial)
+    },[])
+
     // //Busca o produto no banco via API PHP
-    // const buscarProduto = async () => {
-    //     try {
-    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({ codProd })
-    //         });
+    const buscarProduto = async () => {
+        try {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ codProd })
+            });
 
-    //         //const texto = await resposta.text();
-    //         //console.log("RESPOSTA BRUTA DA API:", texto);
+            //const texto = await resposta.text();
+            //console.log("RESPOSTA BRUTA DA API:", texto);
 
-    //         const resultado = await resposta.json();
+            const resultado = await resposta.json();
 
-    //         if (resultado.sucesso) {
-    //             setNomeProduto(resultado.produto.descricao);
-    //         } else {
-    //             setNomeProduto(resultado.mensagem);
-    //         }
-    //     } catch (erro) {
-    //         Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-    //     }
-    // };
+            if (resultado.sucesso) {
+                setNomeProduto(resultado.produto.descricao);
+            } else {
+                setNomeProduto(resultado.mensagem);
+            }
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+        }
+    };
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -111,8 +114,8 @@ export default function VistoriaFormulario() {
                 },
             });
 
-            // const texto = await resposta.text();
-            // console.log("RESPOSTA BRUTA DA API:", texto);
+            //  const texto = await resposta.text();
+            //  console.log("RESPOSTA BRUTA DA API:", texto);
 
             const resultado = await resposta.json();
 
@@ -135,7 +138,7 @@ export default function VistoriaFormulario() {
         if (timer) clearTimeout(timer);
 
         const newTimer = setTimeout(() => {
-            buscarProduto2();
+            buscarProduto();
         }, 500);
 
         setTimer(newTimer);
@@ -150,11 +153,11 @@ export default function VistoriaFormulario() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Vistoria"
-
+                screen="/selecaoFilial1"
             />
 
             <View style={styles.form}>
-                <View>
+                {/* <View>
                     <Text style={styles.label}>
                         Filial *
                     </Text>
@@ -164,7 +167,7 @@ export default function VistoriaFormulario() {
                         onChange={(val) => setCodFilial(val)}
                     />
 
-                </View>
+                </View> */}
 
                 <View>
                     <Text style={styles.label}>

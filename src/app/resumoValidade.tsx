@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import colors from "../../constants/colors";
-import { router} from "expo-router"
+import { router } from "expo-router"
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
@@ -16,6 +16,7 @@ export default function ResumoValidade() {
     const removeritem = useVistoriaStore((state) => state.removerItem);
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
     const userId = useUserDadosStore((state) => state.userId);
+    const codFilial = useVistoriaStore((state) => state.codFilial);
 
 
     //Requisição para inserir validade no banco via API
@@ -29,7 +30,7 @@ export default function ResumoValidade() {
 
         try {
 
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercao.php", {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -37,6 +38,7 @@ export default function ResumoValidade() {
                 body: JSON.stringify({
 
                     userId,
+                    codFilial,
                     itens: lista
                 })
             });
@@ -63,6 +65,12 @@ export default function ResumoValidade() {
             />
             <View style={styles.cardsContainer}>
 
+                <View style={styles.filialTitleContainer}>
+                    <Text style={styles.filialTitle}>
+                        Filial:  {codFilial}
+                    </Text>
+                </View>
+
                 <FlatList
                     data={lista}
                     keyExtractor={(_, index) => index.toString()}
@@ -72,11 +80,10 @@ export default function ResumoValidade() {
                             <Text style={styles.cardTitle}>#{index + 1} - {item.nomeProduto}</Text>
                             <View style={styles.dadosItem}>
                                 <View>
-                                    <Text><Text style={styles.label}>Filial:</Text> {item.codFilial}</Text>
                                     <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
+                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
-                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
                                     <Text><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
                                 </View>
                             </View>
@@ -109,9 +116,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    filialTitleContainer: {
+        paddingBottom: 20
+    },
+    filialTitle: {
+        fontFamily: "Lexend-Bold",
+        fontSize: 30,
+        color: colors.blue,
+    },
     cardsContainer: {
         paddingHorizontal: 14,
-        paddingTop: 20,
+        paddingTop: 10,
         flex: 1,
     },
     card: {

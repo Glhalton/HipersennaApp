@@ -16,6 +16,8 @@ export default function ResumoSolicitacao() {
     const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
     const userId = useUserDadosStore((state) => state.userId);
 
+    const codFilial = useCriarSolicitacaoStore((state) => state.codFilial);
+    const codConferente = useCriarSolicitacaoStore((state) => state.codConferente);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
@@ -28,7 +30,7 @@ export default function ResumoSolicitacao() {
 
         try {
 
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/solicitacao.php", {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoSolicitacao.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -36,6 +38,8 @@ export default function ResumoSolicitacao() {
                 body: JSON.stringify({
 
                     userId,
+                    codFilial,
+                    codConferente,
                     itens: lista
                 })
             });
@@ -47,7 +51,7 @@ export default function ResumoSolicitacao() {
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
                 resetarLista();
-                router.push("/criarSolicitacao");
+                router.push("/solicitacaoFormulario");
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
@@ -60,9 +64,19 @@ export default function ResumoSolicitacao() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Resumo da Solicitação"
-                screen="/criarSolicitacao"
+                screen="/solicitacaoFormulario"
             />
+
             <View style={styles.cardsContainer}>
+
+                <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>
+                        Filial: {codFilial}
+                    </Text>
+                    <Text style={styles.titleText}>
+                        Conferente: {codConferente}
+                    </Text>
+                </View>
 
                 <FlatList
                     data={lista}
@@ -73,7 +87,6 @@ export default function ResumoSolicitacao() {
                             <Text style={styles.cardTitle}>#{index + 1} - {item.nomeProduto}</Text>
                             <View style={styles.dadosItem}>
                                 <View>
-                                    <Text><Text style={styles.label}>Filial:</Text> {item.codFilial}</Text>
                                     <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
                                 </View>
                             </View>
@@ -106,8 +119,16 @@ const styles = StyleSheet.create({
     },
     cardsContainer: {
         paddingHorizontal: 14,
-        paddingTop: 20,
         flex: 1,
+    },
+    titleContainer: {
+        paddingVertical: 20
+    },
+    titleText: {
+        fontFamily: "Lexend-Bold",
+        fontSize: 28,
+        color: colors.blue,
+
     },
     card: {
         backgroundColor: "white",

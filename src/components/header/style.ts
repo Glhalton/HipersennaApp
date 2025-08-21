@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
         elevation: 3,
     },
     headerText: {
-        fontSize: 22,
+        fontSize: 20,
         fontFamily: "Lexend-Bold",
         color: "white",
     },

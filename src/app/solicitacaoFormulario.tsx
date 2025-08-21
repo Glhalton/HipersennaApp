@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useCriarSolicitacaoStore } from "../../store/useCriarSolicitacaoStore";
 
-export default function VistoriaFormulario() {
+export default function SolicitacaoFormulario() {
 
     const lista = useCriarSolicitacaoStore((state) => state.lista);
     const adicionarItem = useCriarSolicitacaoStore((state) => state.adicionarItem);
@@ -17,19 +17,6 @@ export default function VistoriaFormulario() {
     const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
     const setNomeProduto = useCriarSolicitacaoStore((state) => state.setNomeProduto);
     const nomeProduto = useCriarSolicitacaoStore((state) => state.nomeProduto);
-
-    //Codigo da filial
-    const [codFilial, setCodFilial] = React.useState<string | null>(null);
-
-    //Opções do select de filial
-    const filiais = [
-        { label: "Matriz", value: "1" },
-        { label: "Faruk", value: "2" },
-        { label: "Carajás", value: "3" },
-        { label: "VS10", value: "4" },
-        { label: "Xinguara", value: "5" },
-        { label: "Cidade Jardim", value: "7" },
-    ];
 
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
@@ -75,7 +62,7 @@ export default function VistoriaFormulario() {
     }, [codProd]);
 
     function handlerAdicionar() {
-        if (!codProd || !codFilial) {
+        if (!codProd) {
             Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
             return;
         } if (!nomeProduto) {
@@ -85,13 +72,9 @@ export default function VistoriaFormulario() {
 
         adicionarItem({
             codProd,
-            codFilial,
             nomeProduto: nomeProduto || "",
         });
-
-
         setCodProd("");
-        setCodFilial("");
     }
 
     const goToResumoSolicitacao = () => {
@@ -105,18 +88,6 @@ export default function VistoriaFormulario() {
             />
 
             <View style={styles.form}>
-                <View>
-                    <Text style={styles.label}>
-                        Filial *
-                    </Text>
-                    <DropdownInput
-                        value={codFilial}
-                        items={filiais}
-                        onChange={(val) => setCodFilial(val)}
-                    />
-
-                </View>
-
                 <View>
                     <Text style={styles.label}>
                         Código do produto *
@@ -140,6 +111,7 @@ export default function VistoriaFormulario() {
 
                     </View>
                 </View>
+
                 <View style={styles.containerButtons}>
                     <View style={styles.inserirButton}>
                         <LargeButton

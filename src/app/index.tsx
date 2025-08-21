@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Alert, TouchableOpacity, StyleSheet, Text, View, } from "react-native";
+import { Alert, TouchableOpacity, StyleSheet, Text, View, Image } from "react-native";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
 import colors from "../../constants/colors";
 import { useUserDadosStore } from "../../store/useUserDadosStore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 //Função principal que será executada no aplicativo
 export default function Login() {
@@ -57,10 +58,14 @@ export default function Login() {
 
   return (
 
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+        <Image
+          source={require("../../assets/images/Logo-hipersenna100x71.png")}
+          style={styles.logo}
+        />
         <Text style={styles.title}>
-          Bem vindo de volta!
+          SennaApp
         </Text>
       </View>
 
@@ -103,7 +108,7 @@ export default function Login() {
         </TouchableOpacity>
       </View>
 
-    </View>
+    </SafeAreaView>
 
   )
 }
@@ -111,25 +116,29 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 150,
-    backgroundColor: "red",
+    backgroundColor: "#0D0D0D",
   },
   header: {
     alignItems: "center",
-    marginBottom: 70,
+    paddingVertical: 70,
+
+    
   },
   title: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Lexend-Regular",
     color: "white",
     fontSize: 30,
+  },
+  logo:{
+
   },
   form: {
     flex: 1,
     paddingHorizontal: 30,
     paddingTop: 30,
-    backgroundColor: "white",
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    backgroundColor: "#ffffffff",
+    borderTopLeftRadius: 45,
+    borderTopRightRadius: 45,
   },
   label: {
     color: colors.blue,

@@ -3,7 +3,6 @@ import { create } from "zustand"
 //Tipagem de cada item que sera utilizado
 type FormDataItem = {
   codProd: string;
-  codFilial: string;
   dataVencimento: Date;
   quantidade: string;
   observacao: string;
@@ -14,8 +13,10 @@ type FormDataItem = {
 
 //Tipagem das itens que serão globais
 type VistoriaStore = {
+  codFilial: string | null;
   nomeProduto: string | null;
   lista: FormDataItem[];
+  setCodFilial: (filial: string | null) => void;
   setNomeProduto: (produto: string | null) => void;
   adicionarItem: (Item: FormDataItem) => void;
   removerItem: (index: number) => void;
@@ -26,6 +27,8 @@ type VistoriaStore = {
 export const useVistoriaStore = create<VistoriaStore>((set) => ({
   nomeProduto: null,
   lista: [],
+  codFilial: null,
+  setCodFilial: (filial) => set({ codFilial: filial }),
   setNomeProduto: (produto) => set({ nomeProduto: produto }),
   adicionarItem: (item) => set((state) => ({ lista: [...state.lista, item] })),
   removerItem: (index) =>

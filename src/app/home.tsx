@@ -33,8 +33,12 @@ export default function Home() {
         router.push("/vistoriaDemanda");
     }
 
-    const goToCriarSolicitacao = () => {
-        router.push("/criarSolicitacao");
+    const goToSelecaoFilial1 = () => {
+        router.push("/selecaoFilial1");
+    }
+
+    const goToSelecaoFilial2 = () => {
+        router.push("/selecaoFilial2");
     }
 
     useEffect(() => {
@@ -92,7 +96,7 @@ export default function Home() {
                         />
                         <SmallButton
                             title="Add"
-                            onPress={goToVistoria} />
+                            onPress={goToSelecaoFilial1} />
                     </View>
                 </View>
 
@@ -138,7 +142,7 @@ export default function Home() {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity onPress={goToCriarSolicitacao}>
+                        <TouchableOpacity onPress={goToSelecaoFilial2}>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
                                 <Text style={styles.textOptions}>Criar Solicitação</Text>

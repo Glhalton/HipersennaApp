@@ -1,28 +1,38 @@
-import {create} from "zustand";
+import { create } from "zustand"
 
+//Tipagem de cada item que sera utilizado
 type FormDataItem = {
-    codProd: string;
-    codFilial: string;
-    nomeProduto: string;
+  codProd: string;
+  nomeProduto: string;
 }
 
-type CriarSolicitacaoStore = {
-    nomeProduto: string | null;
-    lista: FormDataItem[];
-    setNomeProduto: (produto: string | null) => void;
-    adicionarItem: (item: FormDataItem) => void;
-    removerItem: (index: number) => void;
-    resetarLista: () => void;
+//Tipagem das itens que serão globais
+type criarSolicitacaoStore = {
+  codFilial: string | null;
+  codConferente: string | null;
+  nomeProduto: string | null;
+  lista: FormDataItem[];
+  setCodFilial: (filial: string | null) => void;
+  setNomeProduto: (produto: string | null) => void;
+  setCodConferente: (conferente: string | null) => void;
+  adicionarItem: (Item: FormDataItem) => void;
+  removerItem: (index: number) => void;
+  resetarLista: () => void;
 }
 
-export const useCriarSolicitacaoStore = create<CriarSolicitacaoStore>((set) => ({
-    nomeProduto: null,
-    lista: [],
-    setNomeProduto: (produto) => set({ nomeProduto: produto }),
-    adicionarItem: (item) => set((state) => ({ lista: [...state.lista, item] })),
-    removerItem: (index) =>
-        set((state) => ({
-            lista: state.lista.filter((_, i) => i !== index),
-        })),
-    resetarLista: () => set({ lista: [] }),
+//Criação do store
+export const useCriarSolicitacaoStore = create<criarSolicitacaoStore>((set) => ({
+  nomeProduto: null,
+  lista: [],
+  codFilial: null,
+  codConferente: null,
+  setCodFilial: (filial) => set({ codFilial: filial }),
+  setNomeProduto: (produto) => set({ nomeProduto: produto }),
+  setCodConferente: (conferente) => set({codConferente: conferente}),
+  adicionarItem: (item) => set((state) => ({ lista: [...state.lista, item] })),
+  removerItem: (index) =>
+    set((state) => ({
+      lista: state.lista.filter((_, i) => i !== index),
+    })),
+  resetarLista: () => set({ lista: [] }),
 }));
