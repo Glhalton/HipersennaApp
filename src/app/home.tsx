@@ -9,6 +9,7 @@ import { useUserDadosStore } from "../../store/useUserDadosStore";
 export default function Home() {
 
     const userId = useUserDadosStore((state) => state.userId);
+    const [primeiroNome, setPrimeiroNome] = useState("");
 
     const [countValidade, setCountValidade] = useState(0);
     // const [backPressedOnce, setBackPressedOnce] = useState(false);
@@ -60,6 +61,7 @@ export default function Home() {
 
                 if (resultado.sucesso) {
                     setCountValidade(resultado.quantidade_vistorias);
+                    setPrimeiroNome(resultado.primeiroNome);
                     console.log("Foi buscado a contagem de vistorias")
                 }
 
@@ -86,8 +88,9 @@ export default function Home() {
             <ScrollView contentContainerStyle={styles.scrollContainer}>
                 <View style={styles.containerBemVindo}>
                     <Text style={styles.tituloBemVindo}>
-                        Bem vindo de volta!
+                        Bem vindo de volta, {primeiroNome}!
                     </Text>
+
                     <View style={styles.containerbuttons}>
                         <SmallButton
                             title="Histórico"
@@ -127,12 +130,20 @@ export default function Home() {
                         Acesso rápido
                     </Text>
                     <View>
-                        <TouchableOpacity onPress={goToVistoriaSolicitacoes}>
+
+                        <TouchableOpacity onPress={goToSelecaoFilial2}>
+                            <View style={styles.opcaoMenu}>
+                                <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
+                                <Text style={styles.textOptions}>Criar Solicitação</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        {/* <TouchableOpacity onPress={goToVistoriaSolicitacoes}>
                             <View style={styles.opcaoMenu}>
                                 <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
                                 <Text style={styles.textOptions}>Solicitações de Vistoria</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
@@ -142,12 +153,6 @@ export default function Home() {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity onPress={goToSelecaoFilial2}>
-                            <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
-                                <Text style={styles.textOptions}>Criar Solicitação</Text>
-                            </View>
-                        </TouchableOpacity>
 
                         {/* <TouchableOpacity>
                             <View style={styles.opcaoMenu}>
