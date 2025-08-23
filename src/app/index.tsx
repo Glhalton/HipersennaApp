@@ -70,7 +70,7 @@ export default function Login() {
       </View>
 
       <View style={styles.form}>
-        <View>
+        <View style={styles.inputContainer}>
           <Text style={styles.label}>Usuário</Text>
           <Input
             placeholder="Digite o seu usuário"
@@ -81,7 +81,7 @@ export default function Login() {
         </View>
 
 
-        <View>
+        <View style={styles.inputContainer}>
           <Text style={styles.label}>Senha</Text>
           <Input
             placeholder="Digite a sua senha"
@@ -117,19 +117,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0D0D0D",
+       alignItems: "center",
+
   },
   header: {
     alignItems: "center",
     paddingVertical: 70,
 
-    
+
   },
   title: {
     fontFamily: "Lexend-Regular",
     color: "white",
     fontSize: 30,
   },
-  logo:{
+  logo: {
 
   },
   form: {
@@ -139,11 +141,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffffff",
     borderTopLeftRadius: 45,
     borderTopRightRadius: 45,
+    maxWidth: 500,
+    width: "100%"
+
+  },
+  inputContainer: {
   },
   label: {
     color: colors.blue,
     marginBottom: 4,
     fontFamily: "Lexend-Regular",
+
   },
   buttonEsquecerSenha: {
     alignItems: "flex-end",

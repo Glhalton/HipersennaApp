@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     },
     inputData: {
         backgroundColor: "#F4F6F8",
-        height: 56,
         borderRadius: 8,
         padding: 16,
         marginBottom: 16,

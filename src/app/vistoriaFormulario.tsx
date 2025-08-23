@@ -21,19 +21,6 @@ export default function VistoriaFormulario() {
     const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
     const codFilial = useVistoriaStore((state) => state.codFilial);
 
-    // //Codigo da filial
-    // const [codFilial, setCodFilial] = React.useState<string | null>(null);
-
-    // //Opções do select de filial
-    // const filiais = [
-    //     { label: "Matriz", value: "1" },
-    //     { label: "Faruk", value: "2" },
-    //     { label: "Carajás", value: "3" },
-    //     { label: "VS10", value: "4" },
-    //     { label: "Xinguara", value: "5" },
-    //     { label: "Cidade Jardim", value: "7" },
-    // ];
-
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
 
@@ -79,30 +66,30 @@ export default function VistoriaFormulario() {
     },[])
 
     // //Busca o produto no banco via API PHP
-    const buscarProduto = async () => {
-        try {
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ codProd })
-            });
+    // const buscarProduto = async () => {
+    //     try {
+    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({ codProd })
+    //         });
 
-            //const texto = await resposta.text();
-            //console.log("RESPOSTA BRUTA DA API:", texto);
+    //         //const texto = await resposta.text();
+    //         //console.log("RESPOSTA BRUTA DA API:", texto);
 
-            const resultado = await resposta.json();
+    //         const resultado = await resposta.json();
 
-            if (resultado.sucesso) {
-                setNomeProduto(resultado.produto.descricao);
-            } else {
-                setNomeProduto(resultado.mensagem);
-            }
-        } catch (erro) {
-            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-        }
-    };
+    //         if (resultado.sucesso) {
+    //             setNomeProduto(resultado.produto.descricao);
+    //         } else {
+    //             setNomeProduto(resultado.mensagem);
+    //         }
+    //     } catch (erro) {
+    //         Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+    //     }
+    // };
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -138,7 +125,7 @@ export default function VistoriaFormulario() {
         if (timer) clearTimeout(timer);
 
         const newTimer = setTimeout(() => {
-            buscarProduto();
+            buscarProduto2();
         }, 500);
 
         setTimer(newTimer);

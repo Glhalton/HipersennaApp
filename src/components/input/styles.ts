@@ -8,5 +8,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
     fontFamily: "Lexend-Regular",
+
+
   },
 })

@@ -99,7 +99,8 @@ export default function Home() {
                         />
                         <SmallButton
                             title="Add"
-                            onPress={goToSelecaoFilial1} />
+                            onPress={goToSelecaoFilial1}
+                            backgroundColor={colors.red2} />
                     </View>
                 </View>
 
@@ -191,7 +192,7 @@ const styles = StyleSheet.create({
         paddingTop: 40,
         paddingBottom: 15,
         paddingHorizontal: 14,
-        backgroundColor: "red",
+        backgroundColor: colors.red2,
         elevation: 3,
     },
     headerText: {

@@ -1,15 +1,16 @@
 import { StyleSheet } from "react-native";
+import colors from "../../../constants/colors";
 
 export const styles = StyleSheet.create({
-    button:{
+    button: {
         paddingVertical: 14,
         borderRadius: 8,
-        backgroundColor: "#DA0100",
         justifyContent: "center",
-        alignItems: "center"
-    
+        alignItems: "center",
+
+
     },
-    buttonText:{
+    buttonText: {
         fontSize: 16,
         color: "white",
         fontFamily: "Lexend-Bold",
