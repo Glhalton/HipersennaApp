@@ -64,7 +64,7 @@ export default function ResumoSolicitacao() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Resumo da Solicitação"
-                screen="/solicitacaoFormulario"
+                navigationType="back"
             />
 
             <View style={styles.cardsContainer}>

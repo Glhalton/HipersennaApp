@@ -8,6 +8,7 @@ export default function Layout() {
   const [fontsLoaded] = useFonts({
     "Lexend-Regular": require("../../assets/fonts/Lexend/Lexend-Regular.ttf"),
     "Lexend-Bold": require("../../assets/fonts/Lexend/Lexend-Bold.ttf"),
+    "Lexend-SemiBold": require("../../assets/fonts/Lexend/Lexend-SemiBold.ttf"),
 
   });
 

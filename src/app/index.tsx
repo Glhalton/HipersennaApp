@@ -35,7 +35,7 @@ export default function Login() {
         setUserId(resultado.userId);
         setNivelAcesso(resultado.nivelAcesso);
         console.log(nivelAcesso)
-        router.push("/home");
+        router.replace("/home");
         setUsername("");
         setPassword("");
 
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#0D0D0D",
-       alignItems: "center",
+    alignItems: "center",
 
   },
   header: {

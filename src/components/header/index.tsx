@@ -7,15 +7,27 @@ type Prop = {
     color?: string,
     backgroundColor?: string,
     screen?: Href;
+    navigationType?: NavigationType;
 }
 
-export function Header({ title, color = "white", backgroundColor = "red", screen = "../../home"  }: Prop) {
+type NavigationType = "push" | "back" | "replace";
 
+export function Header({ title, color = "white", backgroundColor = "red", screen = "../../home", navigationType = "push" }: Prop) {
+
+    const handleNavigation = () => {
+        if (navigationType === "push" && screen) {
+            router.push(screen);
+        } else if (navigationType === "replace" && screen) {
+            router.replace(screen);
+        } else if (navigationType === "back") {
+            router.back();
+        }
+    };
 
     return (
 
         <View style={styles.header}>
-            <TouchableOpacity style={styles.button} onPress={() => router.push(screen)}>
+            <TouchableOpacity style={styles.button} onPress={handleNavigation}>
                 <Image style={styles.gearIcon} source={require("../../../assets/images/white-arrow-100.png")} />
             </TouchableOpacity>
             <Text style={styles.headerText}>{title}</Text>

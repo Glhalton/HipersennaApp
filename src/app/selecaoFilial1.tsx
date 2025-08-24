@@ -37,7 +37,7 @@ export default function SelecaoFilial1() {
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
                 title="Seleção de Filial"
-                screen={"/home"}
+                navigationType="back"
             />
             <View style={styles.formulario}>
                 <View style={styles.titleContainer}>

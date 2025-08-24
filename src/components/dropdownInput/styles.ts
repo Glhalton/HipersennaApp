@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
         marginBottom: 16,
         padding: 16,
         fontSize: 16,
-        zIndex: 1,
         fontFamily: "Lexend-Regular",
     },
     dropdownContainer: {

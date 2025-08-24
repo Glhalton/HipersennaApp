@@ -8,7 +8,7 @@ import { useUserDadosStore } from "../../store/useUserDadosStore";
 import { useVistoriaProdutoStore } from "../../store/useVistoriaProdutosStore";
 import DropDownPicker from "react-native-dropdown-picker";
 
-export default function VistoriaDemanda() {
+export default function Demandas() {
 
     type SolicitacaoInfo = {
         solicitacaoId: number;
@@ -64,7 +64,7 @@ export default function VistoriaDemanda() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Demanda"
-                screen="/home"
+                navigationType="back"
             />
             <View style={styles.containerConteudo}>
                 <View style={styles.filtros}>
@@ -81,7 +81,7 @@ export default function VistoriaDemanda() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("/vistoriaProdutos"); setProdutos(item.produtos); }}
+                                onPress={() => { router.push("/demandaProdutos"); setProdutos(item.produtos); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>

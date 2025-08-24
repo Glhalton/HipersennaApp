@@ -10,9 +10,7 @@ export default function Home() {
 
     const userId = useUserDadosStore((state) => state.userId);
     const [primeiroNome, setPrimeiroNome] = useState("");
-
     const [countValidade, setCountValidade] = useState(0);
-    // const [backPressedOnce, setBackPressedOnce] = useState(false);
 
     const goToVistoria = () => {
         router.push("/vistoriaFormulario");
@@ -26,12 +24,8 @@ export default function Home() {
         router.push("/relatorios");
     }
 
-    const goToVistoriaSolicitacoes = () => {
-        router.push("/vistoriaSolicitacoes");
-    }
-
     const goToVistoriaDemanda = () => {
-        router.push("/vistoriaDemanda");
+        router.push("/demandas");
     }
 
     const goToSelecaoFilial1 = () => {
@@ -77,21 +71,20 @@ export default function Home() {
     return (
 
         <SafeAreaView style={styles.container} edges={["bottom"]}>
-
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <TouchableOpacity style={styles.buttonHeader} onPress={() => router.push("/settings")}>
-                    <Image style={styles.gearIcon} source={require("../../assets/images/White-Gear.png")} />
+                <TouchableOpacity style={styles.settings} onPress={() => router.push("/settings")}>
+                    <Image style={styles.settingsImage} source={require("../../assets/images/White-Gear.png")} />
                 </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                <View style={styles.containerBemVindo}>
-                    <Text style={styles.tituloBemVindo}>
+            <ScrollView style={styles.scroll} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
+                <View style={styles.bemVindoContainer}>
+                    <Text style={styles.bemVindoText}>
                         Bem vindo de volta, {primeiroNome}!
                     </Text>
 
-                    <View style={styles.containerbuttons}>
+                    <View style={styles.buttonsContainer}>
                         <SmallButton
                             title="Histórico"
                             onPress={goToHistorico}
@@ -104,30 +97,29 @@ export default function Home() {
                     </View>
                 </View>
 
-
-
-                <View style={styles.containerDashboard}>
-                    <Text style={styles.titulo}>
+                <View style={styles.dashboardContainer}>
+                    <Text style={styles.title}>
                         Dashboard
                     </Text>
+
                     <View style={styles.dashboardRowItens}>
                         <View style={styles.dashboardItem}>
-                            <Text style={styles.dashboardItemText}>Total de {"\n"}vistorias: </Text>
+                            <Text style={styles.dashboardItemText}>Total de vistorias: </Text>
                             <Text style={styles.dashboardItemValue}>{countValidade}</Text>
                         </View>
                         <View style={styles.dashboardItem}>
-                            <Text style={styles.dashboardItemText}>Vencerão em {"\n"}breve</Text>
+                            <Text style={styles.dashboardItemText}>Vencerão em breve:</Text>
                             <Text style={styles.dashboardItemValue}>0</Text>
                         </View>
                     </View>
                     <View style={styles.dashboardLargeItem}>
-                        <Text style={styles.dashboardItemText}>Vencidos </Text>
+                        <Text style={styles.dashboardItemText}>Vencidos:</Text>
                         <Text style={styles.dashboardItemValue}>0</Text>
                     </View>
                 </View>
 
                 <View style={styles.containerAcessoRapido}>
-                    <Text style={styles.titulo}>
+                    <Text style={styles.title}>
                         Acesso rápido
                     </Text>
                     <View>
@@ -138,13 +130,6 @@ export default function Home() {
                                 <Text style={styles.textOptions}>Criar Solicitação</Text>
                             </View>
                         </TouchableOpacity>
-
-                        {/* <TouchableOpacity onPress={goToVistoriaSolicitacoes}>
-                            <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
-                                <Text style={styles.textOptions}>Solicitações de Vistoria</Text>
-                            </View>
-                        </TouchableOpacity> */}
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
@@ -168,6 +153,7 @@ export default function Home() {
                                 <Text style={styles.textOptions}>Gerar relatórios</Text>
                             </View>
                         </TouchableOpacity> */}
+
                     </View>
                 </View>
             </ScrollView>
@@ -179,16 +165,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white",
+        alignItems: "center",
+
     },
-    scrollContainer: {
-        color: colors.blue,
-        paddingHorizontal: 14,
-        paddingTop: 10,
-    },
+    
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        width: "100%",
         paddingTop: 40,
         paddingBottom: 15,
         paddingHorizontal: 14,
@@ -200,40 +185,51 @@ const styles = StyleSheet.create({
         fontFamily: "Lexend-Bold",
         color: "white",
     },
-    buttonHeader: {
+    settings: {
         padding: 5,
     },
-    gearIcon: {
+    settingsImage: {
         width: 25,
         height: 25,
     },
-    imgIcon: {
+
+    scroll:{
+        width: "100%",
+        maxWidth: 600
+    },
+
+    contentStyleScroll: {
+        color: colors.blue,
+        paddingHorizontal: 14,
+        paddingTop: 10,
+        
+
 
     },
-    containerBemVindo: {
+    bemVindoContainer: {
         paddingBottom: 30,
-        borderBottomColor: colors.blue,
         borderBottomWidth: 1,
+        borderBottomColor: colors.gray,
     },
-    tituloBemVindo: {
+    bemVindoText: {
         textAlign: "center",
-        fontSize: 28,
+        fontSize: 24,
         fontFamily: "Lexend-Bold",
-        paddingBottom: 20,
+        paddingBottom: 30,
         paddingTop: 20,
-        color: "#205072",
+        color: colors.blue,
     },
-    containerbuttons: {
+    buttonsContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    containerDashboard: {
+    dashboardContainer: {
         paddingTop: 20,
         paddingBottom: 30,
-        borderBottomColor: colors.blue,
         borderBottomWidth: 1,
+        borderBottomColor: colors.gray,
     },
-    titulo: {
+    title: {
         fontSize: 22,
         fontFamily: "Lexend-Bold",
         color: colors.blue,
@@ -244,33 +240,26 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     dashboardItem: {
-        backgroundColor: "#F4F6F8",
-        height: 134,
+        backgroundColor: colors.lightGray,
+        padding: 24,
         width: "45%",
         borderRadius: 12,
-        justifyContent: "center",
     },
     dashboardItemText: {
-        fontSize: 14,
-        color: "#205072",
-        paddingLeft: 20,
+        fontSize: 16,
+        color: colors.blue,
         fontFamily: "Lexend-Regular",
-
     },
     dashboardItemValue: {
         fontSize: 22,
         fontFamily: "Lexend-Bold",
-        color: "#205072",
-        paddingLeft: 20,
+        color: colors.blue,
     },
     dashboardLargeItem: {
-        backgroundColor: "#F4F6F8",
-        height: 134,
-        width: "100%",
+        backgroundColor: colors.lightGray,
         borderRadius: 12,
-        justifyContent: "center",
         marginTop: 20,
-
+        padding: 24
     },
     containerAcessoRapido: {
         paddingTop: 20,
@@ -282,8 +271,11 @@ const styles = StyleSheet.create({
         gap: 20
     },
     textOptions: {
-        color: colors.blue,
+        color: colors.gray,
         fontSize: 16,
         fontFamily: "Lexend-Regular",
+    },
+    imgIcon: {
+
     }
 })

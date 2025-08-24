@@ -4,12 +4,11 @@ import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import { router} from "expo-router";
 import colors from "../../constants/colors";
-import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import SelecaoFilial1 from "./selecaoFilial1";
+
 
 export default function VistoriaFormulario() {
 
@@ -53,7 +52,6 @@ export default function VistoriaFormulario() {
             observacao: "",
             nomeProduto: nomeProduto || "",
         });
-
 
         setCodProd("");
         setDataVencimento(undefined);
@@ -140,7 +138,7 @@ export default function VistoriaFormulario() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Vistoria"
-                screen="/selecaoFilial1"
+                navigationType="back"
             />
 
             <View style={styles.form}>

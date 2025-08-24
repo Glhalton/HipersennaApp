@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
         borderRadius: 8,
         justifyContent: "center",
         alignItems: "center",
-
+        zIndex:1
 
     },
     buttonText: {

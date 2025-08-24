@@ -11,7 +11,7 @@ export default function Historico() {
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
                 title="Histórico"
-                screen="/home"
+                navigationType="back"
             />
         </SafeAreaView>
     );

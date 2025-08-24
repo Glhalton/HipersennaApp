@@ -85,6 +85,7 @@ export default function SolicitacaoFormulario() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Solicitação Vistoria"
+                navigationType="back"
             />
 
             <View style={styles.form}>

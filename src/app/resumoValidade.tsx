@@ -61,7 +61,7 @@ export default function ResumoValidade() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
                 title="Resumo da vistoria"
-                screen="/vistoriaFormulario"
+                navigationType="back"
             />
             <View style={styles.cardsContainer}>
 
