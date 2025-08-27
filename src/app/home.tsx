@@ -9,12 +9,9 @@ import { useUserDadosStore } from "../../store/useUserDadosStore";
 export default function Home() {
 
     const userId = useUserDadosStore((state) => state.userId);
+    const nivelAcesso = useUserDadosStore((state) => state.nivelAcesso)
     const [primeiroNome, setPrimeiroNome] = useState("");
     const [countValidade, setCountValidade] = useState(0);
-
-    const goToVistoria = () => {
-        router.push("/vistoriaFormulario");
-    }
 
     const goToHistorico = () => {
         router.push("/historico");
@@ -28,8 +25,8 @@ export default function Home() {
         router.push("/demandas");
     }
 
-    const goToSelecaoFilial1 = () => {
-        router.push("/selecaoFilial1");
+    const goToSelecaoTipoVistoria = () => {
+        router.push("/tipoVistoria");
     }
 
     const goToSelecaoFilial2 = () => {
@@ -92,7 +89,7 @@ export default function Home() {
                         />
                         <SmallButton
                             title="Add"
-                            onPress={goToSelecaoFilial1}
+                            onPress={goToSelecaoTipoVistoria}
                             backgroundColor={colors.red2} />
                     </View>
                 </View>
@@ -124,12 +121,16 @@ export default function Home() {
                     </Text>
                     <View>
 
-                        <TouchableOpacity onPress={goToSelecaoFilial2}>
-                            <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
-                                <Text style={styles.textOptions}>Criar Solicitação</Text>
-                            </View>
-                        </TouchableOpacity>
+                        {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3  && (
+                            <TouchableOpacity onPress={goToSelecaoFilial2}>
+                                <View style={styles.opcaoMenu}>
+                                    <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
+                                    <Text style={styles.textOptions}>Criar Solicitação</Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
+
+
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
 
     },
-    
+
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
         height: 25,
     },
 
-    scroll:{
+    scroll: {
         width: "100%",
         maxWidth: 600
     },
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
         color: colors.blue,
         paddingHorizontal: 14,
         paddingTop: 10,
-        
+
 
 
     },

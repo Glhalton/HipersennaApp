@@ -9,7 +9,7 @@ import colors from "../../constants/colors";
 export default function Historico() {
 
     const produtos = useVistoriaProdutoStore((state) => state.produtos);
-    const nomeProduto = "PRODUTO TESTE NUMERO DEZ MIL";
+    const nomeProduto = "Produto Número Dez Mil Quilograma";
 
     useEffect(() => {
         console.log(produtos);
@@ -24,23 +24,6 @@ export default function Historico() {
 
             <View style={styles.cardsContainer}>
 
-                <View style={styles.header}>
-                    <View style={styles.listIdH}>
-                        <Text style={styles.textHeader}>
-                            #
-                        </Text>
-                    </View>
-                    <View style={styles.prodIdH}>
-                        <Text style={styles.textHeader}>
-                            Cod.Prod.
-                        </Text>
-                    </View>
-                    <View style={styles.nomeProdutoH}>
-                        <Text style={styles.textHeader}>
-                            Descrição
-                        </Text>
-                    </View>
-                </View>
                 <FlatList
                     data={produtos}
                     keyExtractor={(_, index) => index.toString()}
@@ -48,19 +31,26 @@ export default function Historico() {
                     renderItem={({ item, index }) => (
                         <View style={styles.card}>
                             <View style={styles.listId}>
-                                <Text style={styles.text}>
-                                    {index + 1}
+                                <Text style={styles.bold}>
+                                    {index + 1}°
                                 </Text>
                             </View>
-                            <View style={styles.prodId}>
-                                <Text style={styles.text}>
-                                    {item.cod_produto}
+                            <View style={styles.dadosItem}>
+                                <View style={styles.codDescricaoProdutoRow}>
+                                    <Text style={styles.bold}>
+                                        {item.cod_produto}
+                                    </Text>
+                                    <Text style={styles.text} >
+                                        : {nomeProduto}
+                                    </Text>
+                                </View>
+                                <View><Text style={styles.text} >
+                                    Dt. vencimento
+                                    <Text style={styles.bold} >
+                                        : 10/11/2007
+                                    </Text>
                                 </Text>
-                            </View>
-                            <View style={styles.nomeProduto}>
-                                <Text style={styles.text} >
-                                    {nomeProduto}
-                                </Text>
+                                </View>
                             </View>
                         </View>
                     )}
@@ -68,7 +58,7 @@ export default function Historico() {
 
             </View>
 
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }
 
@@ -84,76 +74,32 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         backgroundColor: "white",
+        alignItems: "center",
+        gap: 10,
+        borderWidth: 1,
+        borderRadius: 8,
+        borderColor: colors.gray,
+        marginBottom: 10
     },
-    cardTitle: {
-        fontSize: 16,
-        fontFamily: "Lexend-Bold",
-        marginBottom: 6,
-        color: colors.blue,
+    codDescricaoProdutoRow: {
+        flexDirection: "row"
     },
     text: {
-        fontFamily: "Lexend-Regular"
+        fontFamily: "Lexend-Regular",
+        color: colors.gray
+    },
+    bold:{
+        fontFamily: "Lexend-Bold",
+        color: colors.blue,
     },
     textHeader: {
         fontFamily: "Lexend-Regular",
         color: "white",
     },
     dadosItem: {
-        flexDirection: "row",
-        marginBottom: 8,
-        alignItems: "center",
-        justifyContent: "space-between"
+        paddingVertical: 10
     },
     listId: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "10%",
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-        borderLeftWidth: 1,
-    },
-    prodId: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "23%",
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-    },
-    nomeProduto: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "67%",
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-    },
-    header: {
-        flexDirection: "row",
-    },
-    listIdH: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "10%",
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-        borderLeftWidth: 1,
-        backgroundColor: colors.gray
-    },
-    prodIdH: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "23%",
-        borderBottomWidth: 1,
-        borderRightWidth: 1,
-        backgroundColor: colors.gray
-
-    },
-    nomeProdutoH: {
-        paddingVertical: 5,
-        paddingLeft: 5,
-        width: "67%",
-        borderBottomWidth: 1,
-        backgroundColor: colors.gray,
-        borderRightWidth: 1,
-    },
-
+        padding: 10
+    }
 })

@@ -2,12 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
-import { router} from "expo-router";
+import { router } from "expo-router";
 import colors from "../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { useFocusEffect } from "@react-navigation/native";
+import { BackHandler } from "react-native";
+import { useCallback } from "react";
 
 
 export default function VistoriaFormulario() {
@@ -59,9 +62,9 @@ export default function VistoriaFormulario() {
 
     }
 
-    useEffect(() =>{
+    useEffect(() => {
         console.log(codFilial)
-    },[])
+    }, [])
 
     // //Busca o produto no banco via API PHP
     // const buscarProduto = async () => {
@@ -128,7 +131,7 @@ export default function VistoriaFormulario() {
 
         setTimer(newTimer);
     }, [codProd]);
-    
+
 
     const goToResumo = () => {
         router.push("/resumoValidade");

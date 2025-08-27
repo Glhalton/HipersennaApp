@@ -9,12 +9,12 @@ interface DropDownInputProps {
     onChange: (value: string) => void;
 }
 
-export function DropdownInput({ value, items, onChange }: DropDownInputProps) {
+export function DropdownInput({value, items, onChange }: DropDownInputProps) {
     const [open, setOpen] = React.useState(false);
     const [dropDownItems, setDropDownItems] = React.useState(items);
 
     return (
-        <View style={{   zIndex: 1000,}}>
+        <View>           
             <DropDownPicker
                 open={open}
                 value={value}
@@ -30,7 +30,6 @@ export function DropdownInput({ value, items, onChange }: DropDownInputProps) {
                 dropDownContainerStyle={styles.dropdownContainer}
                 textStyle={styles.dropdownText}
                 placeholderStyle={styles.placeholder}
-
             />
         </View>
     )

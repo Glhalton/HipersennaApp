@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react-native";
+import Checkbox from 'expo-checkbox';
 import colors from "../../constants/colors";
 import { router } from "expo-router"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useUserDadosStore } from "../../store/useUserDadosStore";
 import { useVistoriaProdutoStore } from "../../store/useVistoriaProdutosStore";
-import DropDownPicker from "react-native-dropdown-picker";
+
 
 export default function Demandas() {
+
+    const [isSelected, setSelection] = useState(false);
 
     type SolicitacaoInfo = {
         solicitacaoId: number;
@@ -17,6 +20,7 @@ export default function Demandas() {
         dataSolicitacao: string;
         analistaId: number;
         produtos: [];
+        checked: boolean;
     };
 
     const userId = useUserDadosStore((state) => state.userId);
@@ -39,7 +43,12 @@ export default function Demandas() {
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
+                const solicitacoesComCheck = resultado.solicitacoes.map((s: any) => ({
+                    ...s,
+                    checked: false
+                }));
                 setSolicitacoes(resultado.solicitacoes);
+
             } else {
                 Alert.alert("Erro", resultado.mensagem);
             }
@@ -59,6 +68,14 @@ export default function Demandas() {
         if (status === "expirado") return "#E80000";
         return "black";
     }
+
+    const toggleCheck = (id: number) => {
+        setSolicitacoes((prev) =>
+            prev.map((item) =>
+                item.solicitacaoId === id ? { ...item, checked: !item.checked } : item
+            )
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -106,11 +123,11 @@ export default function Demandas() {
                                             </View>
 
                                         </View>
-                                        <View style={styles.containerButton}>
-                                            <Image
-                                                style={styles.verMaisIcon}
-                                                source={require("../../assets/images/Vector-1x.png")}
-                                                resizeMode="contain"
+                                        <View style={styles.checkboxContainer}>
+                                            <Checkbox
+                                                value={item.checked}
+                                                onValueChange={() => toggleCheck(item.solicitacaoId)}
+                                                style={styles.checkbox}
                                             />
                                         </View>
                                     </View>
@@ -178,12 +195,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between"
     },
-    containerButton: {
+    checkboxContainer: {
     },
-    verMaisIcon: {
+    checkbox: {
         width: 24,
         height: 24,
-
     },
     buttonVerMais: {
         paddingLeft: 100,
