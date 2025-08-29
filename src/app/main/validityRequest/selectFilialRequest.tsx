@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { router } from "expo-router";
 import { DropdownInput } from "@/components/dropdownInput";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../store/useVistoriaStore";
+import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
+import { Input } from "@/components/input";
 
-export default function SelecaoFilial1() {
+export default function SelectFilialRequest() {
 
     //Codigo da filial
-
-    const codFilial = useVistoriaStore((state) => state.codFilial);
-    const setCodFilial = useVistoriaStore((state) => state.setCodFilial);
-    const resetarLista = useVistoriaStore((state)=> state.resetarLista);
+    const codFilial = useCriarSolicitacaoStore((state) => state.codFilial);
+    const setCodFilial = useCriarSolicitacaoStore((state) => state.setCodFilial);
+    const codConferente = useCriarSolicitacaoStore((state) => state.codConferente);
+    const setCodConferente = useCriarSolicitacaoStore((state) => state.setCodConferente);
 
     //Opções do select de filial
     const filiais = [
@@ -27,11 +28,6 @@ export default function SelecaoFilial1() {
         { label: "7 - Cidade Jardim", value: "7" },
     ];
 
-    useEffect(() => {
-        resetarLista();
-        console.log("Resetou a lista")
-    }, [])
-
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
@@ -42,7 +38,7 @@ export default function SelecaoFilial1() {
             <View style={styles.formulario}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>
-                        Selecione a filial desejada:
+                        Selecione a filial e conferente desejados:
                     </Text>
                 </View>
 
@@ -56,12 +52,24 @@ export default function SelecaoFilial1() {
                         onChange={(val) => setCodFilial(val)}
                     />
                 </View>
-                {codFilial && (
+
+                <View>
+                    <Text style={styles.label}>
+                        Conferente:
+                    </Text>
+                    <Input
+                        placeholder="Digite o código do conferente"
+                        value={codConferente || ""}
+                        onChangeText={setCodConferente}
+                    />
+                </View>
+                {codFilial && codConferente && (
                     <View style={styles.buttonContainer}>
                         <LargeButton
                             title="Continuar"
-                            onPress={() => router.push("/vistoriaFormulario")}
+                            onPress={() => router.push("../solicitacaoFormulario")}
                         />
+                        
                     </View>
                 )}
 
@@ -77,9 +85,9 @@ const styles = StyleSheet.create({
     },
     formulario: {
         flex: 1,
-        marginHorizontal: 30,
+        marginHorizontal: 14,
         paddingTop: 100,
-        
+
     },
     titleContainer: {
         paddingVertical: 20,
@@ -95,7 +103,7 @@ const styles = StyleSheet.create({
         marginBottom: 4,
         fontFamily: "Lexend-Bold",
     },
-    buttonContainer:{
-        
+    buttonContainer: {
+
     }
 })

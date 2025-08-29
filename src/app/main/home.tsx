@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { router } from "expo-router";
 import { SmallButton } from "@/components/smallButton";
-import colors from "../../constants/colors";
+import colors from "../../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useUserDadosStore } from "../../store/useUserDadosStore";
+import { useUserDadosStore } from "../../../store/useUserDadosStore";
 
 export default function Home() {
 
@@ -14,23 +14,23 @@ export default function Home() {
     const [countValidade, setCountValidade] = useState(0);
 
     const goToHistorico = () => {
-        router.push("/historico");
+        router.push("./history");
     }
 
     const goToRelatorios = () => {
-        router.push("/relatorios");
+        router.push("./selectReport");
     }
 
     const goToVistoriaDemanda = () => {
-        router.push("/demandas");
+        router.push("./requests");
     }
 
     const goToSelecaoTipoVistoria = () => {
-        router.push("/tipoVistoria");
+        router.push("./validityForm/selectType");
     }
 
     const goToSelecaoFilial2 = () => {
-        router.push("/selecaoFilial2");
+        router.push("./selecaoFilial2");
     }
 
     useEffect(() => {
@@ -52,8 +52,8 @@ export default function Home() {
 
                 if (resultado.sucesso) {
                     setCountValidade(resultado.quantidade_vistorias);
-                    setPrimeiroNome(resultado.primeiroNome);
                     console.log("Foi buscado a contagem de vistorias")
+                    setPrimeiroNome(resultado.primeiroNome);
                 }
 
             } catch (error) {
@@ -70,8 +70,8 @@ export default function Home() {
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <View style={styles.header}>
                 <Text style={styles.headerText}>Validade</Text>
-                <TouchableOpacity style={styles.settings} onPress={() => router.push("/settings")}>
-                    <Image style={styles.settingsImage} source={require("../../assets/images/White-Gear.png")} />
+                <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
+                    <Image style={styles.settingsImage} source={require("../../../assets/images/White-Gear.png")} />
                 </TouchableOpacity>
             </View>
 
@@ -124,7 +124,7 @@ export default function Home() {
                         {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3  && (
                             <TouchableOpacity onPress={goToSelecaoFilial2}>
                                 <View style={styles.opcaoMenu}>
-                                    <Image style={styles.imgIcon} source={require("../../assets/images/SinoIcon.png")} />
+                                    <Image style={styles.imgIcon} source={require("../../../assets/images/SinoIcon.png")} />
                                     <Text style={styles.textOptions}>Criar Solicitação</Text>
                                 </View>
                             </TouchableOpacity>
@@ -134,7 +134,7 @@ export default function Home() {
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/MenuIcon.png")} />
+                                <Image style={styles.imgIcon} source={require("../../../assets/images/MenuIcon.png")} />
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>

@@ -41,9 +41,7 @@ export default function Layout() {
             title: "Relatório Vencimento",
 
           }} />
-        <Stack.Screen name="relatorioBonus" options={{ title: "Relatório Bônus" }} />
-
-
+        <Stack.Screen name="relatorioBonus" options={{ title: "Relatório Bônus" }}  />
       </Stack>
     </SafeAreaProvider>
   );

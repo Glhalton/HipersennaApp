@@ -1,36 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
 import { LargeButton } from "@/components/largeButton";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { router } from "expo-router"
-import { useVistoriaStore } from "../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useUserDadosStore } from "../../store/useUserDadosStore";
+import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
+import { useUserDadosStore } from "../../../../store/useUserDadosStore";
 
-
-export default function ResumoValidade() {
+export default function RequestSummary() {
 
     //Lista de itens inseridos do Formulário
-    const lista = useVistoriaStore((state) => state.lista);
-    const removeritem = useVistoriaStore((state) => state.removerItem);
-    const resetarLista = useVistoriaStore((state) => state.resetarLista);
+    const lista = useCriarSolicitacaoStore((state) => state.lista);
+    const removeritem = useCriarSolicitacaoStore((state) => state.removerItem);
+    const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
     const userId = useUserDadosStore((state) => state.userId);
-    const codFilial = useVistoriaStore((state) => state.codFilial);
 
+    const codFilial = useCriarSolicitacaoStore((state) => state.codFilial);
+    const codConferente = useCriarSolicitacaoStore((state) => state.codConferente);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
 
         if (lista.length === 0) {
             Alert.alert("Atenção", "Nenhum item para ser adicionado.");
-            router.push("/vistoriaFormulario");
+            router.push("./vistoriaFormulario");
             return;
         }
 
         try {
 
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoSolicitacao.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -39,16 +39,19 @@ export default function ResumoValidade() {
 
                     userId,
                     codFilial,
+                    codConferente,
                     itens: lista
                 })
             });
+
+
 
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
                 resetarLista();
-                router.push("/vistoriaFormulario");
+                router.push("./solicitacaoFormulario");
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
@@ -60,14 +63,18 @@ export default function ResumoValidade() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Resumo da vistoria"
+                title="Resumo da Solicitação"
                 navigationType="back"
             />
+
             <View style={styles.cardsContainer}>
 
-                <View style={styles.filialTitleContainer}>
-                    <Text style={styles.filialTitle}>
-                        Filial:  {codFilial}
+                <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>
+                        Filial: {codFilial}
+                    </Text>
+                    <Text style={styles.titleText}>
+                        Conferente: {codConferente}
                     </Text>
                 </View>
 
@@ -81,14 +88,8 @@ export default function ResumoValidade() {
                             <View style={styles.dadosItem}>
                                 <View>
                                     <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
-                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
-                                </View>
-                                <View>
-                                    <Text><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
                                 </View>
                             </View>
-
-
                             <TouchableOpacity
                                 style={styles.removerButton}
                                 onPress={() => removeritem(index)}
@@ -116,18 +117,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    filialTitleContainer: {
-        paddingBottom: 20
-    },
-    filialTitle: {
-        fontFamily: "Lexend-Bold",
-        fontSize: 30,
-        color: colors.blue,
-    },
     cardsContainer: {
         paddingHorizontal: 14,
-        paddingTop: 10,
         flex: 1,
+    },
+    titleContainer: {
+        paddingVertical: 20
+    },
+    titleText: {
+        fontFamily: "Lexend-Bold",
+        fontSize: 28,
+        color: colors.blue,
+
     },
     card: {
         backgroundColor: "white",

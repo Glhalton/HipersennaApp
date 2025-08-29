@@ -2,9 +2,9 @@ import { Header } from "@/components/header";
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useVistoriaProdutoStore } from "../../store/useVistoriaProdutosStore";
+import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
 import { router } from "expo-router";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 
 export default function Historico() {
 

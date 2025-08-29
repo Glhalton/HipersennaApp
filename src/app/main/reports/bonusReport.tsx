@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function relatorioBonus(){
+export default function BonusReport(){
     return(
         <View >
             <Text>

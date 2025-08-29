@@ -1,17 +1,17 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { LargeButton } from "@/components/largeButton";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { router } from "expo-router";
 
 const relatorioVencimento = () => {
-    router.push("/relatorioVencimento")
+    router.push("./relatorioVencimento")
 }
 const relatorioBonus = () => {
-    router.push("/relatorioBonus")
+    router.push("./relatorioBonus")
 }
 
-export default function Relatorios() {
+export default function SelectReport() {
     return (
         <View style={styles.container}>
             <View>

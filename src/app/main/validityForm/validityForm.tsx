@@ -3,9 +3,9 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "rea
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../store/useVistoriaStore";
+import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useFocusEffect } from "@react-navigation/native";
@@ -13,7 +13,7 @@ import { BackHandler } from "react-native";
 import { useCallback } from "react";
 
 
-export default function VistoriaFormulario() {
+export default function ValidityForm() {
 
     //Dados do Store
     const lista = useVistoriaStore((state) => state.lista);
@@ -134,7 +134,7 @@ export default function VistoriaFormulario() {
 
 
     const goToResumo = () => {
-        router.push("/resumoValidade");
+        router.push("./resumoValidade");
     };
 
     return (

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useCriarSolicitacaoStore } from "../../store/useCriarSolicitacaoStore";
+import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
 
-export default function SolicitacaoFormulario() {
+export default function RequestForm() {
 
     const lista = useCriarSolicitacaoStore((state) => state.lista);
     const adicionarItem = useCriarSolicitacaoStore((state) => state.adicionarItem);
@@ -78,7 +78,7 @@ export default function SolicitacaoFormulario() {
     }
 
     const goToResumoSolicitacao = () => {
-        router.push("/resumoSolicitacao");
+        router.push("./resumoSolicitacao");
     };
 
     return (

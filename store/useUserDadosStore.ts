@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
-type UserDadosStore = {
-    userId: string | null;
-    setUserId: (id: string | null) => void;
+interface UserDadosStore {
+    userId: number | null;
+    setUserId: (id: number | null) => void;
     nivelAcesso: string | null;
     setNivelAcesso: (nivel: string | null) => void;
 }

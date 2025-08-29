@@ -4,9 +4,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { router } from "expo-router";
 import { DropdownInput } from "@/components/dropdownInput";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../store/useVistoriaStore";
+import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 
 export default function TipoVistoria() {
 
@@ -37,13 +37,13 @@ export default function TipoVistoria() {
                     <View style={styles.avulsaButton}>
                         <LargeButton
                             title="Avulsa"
-                            onPress={() => router.push("/vistoriaFormulario")}
+                            onPress={() => router.push("./vistoriaFormulario")}
                         />
                     </View>
                     <View style={styles.porSolicitacaoButton}>
                         <LargeButton
                             title="Por solicitação"
-                            onPress={() => router.push("/demandasSelecao")}
+                            onPress={() => router.push("./demandasSelecao")}
                         />
                     </View>
                 </View>

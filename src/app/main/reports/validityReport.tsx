@@ -3,11 +3,11 @@ import { View, Text, StyleSheet, ScrollView, Alert } from "react-native";
 import { DropdownInput } from "@/components/dropdownInput";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
-import colors from "../../constants/colors";
+import colors from "../../../../constants/colors";
 import { DataTable } from "react-native-paper";
 import { LargeButton } from "@/components/largeButton";
 
-export default function relatorioVencimento() {
+export default function ValidityReport() {
 
     interface DadoRelatorio {
         cod_produto: string;
