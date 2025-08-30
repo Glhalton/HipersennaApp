@@ -3,9 +3,11 @@ import { Alert, TouchableOpacity, StyleSheet, Text, View, Image } from "react-na
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
-import colors from "../../../constants/colors";
 import { useUserDadosStore } from "../../../store/useUserDadosStore";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FontAwesome, Octicons } from "@expo/vector-icons";
+import colors from "../../../constants/colors";
+
 
 export default function Login() {
 
@@ -15,9 +17,13 @@ export default function Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const fazerLogin = async () => {
+  const getLogin = async () => {
     try {
+      setLoading(true);
+
       const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/autenticacao/login.php", {
         method: "POST",
         headers: {
@@ -44,6 +50,8 @@ export default function Login() {
       Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
       setUsername("");
       setPassword("");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,7 +62,6 @@ export default function Login() {
   }
 
   return (
-
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Image
@@ -68,23 +75,27 @@ export default function Login() {
 
       <View style={styles.form}>
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Usuário</Text>
           <Input
-            placeholder="Digite o seu usuário"
-            onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
             value={username}
+            onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
+            label="Usuário:"
+            IconRight={FontAwesome}
+            iconRightName="user"
+            placeholder="Digite o seu usuário"
             autoCapitalize="none"
           />
         </View>
 
-
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Senha</Text>
           <Input
-            placeholder="Digite a sua senha"
-            onChangeText={setPassword}
             value={password}
-            secureTextEntry={true}
+            onChangeText={setPassword}
+            label="Senha:"
+            IconRight={Octicons}
+            iconRightName={showPassword ? "eye-closed" : "eye"}
+            placeholder="Digite a sua senha"
+            secureTextEntry={showPassword}
+            onIconRightPress={() => setShowPassword(!showPassword)}
             autoCapitalize="none"
           />
         </View>
@@ -95,8 +106,11 @@ export default function Login() {
           </Text>
         </TouchableOpacity>
 
-
-        <LargeButton title="Login" onPress={fazerLogin} />
+        <LargeButton
+          text="Login"
+          onPress={getLogin}
+          loading={loading}
+        />
 
         <TouchableOpacity style={styles.botaoCadastro} onPress={goToSignup}>
           <Text style={styles.textCadastro}>
@@ -104,9 +118,7 @@ export default function Login() {
           </Text>
         </TouchableOpacity>
       </View>
-
     </SafeAreaView>
-
   )
 }
 
@@ -115,13 +127,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#0D0D0D",
     alignItems: "center",
-
   },
   header: {
     alignItems: "center",
-    paddingVertical: 70,
-
-
+    paddingVertical: 60,
   },
   title: {
     fontFamily: "Lexend-Regular",
@@ -144,12 +153,7 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
   },
-  label: {
-    color: colors.blue,
-    marginBottom: 4,
-    fontFamily: "Lexend-Regular",
 
-  },
   buttonEsquecerSenha: {
     alignItems: "flex-end",
     marginBottom: 50,
@@ -160,11 +164,11 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   textEsquecerSenha: {
-    color: "#205072",
+    color: colors.blue,
     fontFamily: "Lexend-Regular",
   },
   textCadastro: {
-    color: "#205072",
+    color: colors.blue,
     fontSize: 14,
     textDecorationLine: "underline",
     fontFamily: "Lexend-Regular",
