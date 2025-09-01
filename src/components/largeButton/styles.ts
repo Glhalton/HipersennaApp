@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 4.65,
         elevation: 8,
     },
-    textButton: {
+    buttonText: {
         fontSize: 16,
         color: "white",
         fontFamily: "Lexend-Bold",

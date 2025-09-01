@@ -101,7 +101,7 @@ export default function signup() {
                 </View>
 
                 <View style={styles.containerBotao}>
-                    <LargeButton title="Criar usuario" onPress={criarUsuario} />
+                    <LargeButton text="Criar usuario" onPress={criarUsuario} />
                 </View>
 
             </View>

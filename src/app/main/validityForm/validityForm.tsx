@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, View, ScrollView } from "react-native";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
@@ -8,9 +8,7 @@ import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useFocusEffect } from "@react-navigation/native";
-import { BackHandler } from "react-native";
-import { useCallback } from "react";
+
 
 
 export default function ValidityForm() {
@@ -193,10 +191,8 @@ export default function ValidityForm() {
                 </View>
 
                 <View>
-                    <Text style={styles.label}>
-                        Quantidade *
-                    </Text>
                     <Input
+                        label="Quantidade *"
                         placeholder="Insira a quantidade"
                         keyboardType="numeric"
                         value={quantidade}
@@ -205,20 +201,18 @@ export default function ValidityForm() {
                 </View>
 
                 <View>
-                    <Text style={styles.label}>
-                        Observação
-                    </Text>
                     <Input
+                        label="Observação"
                         placeholder="Digite a sua observação"
                         value={observacao}
                         onChangeText={setObservacao}
                     />
                 </View>
 
-                <View style={styles.containerButtons}>
+                <View style={styles.buttonsBox}>
                     <View style={styles.inserirButton}>
                         <LargeButton
-                            title="Inserir"
+                            text="Inserir"
                             backgroundColor={colors.gray}
                             onPress={handlerAdicionar}
                         />
@@ -228,7 +222,7 @@ export default function ValidityForm() {
 
                         <View style={styles.inserirButton}>
                             <LargeButton
-                                title="Resumo"
+                                text="Resumo"
                                 onPress={goToResumo}
                             />
                         </View>
@@ -275,7 +269,7 @@ const styles = StyleSheet.create({
         color: "#113b58ff",
         fontFamily: "Lexend-Bold",
     },
-    containerButtons: {
+    buttonsBox: {
         marginTop: 40
     },
     inserirButton: {

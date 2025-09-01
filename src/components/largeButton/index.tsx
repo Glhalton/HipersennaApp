@@ -19,7 +19,7 @@ export function LargeButton({ text, color = "white", backgroundColor = colors.re
                 activeOpacity={0.6}
                 {...rest}
             >
-                {loading ? <ActivityIndicator /> : <Text style={[styles.textButton, { color }]}>{text}</Text>}
+                {loading ? <ActivityIndicator /> : <Text style={[styles.buttonText, { color }]}>{text}</Text>}
             </TouchableOpacity>
         </View>
 

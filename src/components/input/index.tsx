@@ -24,7 +24,9 @@ export function Input(Props: Props) {
 
     return (
         <Fragment>
-            <Text style={styles.label}>{label}</Text>
+            {label &&
+                <Text style={styles.label}>{label}</Text>
+            }
             <View style={styles.boxInput}>
                 {IconLeft && iconLeftName && (
                     <TouchableOpacity onPress={onIconLeftPress}>

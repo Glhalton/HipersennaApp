@@ -59,7 +59,7 @@ export default function SelectFilialValidity() {
                 {codFilial && (
                     <View style={styles.buttonContainer}>
                         <LargeButton
-                            title="Continuar"
+                            text="Continuar"
                             onPress={() => router.push("./vistoriaFormulario")}
                         />
                     </View>

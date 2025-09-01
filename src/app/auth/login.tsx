@@ -8,7 +8,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome, Octicons } from "@expo/vector-icons";
 import colors from "../../../constants/colors";
 
-
 export default function Login() {
 
   const setUserId = useUserDadosStore((state) => state.setUserId);
@@ -56,9 +55,9 @@ export default function Login() {
   };
 
   const goToSignup = () => {
-    router.push("./signup");
-    setUsername("");
-    setPassword("");
+    // router.push("./signup");
+    // setUsername("");
+    // setPassword("");
   }
 
   return (
@@ -74,7 +73,7 @@ export default function Login() {
       </View>
 
       <View style={styles.form}>
-        <View style={styles.inputContainer}>
+        <View style={styles.inputBox}>
           <Input
             value={username}
             onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
@@ -86,7 +85,7 @@ export default function Login() {
           />
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={styles.inputBox}>
           <Input
             value={password}
             onChangeText={setPassword}
@@ -100,8 +99,8 @@ export default function Login() {
           />
         </View>
 
-        <TouchableOpacity style={styles.buttonEsquecerSenha}>
-          <Text style={styles.textEsquecerSenha}>
+        <TouchableOpacity style={styles.forgotPasswordButton}>
+          <Text style={styles.forgotPasswordText}>
             Esqueceu a sua senha?
           </Text>
         </TouchableOpacity>
@@ -112,9 +111,9 @@ export default function Login() {
           loading={loading}
         />
 
-        <TouchableOpacity style={styles.botaoCadastro} onPress={goToSignup}>
-          <Text style={styles.textCadastro}>
-            Não tem uma conta? Cadastre-se
+        <TouchableOpacity style={styles.buttonBox} onPress={goToSignup}>
+          <Text style={styles.signupText}>
+            Não tem uma conta? <Text style={{ color: colors.blue, }}>Crie agora!</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -149,28 +148,28 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 45,
     maxWidth: 500,
     width: "100%"
+  },
+  inputBox: {
 
   },
-  inputContainer: {
-  },
-
-  buttonEsquecerSenha: {
+  forgotPasswordButton: {
     alignItems: "flex-end",
     marginBottom: 50,
   },
-  botaoCadastro: {
-    padding: 20,
-    alignItems: "center",
-    marginBottom: 80,
-  },
-  textEsquecerSenha: {
+
+  forgotPasswordText: {
     color: colors.blue,
     fontFamily: "Lexend-Regular",
   },
-  textCadastro: {
-    color: colors.blue,
+  buttonBox: {
+    padding: 20,
+    alignItems: "center",
+    marginBottom: 80,
+    width: "100%",
+  },
+  signupText: {
+    color: colors.gray,
     fontSize: 14,
-    textDecorationLine: "underline",
     fontFamily: "Lexend-Regular",
   }
 })

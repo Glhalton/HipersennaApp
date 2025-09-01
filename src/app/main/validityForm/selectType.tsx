@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { router } from "expo-router";
-import { DropdownInput } from "@/components/dropdownInput";
 import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 
 export default function TipoVistoria() {
-
-    //Codigo da filial
 
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
 
@@ -26,9 +23,9 @@ export default function TipoVistoria() {
                 title="Seleção de Filial"
                 navigationType="back"
             />
-            <View style={styles.formulario}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>
+            <View style={styles.formBox}>
+                <View style={styles.titleBox}>
+                    <Text style={styles.titleText}>
                         Selecione o tipo de Vistoria:
                     </Text>
                 </View>
@@ -36,14 +33,14 @@ export default function TipoVistoria() {
                 <View>
                     <View style={styles.avulsaButton}>
                         <LargeButton
-                            title="Avulsa"
-                            onPress={() => router.push("./vistoriaFormulario")}
+                            text="Avulsa"
+                            onPress={() => router.push("./validityForm")}
                         />
                     </View>
                     <View style={styles.porSolicitacaoButton}>
                         <LargeButton
-                            title="Por solicitação"
-                            onPress={() => router.push("./demandasSelecao")}
+                            text="Por solicitação"
+                            onPress={() => router.push("./selectRequest")}
                         />
                     </View>
                 </View>
@@ -57,28 +54,24 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
-    formulario: {
+    formBox: {
         flex: 1,
         marginHorizontal: 14,
         paddingTop: 100,
     },
-    titleContainer: {
+    titleBox: {
         paddingVertical: 20,
     },
-    title: {
+    titleText: {
         fontSize: 30,
         color: colors.blue,
-        fontFamily: "Lexend-Regular",
+        fontFamily: "Lexend-Bold",
         textAlign: "center",
     },
-    label: {
-        color: colors.blue,
-        marginBottom: 4,
-        fontFamily: "Lexend-Bold",
+    avulsaButton: {
+        marginBottom: 20,
     },
-    avulsaButton:{
-        marginBottom: 20, 
-    }, porSolicitacaoButton:{
+    porSolicitacaoButton: {
 
     }
 })
