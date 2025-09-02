@@ -1,8 +1,10 @@
 import { create } from "zustand"
 
 type Produto = {
-    cod_produto: string;
-    name: string;
+  productCode: number,
+  description: string,
+  validityDate: string,
+  checked: boolean,
 };
 
 type VistoriaProdutoStore = {

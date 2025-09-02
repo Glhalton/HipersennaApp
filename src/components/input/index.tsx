@@ -10,7 +10,7 @@ type IconComponent = React.ComponentType<React.ComponentProps<typeof MaterialIco
 
 type Props = TextInputProps & {
     IconLeft?: IconComponent,
-    IconRight?: IconComponent,
+    IconRight?: IconComponent, 
     iconLeftName?: string,
     iconRightName?: string,
     label?: string,

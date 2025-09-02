@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useUserDadosStore } from "../../../../store/useUserDadosStore";
 import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
+import { useSelectedRequestsStore } from "../../../../store/useSelectedsRequestsStore";
 import { LargeButton } from "@/components/largeButton";
 
 
@@ -14,18 +15,11 @@ export default function SelectRequest() {
 
     const [isSelected, setSelection] = useState(false);
 
-    type SolicitacaoInfo = {
-        solicitacaoId: number;
-        cod_filial: string | number;
-        status: string | null;
-        dataSolicitacao: string;
-        analistaId: number;
-        produtos: [];
-        checked: boolean;
-    };
+    const solicitacoes = useSelectedRequestsStore((state) => state.lista);
+    const setSolicitacoes = useSelectedRequestsStore((state) => state.setLista);
+    const toggleCheck = useSelectedRequestsStore((state) => state.toggleCheck);
 
     const userId = useUserDadosStore((state) => state.userId);
-    const [solicitacoes, setSolicitacoes] = useState<SolicitacaoInfo[]>([]);
     const setProdutos = useVistoriaProdutoStore((state) => state.setProdutos);
 
     const consultarSolicitacoes = async () => {
@@ -48,7 +42,8 @@ export default function SelectRequest() {
                     ...s,
                     checked: false
                 }));
-                setSolicitacoes(resultado.solicitacoes);
+                setSolicitacoes(solicitacoesComCheck);
+                console.log(solicitacoesComCheck);
 
             } else {
                 Alert.alert("Erro", resultado.mensagem);
@@ -69,14 +64,6 @@ export default function SelectRequest() {
         if (status === "expirado") return "#E80000";
         return "black";
     }
-
-    const toggleCheck = (id: number) => {
-        setSolicitacoes((prev) =>
-            prev.map((item) =>
-                item.solicitacaoId === id ? { ...item, checked: !item.checked } : item
-            )
-        );
-    };
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -99,19 +86,19 @@ export default function SelectRequest() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("../validityRequest/requestProducts"); setProdutos(item.produtos); }}
+                                onPress={() => { router.push("../validityRequest/requestProducts"); setProdutos(item.products); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
-                                        #{item.solicitacaoId}
+                                        #{item.requestId}
                                     </Text>
                                     <View style={styles.dadosItem}>
                                         <View>
-                                            <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.cod_filial}</Text>
+                                            <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.branchId}</Text>
                                             {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.datas}>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
                                             </View>
                                             <View style={styles.statusContainer}>
                                                 <Text style={styles.label}>
@@ -127,7 +114,7 @@ export default function SelectRequest() {
                                         <View style={styles.checkboxContainer}>
                                             <Checkbox
                                                 value={item.checked}
-                                                onValueChange={() => toggleCheck(item.solicitacaoId)}
+                                                onValueChange={() => toggleCheck(item.requestId)}
                                                 style={styles.checkbox}
                                             />
                                         </View>
