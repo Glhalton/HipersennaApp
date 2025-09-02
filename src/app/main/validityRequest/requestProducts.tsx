@@ -18,7 +18,7 @@ export default function Historico() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Demanda"
+                text="Demanda"
                 navigationType="back"
             />
 
@@ -31,25 +31,17 @@ export default function Historico() {
                     renderItem={({ item, index }) => (
                         <View style={styles.card}>
                             <View style={styles.listId}>
-                                <Text style={styles.bold}>
+                                <Text style={styles.label}>
                                     {index + 1}°
                                 </Text>
                             </View>
                             <View style={styles.dadosItem}>
                                 <View style={styles.codDescricaoProdutoRow}>
-                                    <Text style={styles.bold}>
-                                        {item.cod_produto}
-                                    </Text>
-                                    <Text style={styles.text} >
-                                        : {nomeProduto}
-                                    </Text>
+                                    <Text style={styles.label}> {item.cod_produto} <Text style={styles.productDataText} > : {nomeProduto}</Text> </Text>
+
                                 </View>
-                                <View><Text style={styles.text} >
-                                    Dt. vencimento
-                                    <Text style={styles.bold} >
-                                        : 10/11/2007
-                                    </Text>
-                                </Text>
+                                <View>
+                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>10/11/2007</Text></Text>
                                 </View>
                             </View>
                         </View>
@@ -84,11 +76,11 @@ const styles = StyleSheet.create({
     codDescricaoProdutoRow: {
         flexDirection: "row"
     },
-    text: {
+    productDataText: {
         fontFamily: "Lexend-Regular",
         color: colors.gray
     },
-    bold:{
+    label: {
         fontFamily: "Lexend-Bold",
         color: colors.blue,
     },

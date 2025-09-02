@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
@@ -8,6 +8,7 @@ import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { FontAwesome } from "@expo/vector-icons";
 
 
 
@@ -20,6 +21,8 @@ export default function ValidityForm() {
     const setNomeProduto = useVistoriaStore((state) => state.setNomeProduto);
     const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
     const codFilial = useVistoriaStore((state) => state.codFilial);
+
+    const [loading, setLoading] = useState(false);
 
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
@@ -39,10 +42,10 @@ export default function ValidityForm() {
     //Função de adicionar item na lista e limpar os campos
     function handlerAdicionar() {
         if (!codProd || !dataVencimento || !quantidade) {
-            Alert.alert("Atenção", "Preencha todos os campos obrigatórios!")
+            Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
             return;
         } if (!nomeProduto) {
-            Alert.alert("Erro", "Produto não encontrado!");
+            Alert.alert("Erro!", "Produto não encontrado!");
             return;
         }
 
@@ -93,6 +96,7 @@ export default function ValidityForm() {
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
         try {
+            setLoading(true);
             const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd, {
                 method: "GET",
                 headers: {
@@ -111,7 +115,9 @@ export default function ValidityForm() {
                 setNomeProduto(resultado.mensagem);
             }
         } catch (erro) {
-            Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+            Alert.alert("Erro!", "Não foi possível buscar o produto." + erro);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -125,66 +131,44 @@ export default function ValidityForm() {
 
         const newTimer = setTimeout(() => {
             buscarProduto2();
-        }, 500);
+        }, 800);
 
         setTimer(newTimer);
     }, [codProd]);
 
-
-    const goToResumo = () => {
-        router.push("./resumoValidade");
-    };
-
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Vistoria"
+                text="Vistoria"
                 navigationType="back"
             />
 
-            <View style={styles.form}>
-                {/* <View>
-                    <Text style={styles.label}>
-                        Filial *
-                    </Text>
-                    <DropdownInput
-                        value={codFilial}
-                        items={filiais}
-                        onChange={(val) => setCodFilial(val)}
-                    />
-
-                </View> */}
-
-                <View>
-                    <Text style={styles.label}>
-                        Código do produto *
-                    </Text>
-                    <View style={styles.produtoContainer}>
-                        <View style={styles.codigoProdutoInput}>
-                            <Input
-                                placeholder="Produto"
-                                keyboardType="numeric"
-                                value={codProd}
-                                onChangeText={(codProd) => setCodProd(codProd.replace(/[^0-9]/g, ""))}
-                            />
-                        </View>
-                        <View style={styles.nomeProdutoContainer}>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                <Text style={styles.nomeProduto}>
-                                    {nomeProduto || "Produto não encontrado"}
-                                </Text>
-                            </ScrollView>
-                        </View>
-
+            <View style={styles.formBox}>
+                <View style={styles.productInfoBox}>
+                    <View style={styles.productCodeBox}>
+                        <Input
+                            IconRight={FontAwesome}
+                            iconRightName="filter"
+                            label="Código do produto *"
+                            placeholder="Produto"
+                            keyboardType="numeric"
+                            value={codProd}
+                            onChangeText={(codProd) => setCodProd(codProd.replace(/[^0-9]/g, ""))}
+                        />
                     </View>
+                </View>
+                <View style={styles.productNameBox}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                        <Text style={styles.productNameText}>
+                            {loading ? <ActivityIndicator /> : nomeProduto || "Produto não encontrado"}
+                        </Text>
+                    </ScrollView>
                 </View>
 
                 <View>
-                    <Text style={styles.label}>
-                        Data de Validade *
-                    </Text>
                     <DateInput
-                        label="Data de Vencimento"
+                        label="Data de Validade *"
+                        placeholder="Data de Vencimento"
                         value={dataVencimento}
                         onChange={setDataVencimento}
                     />
@@ -210,7 +194,7 @@ export default function ValidityForm() {
                 </View>
 
                 <View style={styles.buttonsBox}>
-                    <View style={styles.inserirButton}>
+                    <View style={styles.summaryButton}>
                         <LargeButton
                             text="Inserir"
                             backgroundColor={colors.gray}
@@ -220,10 +204,10 @@ export default function ValidityForm() {
 
                     {lista.length > 0 && (
 
-                        <View style={styles.inserirButton}>
+                        <View style={styles.summaryButton}>
                             <LargeButton
                                 text="Resumo"
-                                onPress={goToResumo}
+                                onPress={() => router.push("./validitySummary")}
                             />
                         </View>
                     )}
@@ -240,39 +224,31 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
-    form: {
+    formBox: {
         paddingHorizontal: 14,
         paddingTop: 20,
+    },
 
+    productInfoBox: {
     },
-    label: {
-        color: colors.blue,
-        marginBottom: 4,
-        fontFamily: "Lexend-Bold",
+    productCodeBox: {
     },
-    produtoContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    codigoProdutoInput: {
-        width: "30%"
-    },
-    nomeProdutoContainer: {
-        backgroundColor: "#9db1bbff",
+    productNameBox: {
+        backgroundColor: "#e4e4e4cc",
         marginBottom: 16,
         padding: 16,
-        borderRadius: 8,
-        width: "65%"
+        borderRadius: 20,
+        alignItems: "center"
     },
-    nomeProduto: {
+    productNameText: {
         fontSize: 15,
-        color: "#113b58ff",
+        color: colors.gray,
         fontFamily: "Lexend-Bold",
     },
     buttonsBox: {
         marginTop: 40
     },
-    inserirButton: {
+    summaryButton: {
         marginBottom: 20,
     },
 

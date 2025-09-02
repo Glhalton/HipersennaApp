@@ -22,7 +22,7 @@ export default function Home() {
     }
 
     const goToVistoriaDemanda = () => {
-        router.push("./requests");
+        router.push("./validityRequest/requests");
     }
 
     const goToSelecaoTipoVistoria = () => {
@@ -30,7 +30,7 @@ export default function Home() {
     }
 
     const goToSelecaoFilial2 = () => {
-        router.push("./selecaoFilial2");
+        router.push("./validityRequest/selectFilialRequest");
     }
 
     useEffect(() => {
@@ -94,7 +94,7 @@ export default function Home() {
                     </View>
                 </View>
 
-                <View style={styles.dashboardContainer}>
+                <View style={styles.dashboardBox}>
                     <Text style={styles.title}>
                         Dashboard
                     </Text>
@@ -203,8 +203,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         paddingTop: 10,
 
-
-
     },
     bemVindoContainer: {
         paddingBottom: 30,
@@ -223,7 +221,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    dashboardContainer: {
+    dashboardBox: {
         paddingTop: 20,
         paddingBottom: 30,
         borderBottomWidth: 1,

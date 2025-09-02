@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import colors from "../../../../constants/colors";
@@ -9,7 +9,7 @@ import { Header } from "@/components/header";
 import { useUserDadosStore } from "../../../../store/useUserDadosStore";
 
 
-export default function validitySummary() {
+export default function ValiditySummary() {
 
     //Lista de itens inseridos do Formulário
     const lista = useVistoriaStore((state) => state.lista);
@@ -18,13 +18,12 @@ export default function validitySummary() {
     const userId = useUserDadosStore((state) => state.userId);
     const codFilial = useVistoriaStore((state) => state.codFilial);
 
-
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
 
         if (lista.length === 0) {
             Alert.alert("Atenção", "Nenhum item para ser adicionado.");
-            router.push("./vistoriaFormulario");
+            router.back();
             return;
         }
 
@@ -48,7 +47,7 @@ export default function validitySummary() {
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
                 resetarLista();
-                router.push("./vistoriaFormulario");
+                router.back();
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
@@ -60,13 +59,13 @@ export default function validitySummary() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Resumo da vistoria"
+                text="Resumo da vistoria"
                 navigationType="back"
             />
-            <View style={styles.cardsContainer}>
+            <View style={styles.cardsBox}>
 
-                <View style={styles.filialTitleContainer}>
-                    <Text style={styles.filialTitle}>
+                <View style={styles.filialTitleBox}>
+                    <Text style={styles.filialTitleText}>
                         Filial:  {codFilial}
                     </Text>
                 </View>
@@ -77,32 +76,32 @@ export default function validitySummary() {
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
                         <View style={styles.card}>
-                            <Text style={styles.cardTitle}>#{index + 1} - {item.nomeProduto}</Text>
-                            <View style={styles.dadosItem}>
+                            <Text style={styles.cardTitleText}>#{index + 1} - {item.nomeProduto}</Text>
+                            <View style={styles.productDataBox}>
                                 <View>
-                                    <Text><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
-                                    <Text><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
-                                    <Text><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
                                 </View>
                             </View>
 
 
                             <TouchableOpacity
-                                style={styles.removerButton}
+                                style={styles.removeButton}
                                 onPress={() => removeritem(index)}
                             >
-                                <Text style={styles.removerText}>Remover</Text>
+                                <Text style={styles.removeText}>Remover</Text>
                             </TouchableOpacity>
                         </View>
                     )}
                 />
 
 
-                <View style={styles.inserirButton}>
+                <View style={styles.insertButton}>
                     <LargeButton
-                        title="Salvar dados"
+                        text="Salvar dados"
                         onPress={inserirValidade}
                     />
                 </View>
@@ -116,15 +115,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    filialTitleContainer: {
+    filialTitleBox: {
         paddingBottom: 20
     },
-    filialTitle: {
+    filialTitleText: {
         fontFamily: "Lexend-Bold",
         fontSize: 30,
         color: colors.blue,
     },
-    cardsContainer: {
+    cardsBox: {
         paddingHorizontal: 14,
         paddingTop: 10,
         flex: 1,
@@ -135,33 +134,37 @@ const styles = StyleSheet.create({
         padding: 12,
         marginBottom: 12,
     },
-    cardTitle: {
+    cardTitleText: {
         fontSize: 16,
         fontFamily: "Lexend-Bold",
         marginBottom: 6,
         color: colors.blue,
 
     },
-    label: {
-        fontFamily: "Lexend-Regular",
-        color: colors.blue,
-    },
-    dadosItem: {
+    productDataBox: {
         flexDirection: "row",
         gap: 60,
         marginBottom: 8,
     },
-    removerButton: {
+    label: {
+        fontFamily: "Lexend-Regular",
+        color: colors.blue,
+    },
+    productDataText:{
+        fontFamily: "Lexend-Regular",
+        color: colors.gray,
+    },
+    removeButton: {
         backgroundColor: "#f72929ff",
         padding: 5,
         borderRadius: 7,
         alignItems: "center",
     },
-    removerText: {
+    removeText: {
         color: "white",
         fontFamily: "Lexend-Bold"
     },
-    inserirButton: {
+    insertButton: {
         justifyContent: "flex-end",
         marginTop: 20,
         marginBottom: 20,

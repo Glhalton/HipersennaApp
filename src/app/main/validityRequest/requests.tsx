@@ -63,7 +63,7 @@ export default function Demandas() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Demanda"
+                text="Demanda"
                 navigationType="back"
             />
             <View style={styles.containerConteudo}>
@@ -81,7 +81,7 @@ export default function Demandas() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("./demandaProdutos"); setProdutos(item.produtos); }}
+                                onPress={() => { router.push("./requestProducts"); setProdutos(item.produtos); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
@@ -90,7 +90,7 @@ export default function Demandas() {
                                     <View style={styles.dadosItem}>
                                         <View>
                                             <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.cod_filial}</Text>
-                                            <Text style={styles.label}>HortiFruti | Frios</Text>
+                                            {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.datas}>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>

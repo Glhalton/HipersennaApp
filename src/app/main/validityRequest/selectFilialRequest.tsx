@@ -32,7 +32,7 @@ export default function SelectFilialRequest() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Seleção de Filial"
+                text="Seleção de Filial"
                 navigationType="back"
             />
             <View style={styles.formulario}>
@@ -66,8 +66,8 @@ export default function SelectFilialRequest() {
                 {codFilial && codConferente && (
                     <View style={styles.buttonContainer}>
                         <LargeButton
-                            title="Continuar"
-                            onPress={() => router.push("../solicitacaoFormulario")}
+                            text="Continuar"
+                            onPress={() => router.push("./requestForm")}
                         />
                         
                     </View>

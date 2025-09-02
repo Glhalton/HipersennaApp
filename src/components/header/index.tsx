@@ -3,7 +3,7 @@ import { Href, router } from "expo-router";
 import { styles } from "./style";
 
 type Prop = {
-    title: string,
+    text: string,
     color?: string,
     backgroundColor?: string,
     screen?: Href;
@@ -12,7 +12,7 @@ type Prop = {
 
 type NavigationType = "push" | "back" | "replace";
 
-export function Header({ title, color = "white", backgroundColor = "red", screen = "../../home", navigationType = "push" }: Prop) {
+export function Header({ text, color = "white", backgroundColor = "red", screen = "../../home", navigationType = "push" }: Prop) {
 
     const handleNavigation = () => {
         if (navigationType === "push" && screen) {
@@ -30,7 +30,7 @@ export function Header({ title, color = "white", backgroundColor = "red", screen
             <TouchableOpacity style={styles.button} onPress={handleNavigation}>
                 <Image style={styles.gearIcon} source={require("../../../assets/images/white-arrow-100.png")} />
             </TouchableOpacity>
-            <Text style={styles.headerText}>{title}</Text>
+            <Text style={styles.headerText}>{text}</Text>
         </View>
     )
 }

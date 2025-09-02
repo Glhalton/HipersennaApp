@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
@@ -36,31 +36,29 @@ export default function SelectFilialValidity() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Seleção de Filial"
+                text="Seleção de Filial"
                 navigationType="back"
             />
-            <View style={styles.formulario}>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.title}>
+            <View style={styles.formBox}>
+                <View style={styles.titleBox}>
+                    <Text style={styles.titleText}>
                         Selecione a filial desejada:
                     </Text>
                 </View>
 
                 <View>
-                    <Text style={styles.label}>
-                        Filial:
-                    </Text>
                     <DropdownInput
+                    label={"Filial:"}
                         value={codFilial}
                         items={filiais}
                         onChange={(val) => setCodFilial(val)}
                     />
                 </View>
                 {codFilial && (
-                    <View style={styles.buttonContainer}>
+                    <View style={styles.buttonBox}>
                         <LargeButton
                             text="Continuar"
-                            onPress={() => router.push("./vistoriaFormulario")}
+                            onPress={() => router.push("./validityForm")}
                         />
                     </View>
                 )}
@@ -75,27 +73,22 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "white",
     },
-    formulario: {
+    formBox: {
         flex: 1,
         marginHorizontal: 30,
         paddingTop: 100,
-        
     },
-    titleContainer: {
+    titleBox: {
         paddingVertical: 20,
     },
-    title: {
+    titleText: {
         fontSize: 30,
         color: colors.blue,
         fontFamily: "Lexend-Regular",
         textAlign: "center",
     },
-    label: {
-        color: colors.blue,
-        marginBottom: 4,
-        fontFamily: "Lexend-Bold",
-    },
-    buttonContainer:{
-        
+
+    buttonBox:{
+        marginTop: 10,
     }
 })

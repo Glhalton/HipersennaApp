@@ -7,7 +7,7 @@ import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
 import { useVistoriaStore } from "../../../../store/useVistoriaStore";
 
-export default function TipoVistoria() {
+export default function SelectType() {
 
     const resetarLista = useVistoriaStore((state) => state.resetarLista);
 
@@ -20,7 +20,7 @@ export default function TipoVistoria() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Seleção de Filial"
+                text="Seleção de Filial"
                 navigationType="back"
             />
             <View style={styles.formBox}>
@@ -34,7 +34,7 @@ export default function TipoVistoria() {
                     <View style={styles.avulsaButton}>
                         <LargeButton
                             text="Avulsa"
-                            onPress={() => router.push("./validityForm")}
+                            onPress={() => router.push("./selectFilialValidity")}
                         />
                     </View>
                     <View style={styles.porSolicitacaoButton}>

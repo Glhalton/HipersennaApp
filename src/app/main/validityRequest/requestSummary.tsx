@@ -24,7 +24,7 @@ export default function RequestSummary() {
 
         if (lista.length === 0) {
             Alert.alert("Atenção", "Nenhum item para ser adicionado.");
-            router.push("./vistoriaFormulario");
+            router.back();
             return;
         }
 
@@ -51,7 +51,7 @@ export default function RequestSummary() {
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
                 resetarLista();
-                router.push("./solicitacaoFormulario");
+                router.back();
             } else {
                 Alert.alert("Erro", resultado.mensagem)
             }
@@ -63,7 +63,7 @@ export default function RequestSummary() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Resumo da Solicitação"
+                text="Resumo da Solicitação"
                 navigationType="back"
             />
 
@@ -103,7 +103,7 @@ export default function RequestSummary() {
 
                 <View style={styles.inserirButton}>
                     <LargeButton
-                        title="Salvar dados"
+                        text="Salvar dados"
                         onPress={inserirValidade}
                     />
                 </View>

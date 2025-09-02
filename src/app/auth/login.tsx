@@ -72,7 +72,7 @@ export default function Login() {
         </Text>
       </View>
 
-      <View style={styles.form}>
+      <View style={styles.formBox}>
         <View style={styles.inputBox}>
           <Input
             value={username}
@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   logo: {
 
   },
-  form: {
+  formBox: {
     flex: 1,
     paddingHorizontal: 30,
     paddingTop: 30,

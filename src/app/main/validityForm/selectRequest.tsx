@@ -7,9 +7,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useUserDadosStore } from "../../../../store/useUserDadosStore";
 import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
+import { LargeButton } from "@/components/largeButton";
 
 
-export default function SelectFilialRequest() {
+export default function SelectRequest() {
 
     const [isSelected, setSelection] = useState(false);
 
@@ -80,7 +81,7 @@ export default function SelectFilialRequest() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Demanda"
+                text="Demanda"
                 navigationType="back"
             />
             <View style={styles.containerConteudo}>
@@ -98,7 +99,7 @@ export default function SelectFilialRequest() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("./demandaProdutos"); setProdutos(item.produtos); }}
+                                onPress={() => { router.push("../validityRequest/requestProducts"); setProdutos(item.produtos); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
@@ -107,7 +108,7 @@ export default function SelectFilialRequest() {
                                     <View style={styles.dadosItem}>
                                         <View>
                                             <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.cod_filial}</Text>
-                                            <Text style={styles.label}>HortiFruti | Frios</Text>
+                                            {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.datas}>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
@@ -137,6 +138,20 @@ export default function SelectFilialRequest() {
                     />
 
                 </View>
+                <LargeButton
+                    text="Prosseguir"
+                    onPress={() => {
+                        const selecionados = solicitacoes.filter(s => s.checked);
+
+                        if (selecionados.length === 0){
+                            Alert.alert("Atenção!", "Selecione pelo menos uma solicitação para continuar.");
+                            return;
+                        }
+
+                        router.push("./validityRequestProducts")
+
+                    }}
+                />
             </View>
         </SafeAreaView>
     )
@@ -182,7 +197,7 @@ const styles = StyleSheet.create({
 
     },
     label: {
-        fontFamily: "Lexend-Regular",
+        fontFamily: "Lexend-Bold",
         color: colors.blue,
     },
     text: {

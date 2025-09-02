@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView, ActivityIndicator } from "react-native";
 import { Input } from "@/components/input";
 import { router } from "expo-router";
 import colors from "../../../../constants/colors";
@@ -8,6 +8,7 @@ import { LargeButton } from "@/components/largeButton";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
 import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
+import FontAwesome from "@expo/vector-icons/build/FontAwesome";
 
 export default function RequestForm() {
 
@@ -18,6 +19,8 @@ export default function RequestForm() {
     const setNomeProduto = useCriarSolicitacaoStore((state) => state.setNomeProduto);
     const nomeProduto = useCriarSolicitacaoStore((state) => state.nomeProduto);
 
+    const [loading, setLoading] = useState(false);
+
     //Codigo do produto
     const [codProd, setCodProd] = useState("");
 
@@ -27,6 +30,7 @@ export default function RequestForm() {
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
         try {
+            setLoading(true)
             const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd, {
                 method: "GET",
                 headers: {
@@ -43,6 +47,8 @@ export default function RequestForm() {
             }
         } catch (erro) {
             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+        } finally{
+            setLoading(false)
         }
     };
 
@@ -84,39 +90,38 @@ export default function RequestForm() {
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
             <Header
-                title="Solicitação Vistoria"
+                text="Solicitação Vistoria"
                 navigationType="back"
             />
 
             <View style={styles.form}>
                 <View>
-                    <Text style={styles.label}>
-                        Código do produto *
-                    </Text>
-                    <View style={styles.produtoContainer}>
-                        <View style={styles.codigoProdutoInput}>
+                    <View style={styles.productInfoBox}>
+                        <View style={styles.productCodeBox}>
                             <Input
+                                IconRight={FontAwesome}
+                                iconRightName="filter"
+                                label="Código do produto *"
                                 placeholder="Produto"
                                 keyboardType="numeric"
                                 value={codProd}
                                 onChangeText={(codProd) => setCodProd(codProd.replace(/[^0-9]/g, ""))}
                             />
                         </View>
-                        <View style={styles.nomeProdutoContainer}>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                                <Text style={styles.nomeProduto}>
-                                    {nomeProduto || "Produto não encontrado"}
-                                </Text>
-                            </ScrollView>
-                        </View>
-
+                    </View>
+                    <View style={styles.productNameBox}>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                            <Text style={styles.productNameText}>
+                                {loading ? <ActivityIndicator color={colors.blue} /> : nomeProduto || "Produto não encontrado"}
+                            </Text>
+                        </ScrollView>
                     </View>
                 </View>
 
                 <View style={styles.containerButtons}>
                     <View style={styles.inserirButton}>
                         <LargeButton
-                            title="Inserir"
+                            text="Inserir"
                             backgroundColor={colors.gray}
                             onPress={handlerAdicionar}
                         />
@@ -126,8 +131,8 @@ export default function RequestForm() {
 
                         <View style={styles.inserirButton}>
                             <LargeButton
-                                title="Resumo"
-                                onPress={goToResumoSolicitacao}
+                                text="Resumo"
+                                onPress={() => router.push("./requestSummary")}
                             />
                         </View>
                     )}
@@ -149,35 +154,30 @@ const styles = StyleSheet.create({
         paddingTop: 20,
 
     },
-    label: {
-        color: colors.blue,
-        marginBottom: 4,
-        fontFamily: "Lexend-Bold",
-    },
-    produtoContainer: {
-        flexDirection: "row",
-        justifyContent: "space-between"
-    },
-    codigoProdutoInput: {
-        width: "30%"
-    },
-    nomeProdutoContainer: {
-        backgroundColor: "#9db1bbff",
-        marginBottom: 16,
-        padding: 16,
-        borderRadius: 8,
-        width: "65%"
-    },
-    nomeProduto: {
-        fontSize: 15,
-        color: "#113b58ff",
-        fontFamily: "Lexend-Bold",
-    },
+
     containerButtons: {
         marginTop: 40
     },
     inserirButton: {
         marginBottom: 20,
+    },
+
+    productInfoBox: {
+
+    },
+    productCodeBox: {
+    },
+    productNameBox: {
+        backgroundColor: "#e4e4e4cc",
+        marginBottom: 16,
+        padding: 16,
+        borderRadius: 20,
+        alignItems: "center"
+    },
+    productNameText: {
+        fontSize: 15,
+        color: colors.gray,
+        fontFamily: "Lexend-Bold",
     },
 
 });

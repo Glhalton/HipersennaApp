@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     paddingRight: 30,
-
     borderRadius: 20,
   },
   input: {

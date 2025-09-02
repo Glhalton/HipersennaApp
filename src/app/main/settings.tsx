@@ -7,7 +7,7 @@ export default function Settings() {
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                title="Configurações"
+                text="Configurações"
                 navigationType="back"
             />
         </SafeAreaView>
