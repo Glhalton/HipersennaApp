@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList, Image } from "react-native";
-import colors from "../../../../constants/colors";
-import { router } from "expo-router"
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 import { Header } from "@/components/header";
-import { useUserDadosStore } from "../../../../store/useUserDadosStore";
-import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
-import DropDownPicker from "react-native-dropdown-picker";
+import { requestProductsStore } from "../../../../store/requestProductsStore";
+import { userDataStore } from "../../../../store/userDataStore";
+import colors from "../../../../constants/colors";
 
-export default function Demandas() {
+export default function Requests() {
 
-    type SolicitacaoInfo = {
-        solicitacaoId: number;
-        cod_filial: string | number;
+    type Request = {
+        requestId: number;
+        branchId: number;
+        analystId: number;
         status: string | null;
-        dataSolicitacao: string;
-        analistaId: number;
-        produtos: [];
+        createdAt: string;
+        targetDate: string;
+        products: [];
     };
 
-    const userId = useUserDadosStore((state) => state.userId);
-    const [solicitacoes, setSolicitacoes] = useState<SolicitacaoInfo[]>([]);
-    const setProdutos = useVistoriaProdutoStore((state) => state.setProdutos);
+    const userId = userDataStore((state) => state.userId);
+    const [requests, setRequests] = useState<Request[]>([]);
+    const setProdutos = requestProductsStore((state) => state.setProdutos);
 
     const consultarSolicitacoes = async () => {
         try {
@@ -39,12 +39,12 @@ export default function Demandas() {
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                setSolicitacoes(resultado.solicitacoes);
+                setRequests(resultado.solicitacoes);
             } else {
                 Alert.alert("Erro", resultado.mensagem);
             }
         } catch (erro) {
-            Alert.alert("Erro", "Não foi possível conectar ao servidor: " + erro);
+            Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + erro);
         }
     };
 
@@ -66,41 +66,41 @@ export default function Demandas() {
                 text="Demanda"
                 navigationType="back"
             />
-            <View style={styles.containerConteudo}>
-                <View style={styles.filtros}>
-                    <Text style={styles.filtrosText}>
+            <View style={styles.listBox}>
+                <View style={styles.filterBox}>
+                    <Text style={styles.filterText}>
                         Ordernar Por:
                     </Text>
                 </View>
                 <View style={styles.cardsContainer}>
 
                     <FlatList
-                        data={solicitacoes}
+                        data={requests}
                         keyExtractor={(_, index) => index.toString()}
                         contentContainerStyle={{ paddingBottom: 20 }}
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("./requestProducts"); setProdutos(item.produtos); }}
+                                onPress={() => { router.push("./requestProducts"); setProdutos(item.products); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
-                                        #{item.solicitacaoId}
+                                        # {item.requestId}
                                     </Text>
-                                    <View style={styles.dadosItem}>
+                                    <View style={styles.requestBox}>
                                         <View>
-                                            <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.cod_filial}</Text>
+                                            <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.branchId}</Text>
                                             {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.datas}>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.dataSolicitacao).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
                                             </View>
                                             <View style={styles.statusContainer}>
                                                 <Text style={styles.label}>
                                                     Status:
                                                 </Text>
                                                 <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
-                                                <Text style={[styles.status, { color: getColor(item.status) }]}>
+                                                <Text style={[styles.statusText, { color: getColor(item.status) }]}>
                                                     {item.status}
                                                 </Text>
                                             </View>
@@ -129,12 +129,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    containerConteudo: {
+    listBox: {
         paddingHorizontal: 14,
         paddingTop: 20,
         flex: 1,
     },
-    filtros: {
+    filterBox: {
         backgroundColor: colors.gray,
         width: "35%",
         height: "4%",
@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-    filtrosText: {
+    filterText: {
         fontFamily: "Lexend-Regular",
         color: "white"
     },
@@ -162,7 +162,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Lexend-Bold",
         color: colors.blue,
-
     },
     label: {
         fontFamily: "Lexend-Regular",
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
         color: colors.gray,
         fontFamily: "Lexend-Regular"
     },
-    dadosItem: {
+    requestBox: {
         flexDirection: "row",
         marginBottom: 8,
         alignItems: "center",
@@ -183,17 +182,14 @@ const styles = StyleSheet.create({
     verMaisIcon: {
         width: 24,
         height: 24,
-
     },
     buttonVerMais: {
         paddingLeft: 100,
         paddingRight: 10,
         paddingVertical: 10,
         alignItems: "center",
-
     },
     datas: {
-
     },
     statusContainer: {
         flexDirection: "row",
@@ -205,7 +201,7 @@ const styles = StyleSheet.create({
         width: 13,
         height: 13,
     },
-    status: {
+    statusText: {
         fontFamily: "Lexend-Regular"
     }
 

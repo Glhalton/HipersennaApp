@@ -1,26 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Alert, FlatList } from "react-native";
-import Checkbox from 'expo-checkbox';
-import colors from "../../../../constants/colors";
-import { router } from "expo-router"
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Header } from "@/components/header";
-import { useUserDadosStore } from "../../../../store/useUserDadosStore";
-import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
-import { useSelectedRequestsStore } from "../../../../store/useSelectedsRequestsStore";
-import { LargeButton } from "@/components/largeButton";
-
+import { router } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { requestProductsStore } from "../../../../store/requestProductsStore";
+import { userDataStore } from "../../../../store/userDataStore";
+import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
 
 export default function SelectRequest() {
 
-    const [isSelected, setSelection] = useState(false);
-
-    const solicitacoes = useSelectedRequestsStore((state) => state.lista);
-    const setSolicitacoes = useSelectedRequestsStore((state) => state.setLista);
-    const toggleCheck = useSelectedRequestsStore((state) => state.toggleCheck);
-
-    const userId = useUserDadosStore((state) => state.userId);
-    const setProdutos = useVistoriaProdutoStore((state) => state.setProdutos);
+    const solicitacoes = validityRequestProductsStore((state) => state.lista);
+    const setSolicitacoes = validityRequestProductsStore((state) => state.setLista);
+    const userId = userDataStore((state) => state.userId);
+    const setProdutos = requestProductsStore((state) => state.setProdutos);
 
     const consultarSolicitacoes = async () => {
         try {
@@ -38,13 +31,7 @@ export default function SelectRequest() {
             const resultado = await resposta.json();
 
             if (resultado.sucesso) {
-                const solicitacoesComCheck = resultado.solicitacoes.map((s: any) => ({
-                    ...s,
-                    checked: false
-                }));
-                setSolicitacoes(solicitacoesComCheck);
-                console.log(solicitacoesComCheck);
-
+                setSolicitacoes(resultado.solicitacoes);
             } else {
                 Alert.alert("Erro", resultado.mensagem);
             }
@@ -72,6 +59,11 @@ export default function SelectRequest() {
                 navigationType="back"
             />
             <View style={styles.containerConteudo}>
+                <View style={styles.titleBox}>
+                    <Text style={styles.titleText}>
+                        Selecione uma solicitação:
+                    </Text>
+                </View>
                 <View style={styles.filtros}>
                     <Text style={styles.filtrosText}>
                         Ordernar Por:
@@ -86,7 +78,7 @@ export default function SelectRequest() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("../validityRequest/requestProducts"); setProdutos(item.products); }}
+                                onPress={() => { router.push("../validityForm/validityRequestProducts"); setProdutos(item.products); console.log(item.products) }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
@@ -95,7 +87,6 @@ export default function SelectRequest() {
                                     <View style={styles.dadosItem}>
                                         <View>
                                             <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.branchId}</Text>
-                                            {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.datas}>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
@@ -111,13 +102,6 @@ export default function SelectRequest() {
                                             </View>
 
                                         </View>
-                                        <View style={styles.checkboxContainer}>
-                                            <Checkbox
-                                                value={item.checked}
-                                                onValueChange={() => toggleCheck(item.requestId)}
-                                                style={styles.checkbox}
-                                            />
-                                        </View>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -125,20 +109,6 @@ export default function SelectRequest() {
                     />
 
                 </View>
-                <LargeButton
-                    text="Prosseguir"
-                    onPress={() => {
-                        const selecionados = solicitacoes.filter(s => s.checked);
-
-                        if (selecionados.length === 0){
-                            Alert.alert("Atenção!", "Selecione pelo menos uma solicitação para continuar.");
-                            return;
-                        }
-
-                        router.push("./validityRequestProducts")
-
-                    }}
-                />
             </View>
         </SafeAreaView>
     )
@@ -147,6 +117,15 @@ export default function SelectRequest() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    titleBox:{
+        alignItems: "center",
+        paddingBottom: 20
+    },
+    titleText:{
+        fontFamily:"Lexend-Bold",
+        color: colors.blue,
+        fontSize: 25
     },
     containerConteudo: {
         paddingHorizontal: 14,
@@ -197,19 +176,8 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between"
     },
-    checkboxContainer: {
-    },
-    checkbox: {
-        width: 24,
-        height: 24,
-    },
-    buttonVerMais: {
-        paddingLeft: 100,
-        paddingRight: 10,
-        paddingVertical: 10,
-        alignItems: "center",
 
-    },
+
     datas: {
 
     },

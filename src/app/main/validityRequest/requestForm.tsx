@@ -1,23 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View, ScrollView, ActivityIndicator } from "react-native";
-import { Input } from "@/components/input";
-import { router } from "expo-router";
-import colors from "../../../../constants/colors";
-import { DropdownInput } from "@/components/dropdownInput";
-import { LargeButton } from "@/components/largeButton";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
+import { Input } from "@/components/input";
+import { LargeButton } from "@/components/largeButton";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { requestsInsertStore } from "../../../../store/requestsInsertStore";
 
 export default function RequestForm() {
 
-    const lista = useCriarSolicitacaoStore((state) => state.lista);
-    const adicionarItem = useCriarSolicitacaoStore((state) => state.adicionarItem);
-    const removerItem = useCriarSolicitacaoStore((state) => state.removerItem);
-    const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
-    const setNomeProduto = useCriarSolicitacaoStore((state) => state.setNomeProduto);
-    const nomeProduto = useCriarSolicitacaoStore((state) => state.nomeProduto);
+    const lista = requestsInsertStore((state) => state.lista);
+    const adicionarItem = requestsInsertStore((state) => state.adicionarItem);
+    const removerItem = requestsInsertStore((state) => state.removerItem);
+    const resetarLista = requestsInsertStore((state) => state.resetarLista);
+    const setNomeProduto = requestsInsertStore((state) => state.setNomeProduto);
+    const nomeProduto = requestsInsertStore((state) => state.nomeProduto);
 
     const [loading, setLoading] = useState(false);
 

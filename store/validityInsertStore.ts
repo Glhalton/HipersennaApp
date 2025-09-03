@@ -1,34 +1,35 @@
-import { create } from "zustand"
+import { create } from "zustand";
 
 //Tipagem de cada item que sera utilizado
 type FormDataItem = {
   codProd: string;
+  dataVencimento: Date;
+  quantidade: string;
+  observacao: string;
   nomeProduto: string;
 }
 
+
+
 //Tipagem das itens que serão globais
-type criarSolicitacaoStore = {
+type VistoriaStore = {
   codFilial: string | null;
-  codConferente: string | null;
   nomeProduto: string | null;
   lista: FormDataItem[];
   setCodFilial: (filial: string | null) => void;
   setNomeProduto: (produto: string | null) => void;
-  setCodConferente: (conferente: string | null) => void;
   adicionarItem: (Item: FormDataItem) => void;
   removerItem: (index: number) => void;
   resetarLista: () => void;
 }
 
 //Criação do store
-export const useCriarSolicitacaoStore = create<criarSolicitacaoStore>((set) => ({
+export const validityInsertStore = create<VistoriaStore>((set) => ({
   nomeProduto: null,
   lista: [],
   codFilial: null,
-  codConferente: null,
   setCodFilial: (filial) => set({ codFilial: filial }),
   setNomeProduto: (produto) => set({ nomeProduto: produto }),
-  setCodConferente: (conferente) => set({codConferente: conferente}),
   adicionarItem: (item) => set((state) => ({ lista: [...state.lista, item] })),
   removerItem: (index) =>
     set((state) => ({

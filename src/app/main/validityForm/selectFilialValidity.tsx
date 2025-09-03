@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Header } from "@/components/header";
-import { router } from "expo-router";
 import { DropdownInput } from "@/components/dropdownInput";
-import colors from "../../../../constants/colors";
+import { Header } from "@/components/header";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../../../store/useVistoriaStore";
+import { router } from "expo-router";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function SelectFilialValidity() {
 
     //Codigo da filial
 
-    const codFilial = useVistoriaStore((state) => state.codFilial);
-    const setCodFilial = useVistoriaStore((state) => state.setCodFilial);
-    const resetarLista = useVistoriaStore((state)=> state.resetarLista);
+    const codFilial = validityInsertStore((state) => state.codFilial);
+    const setCodFilial = validityInsertStore((state) => state.setCodFilial);
+    const resetarLista = validityInsertStore((state)=> state.resetarLista);
 
     //Opções do select de filial
     const filiais = [

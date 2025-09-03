@@ -1,10 +1,10 @@
 import { create } from "zustand"
 
 type Product = {
-  productCode: number,
+  codProduct: number,
   description: string,
   validityDate: string,
-  checked: boolean,
+  productStatus: number,
 }
 
 type RequestDataItem = {
@@ -14,25 +14,17 @@ type RequestDataItem = {
   createdAt: string,
   targetDate: string,
   analystId: number,
-  checked: boolean,
   products: Product[]
 }
 
 type SelectedRequestsStore = {
   lista: RequestDataItem[];
-  setLista: (novaLista: RequestDataItem[]) => void;
-  toggleCheck: (id: number) => void;                 
+  setLista: (novaLista: RequestDataItem[]) => void;         
   resetarLista: () => void;
 }
 
-export const useSelectedRequestsStore = create<SelectedRequestsStore>((set) => ({
+export const validityRequestProductsStore = create<SelectedRequestsStore>((set) => ({
   lista: [],
   setLista: (novaLista) => set({ lista: novaLista }),
-  toggleCheck: (id) =>
-    set((state) => ({
-      lista: state.lista.map((item) =>
-        item.requestId === id ? { ...item, checked: !item.checked } : item
-      )
-    })),
   resetarLista: () => set({ lista: [] }),
 }));

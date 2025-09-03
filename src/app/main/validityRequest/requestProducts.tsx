@@ -1,31 +1,29 @@
+import React, { useEffect } from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { Header } from "@/components/header";
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useVistoriaProdutoStore } from "../../../../store/useVistoriaProdutosStore";
-import { router } from "expo-router";
+import { requestProductsStore } from "../../../../store/requestProductsStore";
 import colors from "../../../../constants/colors";
 
-export default function Historico() {
+export default function RequestProducts() {
 
-    const produtos = useVistoriaProdutoStore((state) => state.produtos);
-    const nomeProduto = "Produto Número Dez Mil Quilograma";
+    const products = requestProductsStore((state) => state.produtos);
 
     useEffect(() => {
-        console.log(produtos);
+        console.log(products);
     }, [])
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header
-                text="Demanda"
+                text="Produtos da Solicitação"
                 navigationType="back"
             />
 
             <View style={styles.cardsContainer}>
 
                 <FlatList
-                    data={produtos}
+                    data={products}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
@@ -37,11 +35,11 @@ export default function Historico() {
                             </View>
                             <View style={styles.dadosItem}>
                                 <View style={styles.codDescricaoProdutoRow}>
-                                    <Text style={styles.label}> {item.cod_produto} <Text style={styles.productDataText} > : {nomeProduto}</Text> </Text>
+                                    <Text style={styles.label}> {item.codProduct} <Text style={styles.productDataText} > : {item.description}</Text> </Text>
 
                                 </View>
                                 <View>
-                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>10/11/2007</Text></Text>
+                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate}</Text></Text>
                                 </View>
                             </View>
                         </View>

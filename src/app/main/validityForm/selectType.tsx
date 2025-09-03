@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { router } from "expo-router";
-import colors from "../../../../constants/colors";
 import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../../../store/useVistoriaStore";
+import { router } from "expo-router";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function SelectType() {
 
-    const resetarLista = useVistoriaStore((state) => state.resetarLista);
+    const resetarLista = validityInsertStore((state) => state.resetarLista);
 
     useEffect(() => {
         resetarLista();

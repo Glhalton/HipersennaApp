@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View, ScrollView, ActivityIndicator } from "react-native";
 import { DateInput } from "@/components/dateInput";
-import { Input } from "@/components/input";
-import { router } from "expo-router";
-import colors from "../../../../constants/colors";
-import { LargeButton } from "@/components/largeButton";
-import { useVistoriaStore } from "../../../../store/useVistoriaStore";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
+import { Input } from "@/components/input";
+import { LargeButton } from "@/components/largeButton";
 import { FontAwesome } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 
 
 export default function ValidityForm() {
 
     //Dados do Store
-    const lista = useVistoriaStore((state) => state.lista);
-    const adicionarItem = useVistoriaStore((state) => state.adicionarItem);
-    const resetarLista = useVistoriaStore((state) => state.resetarLista);
-    const setNomeProduto = useVistoriaStore((state) => state.setNomeProduto);
-    const nomeProduto = useVistoriaStore((state) => state.nomeProduto);
-    const codFilial = useVistoriaStore((state) => state.codFilial);
+    const lista = validityInsertStore((state) => state.lista);
+    const adicionarItem = validityInsertStore((state) => state.adicionarItem);
+    const resetarLista = validityInsertStore((state) => state.resetarLista);
+    const setNomeProduto = validityInsertStore((state) => state.setNomeProduto);
+    const nomeProduto = validityInsertStore((state) => state.nomeProduto);
+    const codFilial = validityInsertStore((state) => state.codFilial);
 
     const [loading, setLoading] = useState(false);
 

@@ -1,14 +1,22 @@
+import React, { useState } from "react";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Header } from "@/components/header";
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelectedRequestsStore } from "../../../../store/useSelectedsRequestsStore";
-import { router } from "expo-router";
 import colors from "../../../../constants/colors";
+import { requestProductsStore } from "../../../../store/requestProductsStore";
+import { BlurView } from "expo-blur";
 
-export default function validityRequestProducts() {
+export default function ValidityRequestProducts() {
 
-    const requests = useSelectedRequestsStore((state) => state.lista);
+    const produtos = requestProductsStore((state) => state.produtos);
+
+    const [selectedProduct, setSelectedProduct] = useState<any>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const ProductPress = (item: any) => {
+        setSelectedProduct(item);
+        setModalVisible(true);
+    }
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
@@ -20,45 +28,59 @@ export default function validityRequestProducts() {
             <View style={styles.cardsContainer}>
 
                 <FlatList
-                    data={requests.products}
+                    data={produtos}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
-                        <View style={styles.card}>
-                            <View style={styles.listId}>
-                                <Text style={styles.label}>{index + 1}°</Text>
+                        <TouchableOpacity
+                            onPress={() => ProductPress(item)}
+                        >
+                            <View style={styles.card}>
+                                <View style={styles.listId}>
+                                    <Text style={styles.label}>
+                                        {index + 1}°
+                                    </Text>
+                                </View>
+                                <View>
+                                    <View style={styles.codDescricaoProdutoRow}>
+                                        <Text style={styles.label}> {item.codProduct}: <Text style={styles.productDataText}>{item.description}</Text> </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate}</Text></Text>
+                                    </View>
+                                </View>
+                                <View style={styles.dadosItem}>
+                                    <View style={styles.codDescricaoProdutoRow}>
+                                        <Text style={styles.label}> Quant: </Text>
+                                    </View>
+                                    <View>
+                                        <Text style={styles.productDataText}> 10 </Text>
+                                    </View>
+                                </View>
                             </View>
-                            <View style={styles.dadosItem}>
-                                {/* FlatList de produtos */}
-                                <FlatList
-                                    data={item.products}
-                                    keyExtractor={(_, i) => i.toString()}
-                                    renderItem={({ item: produto }) => (
-                                        <View style={{ marginBottom: 5 }}>
-                                            <View style={styles.codDescricaoProdutoRow}>
-                                                <Text style={styles.label}>
-                                                    {produto.productCode}{" "}
-                                                    <Text style={styles.productDataText}>
-                                                        : {produto.description}
-                                                    </Text>
-                                                </Text>
-                                            </View>
-                                            <Text style={styles.label}>
-                                                Dt. vencimento:{" "}
-                                                <Text style={styles.productDataText}>
-                                                    {produto.validityDate}
-                                                </Text>
-                                            </Text>
-                                        </View>
-                                    )}
-                                />
-                            </View>
-                        </View>
+                        </TouchableOpacity>
                     )}
                 />
 
-            </View>
+                <Modal
 
+                    animationType="fade"
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill}>
+
+                        <View style={styles.modalContainerCenter}>
+                            <View style={styles.modalBox}>
+                                <Text>
+                                    Você clicou em um produto
+                                </Text>
+                            </View>
+                        </View>
+                        </BlurView>
+                </Modal>
+
+            </View>
         </SafeAreaView >
     );
 }
@@ -75,12 +97,13 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         backgroundColor: "white",
-        alignItems: "center",
-        gap: 10,
+        justifyContent: "space-between",
         borderWidth: 1,
         borderRadius: 8,
         borderColor: colors.gray,
-        marginBottom: 10
+        marginBottom: 10,
+        padding: 10,
+
     },
     codDescricaoProdutoRow: {
         flexDirection: "row"
@@ -98,9 +121,22 @@ const styles = StyleSheet.create({
         color: "white",
     },
     dadosItem: {
-        paddingVertical: 10
+        alignItems: "center"
     },
     listId: {
         padding: 10
+    },
+    modalContainerCenter: {
+        opacity: 20,
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 40,
+    },
+    modalBox: {
+        width: "100%",
+        height: 340,
+        backgroundColor: "blue"
+
     }
 })

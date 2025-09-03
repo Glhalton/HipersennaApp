@@ -1,15 +1,15 @@
+import { SmallButton } from "@/components/smallButton";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
-import { SmallButton } from "@/components/smallButton";
-import colors from "../../../constants/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useUserDadosStore } from "../../../store/useUserDadosStore";
+import colors from "../../../constants/colors";
+import { userDataStore } from "../../../store/userDataStore";
 
 export default function Home() {
 
-    const userId = useUserDadosStore((state) => state.userId);
-    const nivelAcesso = useUserDadosStore((state) => state.nivelAcesso)
+    const userId = userDataStore((state) => state.userId);
+    const nivelAcesso = userDataStore((state) => state.nivelAcesso)
     const [primeiroNome, setPrimeiroNome] = useState("");
     const [countValidade, setCountValidade] = useState(0);
 

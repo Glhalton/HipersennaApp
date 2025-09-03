@@ -1,22 +1,22 @@
-import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
-import { LargeButton } from "@/components/largeButton";
-import colors from "../../../../constants/colors";
-import { router } from "expo-router"
-import { useVistoriaStore } from "../../../../store/useVistoriaStore";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useUserDadosStore } from "../../../../store/useUserDadosStore";
+import { LargeButton } from "@/components/largeButton";
+import { router } from "expo-router";
+import React from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { userDataStore } from "../../../../store/userDataStore";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 
 export default function ValiditySummary() {
 
     //Lista de itens inseridos do Formulário
-    const lista = useVistoriaStore((state) => state.lista);
-    const removeritem = useVistoriaStore((state) => state.removerItem);
-    const resetarLista = useVistoriaStore((state) => state.resetarLista);
-    const userId = useUserDadosStore((state) => state.userId);
-    const codFilial = useVistoriaStore((state) => state.codFilial);
+    const lista = validityInsertStore((state) => state.lista);
+    const removeritem = validityInsertStore((state) => state.removerItem);
+    const resetarLista = validityInsertStore((state) => state.resetarLista);
+    const userId = userDataStore((state) => state.userId);
+    const codFilial = validityInsertStore((state) => state.codFilial);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {

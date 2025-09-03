@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, FlatList } from "react-native";
-import { LargeButton } from "@/components/largeButton";
-import colors from "../../../../constants/colors";
-import { router } from "expo-router"
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/header";
-import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
-import { useUserDadosStore } from "../../../../store/useUserDadosStore";
+import { LargeButton } from "@/components/largeButton";
+import { router } from "expo-router";
+import React from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { requestsInsertStore } from "../../../../store/requestsInsertStore";
+import { userDataStore } from "../../../../store/userDataStore";
 
 export default function RequestSummary() {
 
     //Lista de itens inseridos do Formulário
-    const lista = useCriarSolicitacaoStore((state) => state.lista);
-    const removeritem = useCriarSolicitacaoStore((state) => state.removerItem);
-    const resetarLista = useCriarSolicitacaoStore((state) => state.resetarLista);
-    const userId = useUserDadosStore((state) => state.userId);
+    const lista = requestsInsertStore((state) => state.lista);
+    const removeritem = requestsInsertStore((state) => state.removerItem);
+    const resetarLista = requestsInsertStore((state) => state.resetarLista);
+    const userId = userDataStore((state) => state.userId);
 
-    const codFilial = useCriarSolicitacaoStore((state) => state.codFilial);
-    const codConferente = useCriarSolicitacaoStore((state) => state.codConferente);
+    const codFilial = requestsInsertStore((state) => state.codFilial);
+    const codConferente = requestsInsertStore((state) => state.codConferente);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {

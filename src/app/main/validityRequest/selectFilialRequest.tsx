@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Header } from "@/components/header";
-import { router } from "expo-router";
 import { DropdownInput } from "@/components/dropdownInput";
-import colors from "../../../../constants/colors";
-import { LargeButton } from "@/components/largeButton";
-import { useCriarSolicitacaoStore } from "../../../../store/useCriarSolicitacaoStore";
+import { Header } from "@/components/header";
 import { Input } from "@/components/input";
+import { LargeButton } from "@/components/largeButton";
+import { router } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import colors from "../../../../constants/colors";
+import { requestsInsertStore } from "../../../../store/requestsInsertStore";
 
 export default function SelectFilialRequest() {
 
     //Codigo da filial
-    const codFilial = useCriarSolicitacaoStore((state) => state.codFilial);
-    const setCodFilial = useCriarSolicitacaoStore((state) => state.setCodFilial);
-    const codConferente = useCriarSolicitacaoStore((state) => state.codConferente);
-    const setCodConferente = useCriarSolicitacaoStore((state) => state.setCodConferente);
+    const codFilial = requestsInsertStore((state) => state.codFilial);
+    const setCodFilial = requestsInsertStore((state) => state.setCodFilial);
+    const codConferente = requestsInsertStore((state) => state.codConferente);
+    const setCodConferente = requestsInsertStore((state) => state.setCodConferente);
 
     //Opções do select de filial
     const filiais = [

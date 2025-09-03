@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { Alert, TouchableOpacity, StyleSheet, Text, View, Image } from "react-native";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
-import { router } from "expo-router";
-import { useUserDadosStore } from "../../../store/useUserDadosStore";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome, Octicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useState } from "react";
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../constants/colors";
+import { userDataStore } from "../../../store/userDataStore";
 
 export default function Login() {
 
-  const setUserId = useUserDadosStore((state) => state.setUserId);
-  const setNivelAcesso = useUserDadosStore((state) => state.setNivelAcesso);
-  const nivelAcesso = useUserDadosStore((state) => state.nivelAcesso);
+  const setUserId = userDataStore((state) => state.setUserId);
+  const setNivelAcesso = userDataStore((state) => state.setNivelAcesso);
+  const nivelAcesso = userDataStore((state) => state.nivelAcesso);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");

@@ -7,7 +7,7 @@ interface UserDadosStore {
     setNivelAcesso: (nivel: string | null) => void;
 }
 
-export const useUserDadosStore = create<UserDadosStore>((set) => ({
+export const userDataStore = create<UserDadosStore>((set) => ({
     userId: null,
     setUserId: (id) => set({ userId: id }),
     nivelAcesso: null,
