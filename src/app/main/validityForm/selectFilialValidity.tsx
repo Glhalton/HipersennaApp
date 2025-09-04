@@ -12,9 +12,7 @@ export default function SelectFilialValidity() {
 
     //Codigo da filial
 
-    const codFilial = validityInsertStore((state) => state.codFilial);
-    const setCodFilial = validityInsertStore((state) => state.setCodFilial);
-    const resetarLista = validityInsertStore((state)=> state.resetarLista);
+    const resetarLista = validityInsertStore((state)=> state.resetProducts);
 
     //Opções do select de filial
     const filiais = [

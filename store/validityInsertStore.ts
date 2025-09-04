@@ -1,39 +1,40 @@
 import { create } from "zustand";
 
 //Tipagem de cada item que sera utilizado
-type FormDataItem = {
-  codProd: string;
-  dataVencimento: Date;
+type ProductData = {
+  codProduct: string;
+  description?: string;
+  validityDate: Date,
   quantidade: string;
-  observacao: string;
-  nomeProduto: string;
+  observation?: string;
 }
 
-
+type ValidityData = {
+  branchId: string,
+  createdAt: Date,
+  userId: number,
+  requestId?: number
+}
 
 //Tipagem das itens que serão globais
 type VistoriaStore = {
-  codFilial: string | null;
-  nomeProduto: string | null;
-  lista: FormDataItem[];
-  setCodFilial: (filial: string | null) => void;
-  setNomeProduto: (produto: string | null) => void;
-  adicionarItem: (Item: FormDataItem) => void;
-  removerItem: (index: number) => void;
-  resetarLista: () => void;
+  validityData: ValidityData | null; 
+  products: ProductData[];
+  addValidity: (validityData: ValidityData) => void;
+  addProduct: (Item: ProductData) => void;
+  removeProduct: (index: number) => void;
+  resetProducts: () => void;
 }
 
 //Criação do store
 export const validityInsertStore = create<VistoriaStore>((set) => ({
-  nomeProduto: null,
-  lista: [],
-  codFilial: null,
-  setCodFilial: (filial) => set({ codFilial: filial }),
-  setNomeProduto: (produto) => set({ nomeProduto: produto }),
-  adicionarItem: (item) => set((state) => ({ lista: [...state.lista, item] })),
-  removerItem: (index) =>
+  products: [],
+  validityData: null,
+  addValidity: (validityData) => set(({validityData})),
+  addProduct: (item) => set((state) => ({ products: [...state.products, item] })),
+  removeProduct: (index) =>
     set((state) => ({
-      lista: state.lista.filter((_, i) => i !== index),
+      products: state.products.filter((_, i) => i !== index),
     })),
-  resetarLista: () => set({ lista: [] }),
+  resetProducts: () => set({ products: [] }),
 }));

@@ -18,14 +18,14 @@ export default function ValidityForm() {
     const lista = validityInsertStore((state) => state.lista);
     const adicionarItem = validityInsertStore((state) => state.adicionarItem);
     const resetarLista = validityInsertStore((state) => state.resetarLista);
-    const setNomeProduto = validityInsertStore((state) => state.setNomeProduto);
-    const nomeProduto = validityInsertStore((state) => state.nomeProduto);
+    const setDescription = validityInsertStore((state) => state.setDescription);
+    const description = validityInsertStore((state) => state.description);
     const codFilial = validityInsertStore((state) => state.codFilial);
 
     const [loading, setLoading] = useState(false);
 
     //Codigo do produto
-    const [codProd, setCodProd] = useState("");
+    const [codProduct, setCodProduct] = useState("");
 
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
@@ -41,23 +41,23 @@ export default function ValidityForm() {
 
     //Função de adicionar item na lista e limpar os campos
     function handlerAdicionar() {
-        if (!codProd || !dataVencimento || !quantidade) {
+        if (!codProduct || !dataVencimento || !quantidade) {
             Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
             return;
-        } if (!nomeProduto) {
+        } if (!description) {
             Alert.alert("Erro!", "Produto não encontrado!");
             return;
         }
 
         adicionarItem({
-            codProd,
-            dataVencimento: new Date(),
+            codProduct,
+            validityDate: new Date(),
             quantidade,
-            observacao: "",
-            nomeProduto: nomeProduto || "",
+            observation: "",
+            description: description || "",
         });
 
-        setCodProd("");
+        setCodProduct("");
         setDataVencimento(undefined);
         setQuantidade("");
 
@@ -97,7 +97,7 @@ export default function ValidityForm() {
     const buscarProduto2 = async () => {
         try {
             setLoading(true);
-            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProd, {
+            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProduct, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer fbf722488af02d0a7c596872aec73db9"
@@ -110,9 +110,9 @@ export default function ValidityForm() {
             const resultado = await resposta.json();
 
             if (Array.isArray(resultado) && resultado.length > 0 && resultado[0].descricao) {
-                setNomeProduto(resultado[0].descricao);
+                setDescription(resultado[0].descricao);
             } else {
-                setNomeProduto(resultado.mensagem);
+                setDescription(resultado.mensagem);
             }
         } catch (erro) {
             Alert.alert("Erro!", "Não foi possível buscar o produto." + erro);
@@ -122,8 +122,8 @@ export default function ValidityForm() {
     };
 
     useEffect(() => {
-        if (codProd.trim() === "") {
-            setNomeProduto(null);
+        if (codProduct.trim() === "") {
+            setDescription(null);
             return;
         }
 
@@ -134,7 +134,7 @@ export default function ValidityForm() {
         }, 800);
 
         setTimer(newTimer);
-    }, [codProd]);
+    }, [codProduct]);
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -152,15 +152,15 @@ export default function ValidityForm() {
                             label="Código do produto *"
                             placeholder="Produto"
                             keyboardType="numeric"
-                            value={codProd}
-                            onChangeText={(codProd) => setCodProd(codProd.replace(/[^0-9]/g, ""))}
+                            value={codProduct}
+                            onChangeText={(codProd) => setCodProduct(codProd.replace(/[^0-9]/g, ""))}
                         />
                     </View>
                 </View>
                 <View style={styles.productNameBox}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <Text style={styles.productNameText}>
-                            {loading ? <ActivityIndicator /> : nomeProduto || "Produto não encontrado"}
+                            {loading ? <ActivityIndicator /> : description || "Produto não encontrado"}
                         </Text>
                     </ScrollView>
                 </View>

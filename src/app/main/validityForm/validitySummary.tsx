@@ -12,11 +12,10 @@ import { validityInsertStore } from "../../../../store/validityInsertStore";
 export default function ValiditySummary() {
 
     //Lista de itens inseridos do Formulário
-    const lista = validityInsertStore((state) => state.lista);
-    const removeritem = validityInsertStore((state) => state.removerItem);
-    const resetarLista = validityInsertStore((state) => state.resetarLista);
+    const lista = validityInsertStore((state) => state.products);
+    const removeritem = validityInsertStore((state) => state.removeProduct);
+    const resetarLista = validityInsertStore((state) => state.resetProducts);
     const userId = userDataStore((state) => state.userId);
-    const codFilial = validityInsertStore((state) => state.codFilial);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
@@ -76,11 +75,11 @@ export default function ValiditySummary() {
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
                         <View style={styles.card}>
-                            <Text style={styles.cardTitleText}>#{index + 1} - {item.nomeProduto}</Text>
+                            <Text style={styles.cardTitleText}>#{index + 1} - {item.description}</Text>
                             <View style={styles.productDataBox}>
                                 <View>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Código:</Text> {item.codProd}</Text>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Validade:</Text> {new Date(item.dataVencimento).toLocaleDateString("pt-BR")}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Código:</Text> {item.codProduct}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Validade:</Text> {new Date(item.validityDate).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
                                     <Text style={styles.productDataText}><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>

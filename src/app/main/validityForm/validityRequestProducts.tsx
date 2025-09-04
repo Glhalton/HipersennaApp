@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput} from "react-native";
 import { Header } from "@/components/header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { BlurView } from "expo-blur";
+import { SmallButton } from "@/components/smallButton";
+
+
 
 export default function ValidityRequestProducts() {
 
@@ -62,25 +65,46 @@ export default function ValidityRequestProducts() {
                     )}
                 />
 
-                <Modal
 
-                    animationType="fade"
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill}>
-
-                        <View style={styles.modalContainerCenter}>
-                            <View style={styles.modalBox}>
-                                <Text>
-                                    Você clicou em um produto
-                                </Text>
-                            </View>
-                        </View>
-                        </BlurView>
-                </Modal>
 
             </View>
+            <Modal
+                animationType="fade"
+                visible={modalVisible}
+                transparent={true}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                {/* <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill}> */}
+                <View style={styles.modalContainerCenter}>
+                    <View style={styles.modalBox}>
+                        <View style={styles.productDataBox}>
+                            <Text style={styles.label}>Cod. Produto: <Text style={styles.productDataText}>{selectedProduct?.codProduct}</Text></Text>
+                            <Text style={styles.label}>Descrição: <Text style={styles.productDataText}>{selectedProduct?.description}</Text></Text>
+                            <Text style={styles.label}>Dt. Validade: <Text style={styles.productDataText}>{selectedProduct?.validityDate}</Text></Text>
+                            <View style={styles.inputBox}>
+                                <Text style={styles.label}>Quant:</Text>
+                                <TextInput
+                                    style={styles.input}
+                                    inputMode="numeric"
+                                />
+                            </View>
+
+                        </View>
+                        <View style={styles.modalButtonsBox}>
+                            <SmallButton
+                                title={"Não encontrei"}
+                                onPress={() => { setModalVisible(false) }}
+                            />
+                            <SmallButton
+                                backgroundColor={colors.gray}
+                                title={"Voltar"}
+                                onPress={() => setModalVisible(false)}
+                            />
+                        </View>
+                    </View>
+                </View>
+                {/* </BlurView> */}
+            </Modal>
         </SafeAreaView >
     );
 }
@@ -89,6 +113,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white"
+        
     },
     cardsContainer: {
         paddingVertical: 20,
@@ -136,7 +161,33 @@ const styles = StyleSheet.create({
     modalBox: {
         width: "100%",
         height: 340,
-        backgroundColor: "blue"
+        borderRadius: 20,
+        backgroundColor: colors.inputColor,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalButtonsBox: {
+        flexDirection: "row",
+        flex: 1,
+        width: "100%",
+        height: "100%",
+        justifyContent: "space-around",
+        alignItems: "flex-end",
+        paddingVertical: 30,
+    },
+    productDataBox: {
+        paddingTop: 110,
+        gap: 6,
+        alignItems: "center",
 
+    },
+    inputBox:{
+        flexDirection: "row",
+        
+    },
+    input: {
+        height: 10,
+        minHeight: 10,
     }
+
 })

@@ -9,7 +9,7 @@ import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function SelectType() {
 
-    const resetarLista = validityInsertStore((state) => state.resetarLista);
+    const resetarLista = validityInsertStore((state) => state.resetProducts);
 
     useEffect(() => {
         resetarLista();
