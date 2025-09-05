@@ -1,25 +1,61 @@
-import React, { useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput} from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { Header } from "@/components/header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
-import { BlurView } from "expo-blur";
 import { SmallButton } from "@/components/smallButton";
-
-
+import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
 
 export default function ValidityRequestProducts() {
 
-    const produtos = requestProductsStore((state) => state.produtos);
+    const productList = validityInsertStore((state) => state.productsList);
+
+    const updateQuantity = validityInsertStore((state) => state.updateProductQuantity)
+    const updateStatus = validityInsertStore((state) => state.updateProductStatus)
+
+    const validityData = validityInsertStore((state) => state.validityData);
 
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [modalVisible, setModalVisible] = useState(false);
 
-    const ProductPress = (item: any) => {
+    const [quantity, setQuantity] = useState("");
+    const [index, setIndex] = useState<any>("");
+
+    //Função para abrir o modal
+    const ProductPress = (item: any, index: number) => {
         setSelectedProduct(item);
+        setIndex(index)
         setModalVisible(true);
+
     }
+
+    //Botão de voltar o modal
+    const backButtonModal = ((quant: string) => {
+        if (quantity) {
+            updateQuantity(index, quant);
+            updateStatus(index, "1");
+
+        }
+        setModalVisible(false);
+        setQuantity("")
+    })
+
+    const notFoundButtonModal = (() => {
+        updateStatus(index, "3");
+        setModalVisible(false);
+    })
+
+    function getColor(status: string | undefined) {
+        if (status === "1") return "#13BE19";
+        if (status === "3") return colors.red2;
+        return "white";
+    }
+
+    useEffect(() => {
+        console.log(validityData)
+    }, [])
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
@@ -29,16 +65,21 @@ export default function ValidityRequestProducts() {
             />
 
             <View style={styles.cardsContainer}>
+                <View style={styles.titleBox}>
+                    <Text style={styles.titleText}>
+                        Digite a quantidade para cada produto:
+                    </Text>
+                </View>
 
                 <FlatList
-                    data={produtos}
+                    data={productList}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
                         <TouchableOpacity
-                            onPress={() => ProductPress(item)}
+                            onPress={() => { ProductPress(item, index); console.log(item); }}
                         >
-                            <View style={styles.card}>
+                            <View style={[styles.card, { backgroundColor: getColor(item.productStatus) }]}>
                                 <View style={styles.listId}>
                                     <Text style={styles.label}>
                                         {index + 1}°
@@ -49,7 +90,7 @@ export default function ValidityRequestProducts() {
                                         <Text style={styles.label}> {item.codProduct}: <Text style={styles.productDataText}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate}</Text></Text>
+                                        <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate.toString()}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
@@ -57,7 +98,7 @@ export default function ValidityRequestProducts() {
                                         <Text style={styles.label}> Quant: </Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.productDataText}> 10 </Text>
+                                        <Text style={styles.productDataText}> {item.quantity} </Text>
                                     </View>
                                 </View>
                             </View>
@@ -86,6 +127,9 @@ export default function ValidityRequestProducts() {
                                 <TextInput
                                     style={styles.input}
                                     inputMode="numeric"
+                                    value={quantity}
+                                    onChangeText={setQuantity}
+
                                 />
                             </View>
 
@@ -93,12 +137,13 @@ export default function ValidityRequestProducts() {
                         <View style={styles.modalButtonsBox}>
                             <SmallButton
                                 title={"Não encontrei"}
-                                onPress={() => { setModalVisible(false) }}
+                                onPress={() => {notFoundButtonModal() }}
+
                             />
                             <SmallButton
-                                backgroundColor={colors.gray}
+                                backgroundColor={"#13BE19"}
                                 title={"Voltar"}
-                                onPress={() => setModalVisible(false)}
+                                onPress={() => backButtonModal(quantity)}
                             />
                         </View>
                     </View>
@@ -113,7 +158,16 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "white"
-        
+
+    },
+    titleBox: {
+        alignItems: "center",
+        paddingBottom: 20
+    },
+    titleText: {
+        fontFamily: "Lexend-Bold",
+        color: colors.blue,
+        fontSize: 25
     },
     cardsContainer: {
         paddingVertical: 20,
@@ -121,7 +175,6 @@ const styles = StyleSheet.create({
     },
     card: {
         flexDirection: "row",
-        backgroundColor: "white",
         justifyContent: "space-between",
         borderWidth: 1,
         borderRadius: 8,
@@ -152,17 +205,18 @@ const styles = StyleSheet.create({
         padding: 10
     },
     modalContainerCenter: {
-        opacity: 20,
+
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 40,
+        backgroundColor: "rgba(0, 0, 0, 0.53)",
     },
     modalBox: {
         width: "100%",
-        height: 340,
+        height: 300,
         borderRadius: 20,
-        backgroundColor: colors.inputColor,
+        backgroundColor: "white",
         justifyContent: "center",
         alignItems: "center",
     },
@@ -176,18 +230,25 @@ const styles = StyleSheet.create({
         paddingVertical: 30,
     },
     productDataBox: {
-        paddingTop: 110,
+        paddingTop: 60,
         gap: 6,
         alignItems: "center",
 
     },
-    inputBox:{
+    inputBox: {
         flexDirection: "row",
-        
+        alignItems: "center",
+        gap: 20
+
     },
     input: {
-        height: 10,
+        height: 40,
         minHeight: 10,
+        width: 100,
+        backgroundColor: colors.inputColor,
+        borderRadius: 20,
+        borderWidth: 1,
+        paddingLeft: 20
     }
 
 })

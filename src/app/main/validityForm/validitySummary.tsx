@@ -12,16 +12,16 @@ import { validityInsertStore } from "../../../../store/validityInsertStore";
 export default function ValiditySummary() {
 
     //Lista de itens inseridos do Formulário
-    const lista = validityInsertStore((state) => state.products);
-    const removeritem = validityInsertStore((state) => state.removeProduct);
-    const resetarLista = validityInsertStore((state) => state.resetProducts);
-    const userId = userDataStore((state) => state.userId);
+    const validityData = validityInsertStore((state) => state.validityData)
+    const productsList = validityInsertStore((state) => state.productsList);
+    const removeProduct = validityInsertStore((state) => state.removeProduct);
+    const resetProducts = validityInsertStore((state) => state.resetProducts);
 
     //Requisição para inserir validade no banco via API
     const inserirValidade = async () => {
 
-        if (lista.length === 0) {
-            Alert.alert("Atenção", "Nenhum item para ser adicionado.");
+        if (productsList.length === 0) {
+            Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
             router.back();
             return;
         }
@@ -34,10 +34,8 @@ export default function ValiditySummary() {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-
-                    userId,
-                    codFilial,
-                    itens: lista
+                    validity: validityData,
+                    itens: productsList
                 })
             });
 
@@ -45,7 +43,7 @@ export default function ValiditySummary() {
 
             if (resultado.sucesso) {
                 Alert.alert("Sucesso", resultado.mensagem);
-                resetarLista();
+                resetProducts();
                 router.back();
             } else {
                 Alert.alert("Erro", resultado.mensagem)
@@ -65,12 +63,12 @@ export default function ValiditySummary() {
 
                 <View style={styles.filialTitleBox}>
                     <Text style={styles.filialTitleText}>
-                        Filial:  {codFilial}
+                        Filial:  {validityData.branchId}
                     </Text>
                 </View>
 
                 <FlatList
-                    data={lista}
+                    data={productsList}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
@@ -82,21 +80,20 @@ export default function ValiditySummary() {
                                     <Text style={styles.productDataText}><Text style={styles.label}>Validade:</Text> {new Date(item.validityDate).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Quantidade:</Text> {item.quantidade}</Text>
+                                    <Text style={styles.productDataText}><Text style={styles.label}>Quantidade:</Text> {item.quantity}</Text>
                                 </View>
                             </View>
 
 
                             <TouchableOpacity
                                 style={styles.removeButton}
-                                onPress={() => removeritem(index)}
+                                onPress={() => removeProduct(index)}
                             >
                                 <Text style={styles.removeText}>Remover</Text>
                             </TouchableOpacity>
                         </View>
                     )}
                 />
-
 
                 <View style={styles.insertButton}>
                     <LargeButton

@@ -15,33 +15,33 @@ import { validityInsertStore } from "../../../../store/validityInsertStore";
 export default function ValidityForm() {
 
     //Dados do Store
-    const lista = validityInsertStore((state) => state.lista);
-    const adicionarItem = validityInsertStore((state) => state.adicionarItem);
-    const resetarLista = validityInsertStore((state) => state.resetarLista);
-    const setDescription = validityInsertStore((state) => state.setDescription);
-    const description = validityInsertStore((state) => state.description);
-    const codFilial = validityInsertStore((state) => state.codFilial);
-
-    const [loading, setLoading] = useState(false);
+    const validity = validityInsertStore((state) => state.validityData)
+    const productsList = validityInsertStore((state) => state.productsList);
+    const addProduct = validityInsertStore((state) => state.addProduct);
+    const resetList = validityInsertStore((state) => state.resetProducts);
 
     //Codigo do produto
     const [codProduct, setCodProduct] = useState("");
 
+    const [description, setDescription] = useState("");
+
+    //Data de Vencimento
+    const [validityDate, setValidityDate] = useState<Date | undefined>(undefined);
+
+    //Quantidade
+    const [quantity, setQuantity] = useState("");
+
+    //Texto de observação
+    const [observation, setObservation] = useState("");
+
+    const [loading, setLoading] = useState(false);
+
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
 
-    //Data de Vencimento
-    const [dataVencimento, setDataVencimento] = useState<Date | undefined>(undefined);
-
-    //Quantidade
-    const [quantidade, setQuantidade] = useState("");
-
-    //Texto de observação
-    const [observacao, setObservacao] = useState("");
-
-    //Função de adicionar item na lista e limpar os campos
+    //Função de adicionar item na lista de produtos e limpar os campos
     function handlerAdicionar() {
-        if (!codProduct || !dataVencimento || !quantidade) {
+        if (!codProduct || !validityDate || !quantity) {
             Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
             return;
         } if (!description) {
@@ -49,49 +49,23 @@ export default function ValidityForm() {
             return;
         }
 
-        adicionarItem({
+        addProduct({
             codProduct,
+            description,
             validityDate: new Date(),
-            quantidade,
-            observation: "",
-            description: description || "",
+            quantity,
+            observation
         });
 
         setCodProduct("");
-        setDataVencimento(undefined);
-        setQuantidade("");
+        setValidityDate(undefined);
+        setQuantity("");
 
     }
 
     useEffect(() => {
-        console.log(codFilial)
+        console.log(validity)
     }, [])
-
-    // //Busca o produto no banco via API PHP
-    // const buscarProduto = async () => {
-    //     try {
-    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({ codProd })
-    //         });
-
-    //         //const texto = await resposta.text();
-    //         //console.log("RESPOSTA BRUTA DA API:", texto);
-
-    //         const resultado = await resposta.json();
-
-    //         if (resultado.sucesso) {
-    //             setNomeProduto(resultado.produto.descricao);
-    //         } else {
-    //             setNomeProduto(resultado.mensagem);
-    //         }
-    //     } catch (erro) {
-    //         Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-    //     }
-    // };
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -123,7 +97,7 @@ export default function ValidityForm() {
 
     useEffect(() => {
         if (codProduct.trim() === "") {
-            setDescription(null);
+            setDescription("");
             return;
         }
 
@@ -169,8 +143,8 @@ export default function ValidityForm() {
                     <DateInput
                         label="Data de Validade *"
                         placeholder="Data de Vencimento"
-                        value={dataVencimento}
-                        onChange={setDataVencimento}
+                        value={validityDate}
+                        onChange={setValidityDate}
                     />
                 </View>
 
@@ -179,8 +153,8 @@ export default function ValidityForm() {
                         label="Quantidade *"
                         placeholder="Insira a quantidade"
                         keyboardType="numeric"
-                        value={quantidade}
-                        onChangeText={(quantidade) => setQuantidade(quantidade.replace(/[^0-9]/g, ""))}
+                        value={quantity}
+                        onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
                     />
                 </View>
 
@@ -188,8 +162,8 @@ export default function ValidityForm() {
                     <Input
                         label="Observação"
                         placeholder="Digite a sua observação"
-                        value={observacao}
-                        onChangeText={setObservacao}
+                        value={observation}
+                        onChangeText={setObservation}
                     />
                 </View>
 
@@ -202,12 +176,12 @@ export default function ValidityForm() {
                         />
                     </View>
 
-                    {lista.length > 0 && (
+                    {productsList.length > 0 && (
 
                         <View style={styles.summaryButton}>
                             <LargeButton
                                 text="Resumo"
-                                onPress={() => router.push("./validitySummary")}
+                                onPress={() => { console.log(productsList); router.push("./validitySummary") }}
                             />
                         </View>
                     )}

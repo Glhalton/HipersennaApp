@@ -1,18 +1,25 @@
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { DropdownInput } from "@/components/dropdownInput";
 import { Header } from "@/components/header";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { userDataStore } from "../../../../store/userDataStore";
 
 export default function SelectFilialValidity() {
 
     //Codigo da filial
 
-    const resetarLista = validityInsertStore((state)=> state.resetProducts);
+    const resetarLista = validityInsertStore((state) => state.resetProducts);
+    const resetValidity = validityInsertStore((state) => state.resetValidity);
+    const validity = validityInsertStore((state) => state.validityData);
+    const setValidity = validityInsertStore((state) => state.addValidity);
+    const userId = userDataStore((state) => state.userId);
+
+    const [branchId, setBranchId] = useState("");
 
     //Opções do select de filial
     const filiais = [
@@ -25,8 +32,28 @@ export default function SelectFilialValidity() {
         { label: "7 - Cidade Jardim", value: "7" },
     ];
 
+    function addValidity() {
+        if (!branchId || !userId) {
+            Alert.alert("Erro!", "Erro na coleta de dados!");
+            return;
+        }
+
+        const createdAt = new Date().toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo'
+        });
+
+        setValidity({
+            branchId,
+            createdAt,
+            userId,
+            requestId: null,
+        })
+
+    }
+
     useEffect(() => {
         resetarLista();
+        resetValidity();
         console.log("Resetou a lista")
     }, [])
 
@@ -46,17 +73,17 @@ export default function SelectFilialValidity() {
 
                 <View>
                     <DropdownInput
-                    label={"Filial:"}
-                        value={codFilial}
+                        label={"Filial:"}
+                        value={branchId}
                         items={filiais}
-                        onChange={(val) => setCodFilial(val)}
+                        onChange={(val) => setBranchId(val)}
                     />
                 </View>
-                {codFilial && (
+                {branchId && (
                     <View style={styles.buttonBox}>
                         <LargeButton
                             text="Continuar"
-                            onPress={() => router.push("./validityForm")}
+                            onPress={() => { addValidity(); router.replace("./validityForm"); }}
                         />
                     </View>
                 )}
@@ -86,7 +113,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
 
-    buttonBox:{
+    buttonBox: {
         marginTop: 10,
     }
 })

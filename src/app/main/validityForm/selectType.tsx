@@ -16,7 +16,6 @@ export default function SelectType() {
         console.log("Resetou a lista")
     }, [])
 
-
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
             <Header

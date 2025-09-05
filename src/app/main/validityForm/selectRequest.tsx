@@ -7,14 +7,39 @@ import colors from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { userDataStore } from "../../../../store/userDataStore";
 import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function SelectRequest() {
 
-    const solicitacoes = validityRequestProductsStore((state) => state.lista);
+    const solicitacoes = validityRequestProductsStore((state) => state.requests);
     const setSolicitacoes = validityRequestProductsStore((state) => state.setLista);
     const userId = userDataStore((state) => state.userId);
-    const setProdutos = requestProductsStore((state) => state.setProdutos);
 
+    const productsList = validityInsertStore((state) => state.productsList)
+    const setProductsList = validityInsertStore((state) => state.setProductList);
+
+    const setValidity = validityInsertStore((state) => state.addValidity);
+
+    //Cria a validade
+    function addValidity(branchId: string, requestId: number) {
+        if (!branchId || !userId) {
+            Alert.alert("Erro!", "Erro na coleta de dados!");
+            return;
+        }
+
+        const createdAt = new Date().toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo'
+        });
+
+        setValidity({
+            branchId,
+            createdAt,
+            userId,
+            requestId,
+        })
+    }
+
+    //Consulta as solicitações
     const consultarSolicitacoes = async () => {
         try {
             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarSolicitacao.php", {
@@ -40,10 +65,6 @@ export default function SelectRequest() {
         }
     };
 
-    useEffect(() => {
-        consultarSolicitacoes();
-    }, []);
-
     function getColor(status: string | null) {
         if (status === "pendente") return "#FF6200";
         if (status === "em andamento") return "#51ABFF";
@@ -51,6 +72,16 @@ export default function SelectRequest() {
         if (status === "expirado") return "#E80000";
         return "black";
     }
+
+    const selectedRequest = (item: any) => {
+        router.replace("../validityForm/validityRequestProducts");
+        setProductsList(item.products);
+        addValidity(item.branchId.toString(), item.requestId);
+    }
+
+    useEffect(() => {
+        consultarSolicitacoes();
+    }, []);
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -78,7 +109,7 @@ export default function SelectRequest() {
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("../validityForm/validityRequestProducts"); setProdutos(item.products); console.log(item.products) }}
+                                onPress={() => { selectedRequest(item); }}
                             >
                                 <View style={styles.card}>
                                     <Text style={styles.cardTitle}>
@@ -118,12 +149,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    titleBox:{
+    titleBox: {
         alignItems: "center",
         paddingBottom: 20
     },
-    titleText:{
-        fontFamily:"Lexend-Bold",
+    titleText: {
+        fontFamily: "Lexend-Bold",
         color: colors.blue,
         fontSize: 25
     },
@@ -176,8 +207,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "space-between"
     },
-
-
     datas: {
 
     },

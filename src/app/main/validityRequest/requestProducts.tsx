@@ -39,7 +39,7 @@ export default function RequestProducts() {
 
                                 </View>
                                 <View>
-                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate}</Text></Text>
+                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate.toString()}</Text></Text>
                                 </View>
                             </View>
                         </View>
