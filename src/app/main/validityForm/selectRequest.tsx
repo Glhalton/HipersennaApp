@@ -14,8 +14,7 @@ export default function SelectRequest() {
     const solicitacoes = validityRequestProductsStore((state) => state.requests);
     const setSolicitacoes = validityRequestProductsStore((state) => state.setLista);
     const userId = userDataStore((state) => state.userId);
-
-    const productsList = validityInsertStore((state) => state.productsList)
+    
     const setProductsList = validityInsertStore((state) => state.setProductList);
 
     const setValidity = validityInsertStore((state) => state.addValidity);

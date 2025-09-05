@@ -6,6 +6,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 export default function SelectType() {
 
@@ -22,6 +23,7 @@ export default function SelectType() {
                 text="Seleção de Filial"
                 navigationType="back"
             />
+
             <View style={styles.formBox}>
                 <View style={styles.titleBox}>
                     <Text style={styles.titleText}>

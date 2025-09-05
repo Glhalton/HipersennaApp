@@ -7,6 +7,7 @@ import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { SmallButton } from "@/components/smallButton";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
 import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
+import { LargeButton } from "@/components/largeButton";
 
 export default function ValidityRequestProducts() {
 
@@ -22,6 +23,8 @@ export default function ValidityRequestProducts() {
 
     const [quantity, setQuantity] = useState("");
     const [index, setIndex] = useState<any>("");
+
+    const hasEmpty = productList.some(p => !p.quantity || p.quantity.trim() === "")
 
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
@@ -45,12 +48,19 @@ export default function ValidityRequestProducts() {
     const notFoundButtonModal = (() => {
         updateStatus(index, "3");
         setModalVisible(false);
+        updateQuantity(index, "0");
+        setQuantity("");
     })
 
     function getColor(status: string | undefined) {
-        if (status === "1") return "#13BE19";
+        if (status === "1") return "#5FE664";
         if (status === "3") return colors.red2;
         return "white";
+    }
+
+    function getColorText(status: string | undefined) {
+        if (status === "3") return "white";
+        return colors.blue;
     }
 
     useEffect(() => {
@@ -81,24 +91,24 @@ export default function ValidityRequestProducts() {
                         >
                             <View style={[styles.card, { backgroundColor: getColor(item.productStatus) }]}>
                                 <View style={styles.listId}>
-                                    <Text style={styles.label}>
+                                    <Text style={[styles.label, {color: getColorText(item.productStatus)}]}>
                                         {index + 1}°
                                     </Text>
                                 </View>
                                 <View>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={styles.label}> {item.codProduct}: <Text style={styles.productDataText}>{item.description}</Text> </Text>
+                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]}> {item.codProduct}: <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate.toString()}</Text></Text>
+                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]} > Dt. vencimento: <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}>{item.validityDate.toString()}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={styles.label}> Quant: </Text>
+                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]}> Quant: </Text>
                                     </View>
                                     <View>
-                                        <Text style={styles.productDataText}> {item.quantity} </Text>
+                                        <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}> {item.quantity} </Text>
                                     </View>
                                 </View>
                             </View>
@@ -106,9 +116,18 @@ export default function ValidityRequestProducts() {
                     )}
                 />
 
+                {!hasEmpty && (
+                    <View>
+                        <LargeButton
+                            text="Finalizar validade"
+                        />
+                    </View>
+                )}
+
 
 
             </View>
+
             <Modal
                 animationType="fade"
                 visible={modalVisible}
@@ -137,12 +156,12 @@ export default function ValidityRequestProducts() {
                         <View style={styles.modalButtonsBox}>
                             <SmallButton
                                 title={"Não encontrei"}
-                                onPress={() => {notFoundButtonModal() }}
+                                onPress={() => { notFoundButtonModal() }}
 
                             />
                             <SmallButton
                                 backgroundColor={"#13BE19"}
-                                title={"Voltar"}
+                                title={"Confirmar"}
                                 onPress={() => backButtonModal(quantity)}
                             />
                         </View>

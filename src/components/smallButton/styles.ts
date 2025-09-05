@@ -7,10 +7,10 @@ export const styles = StyleSheet.create({
         height: 43,
         justifyContent:"center",
         alignItems: "center",
-        borderRadius: 16,
+        borderRadius: 20,
     },
     buttonText:{
-        fontSize: 14,
+        fontSize: 16,
         color: "white",
         fontFamily: "Lexend-Bold",
     }

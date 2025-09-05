@@ -18,7 +18,6 @@ export default function ValidityForm() {
     const validity = validityInsertStore((state) => state.validityData)
     const productsList = validityInsertStore((state) => state.productsList);
     const addProduct = validityInsertStore((state) => state.addProduct);
-    const resetList = validityInsertStore((state) => state.resetProducts);
 
     //Codigo do produto
     const [codProduct, setCodProduct] = useState("");
@@ -38,34 +37,6 @@ export default function ValidityForm() {
 
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
-
-    //Função de adicionar item na lista de produtos e limpar os campos
-    function handlerAdicionar() {
-        if (!codProduct || !validityDate || !quantity) {
-            Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
-            return;
-        } if (!description) {
-            Alert.alert("Erro!", "Produto não encontrado!");
-            return;
-        }
-
-        addProduct({
-            codProduct,
-            description,
-            validityDate: new Date(),
-            quantity,
-            observation
-        });
-
-        setCodProduct("");
-        setValidityDate(undefined);
-        setQuantity("");
-
-    }
-
-    useEffect(() => {
-        console.log(validity)
-    }, [])
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -94,6 +65,30 @@ export default function ValidityForm() {
             setLoading(false);
         }
     };
+
+    //Função de adicionar item na lista de produtos e limpar os campos
+    function handlerAdicionar() {
+        if (!codProduct || !validityDate || !quantity) {
+            Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
+            return;
+        } if (!description) {
+            Alert.alert("Erro!", "Produto não encontrado!");
+            return;
+        }
+
+        addProduct({
+            codProduct,
+            description,
+            validityDate,
+            quantity,
+            observation
+        });
+
+        setCodProduct("");
+        setQuantity("");
+        setValidityDate(undefined);
+
+    }
 
     useEffect(() => {
         if (codProduct.trim() === "") {
@@ -199,7 +194,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
     },
     formBox: {
-        paddingHorizontal: 14,
+        paddingHorizontal: 20,
         paddingTop: 20,
     },
 

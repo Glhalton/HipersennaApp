@@ -121,7 +121,7 @@ export default function Home() {
                     </Text>
                     <View>
 
-                        {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3  && (
+                        {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3 && (
                             <TouchableOpacity onPress={goToSelecaoFilial2}>
                                 <View style={styles.opcaoMenu}>
                                     <Image style={styles.imgIcon} source={require("../../../assets/images/SinoIcon.png")} />
@@ -165,7 +165,7 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: colors.background,
         alignItems: "center",
 
     },
@@ -185,6 +185,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lexend-Bold",
         color: "white",
     },
+    
     settings: {
         padding: 5,
     },
@@ -205,13 +206,15 @@ const styles = StyleSheet.create({
 
     },
     bemVindoContainer: {
+        marginTop: 20,
         paddingBottom: 30,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.gray,
+        paddingHorizontal: 20,
+        backgroundColor: colors.white,
+        borderRadius: 20,
     },
     bemVindoText: {
         textAlign: "center",
-        fontSize: 24,
+        fontSize: 22,
         fontFamily: "Lexend-Bold",
         paddingBottom: 30,
         paddingTop: 20,
@@ -224,8 +227,6 @@ const styles = StyleSheet.create({
     dashboardBox: {
         paddingTop: 20,
         paddingBottom: 30,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.gray,
     },
     title: {
         fontSize: 22,
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     dashboardItem: {
-        backgroundColor: colors.lightGray,
+        backgroundColor: colors.white,
         padding: 24,
         width: "45%",
         borderRadius: 12,
@@ -254,13 +255,16 @@ const styles = StyleSheet.create({
         color: colors.blue,
     },
     dashboardLargeItem: {
-        backgroundColor: colors.lightGray,
+        backgroundColor: colors.white,
         borderRadius: 12,
         marginTop: 20,
         padding: 24
     },
     containerAcessoRapido: {
         paddingTop: 20,
+        backgroundColor: colors.white,
+        borderRadius: 20,
+        paddingHorizontal: 20,
     },
     opcaoMenu: {
         flexDirection: "row",
