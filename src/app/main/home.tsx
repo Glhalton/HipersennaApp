@@ -5,6 +5,7 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function Home() {
 
@@ -67,19 +68,30 @@ export default function Home() {
 
     return (
 
-        <SafeAreaView style={styles.container} edges={["bottom"]}>
+        <SafeAreaView className="bg-red-200" style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Validade</Text>
+                {/* <Text style={styles.headerText}>Validade</Text> */}
+                <Text style={styles.bemVindoText}>
+                    Olá, {primeiroNome}.
+                </Text>
                 <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
-                    <Image style={styles.settingsImage} source={require("../../../assets/images/White-Gear.png")} />
+                    {/* <Image style={styles.settingsImage} source={require("../../../assets/images/White-Gear.png")} /> */}
+                    <Ionicons
+                        name="settings-sharp"
+                        color={colors.gray}
+                        size={30}
+                    />
                 </TouchableOpacity>
             </View>
-
             <ScrollView style={styles.scroll} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
-                <View style={styles.bemVindoContainer}>
-                    <Text style={styles.bemVindoText}>
-                        Bem vindo de volta, {primeiroNome}!
+                <View style={styles.subTitleBox}>
+                    <Text style={styles.subTitleText}>
+                        SennaApp
                     </Text>
+                </View>
+
+                <View style={styles.bemVindoContainer}>
+
 
                     <View style={styles.buttonsContainer}>
                         <SmallButton
@@ -174,26 +186,34 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        paddingTop: 40,
-        paddingBottom: 15,
+        paddingTop: 20,
         paddingHorizontal: 14,
-        backgroundColor: colors.red2,
-        elevation: 3,
-    },
-    headerText: {
-        fontSize: 22,
-        fontFamily: "Lexend-Bold",
-        color: "white",
-    },
-    
-    settings: {
-        padding: 5,
-    },
-    settingsImage: {
-        width: 25,
-        height: 25,
     },
 
+    // headerText: {
+    //     fontSize: 22,
+    //     fontFamily: "Lexend-Bold",
+    //     color: "white",
+    // },
+
+    settings: {
+        width: 30,
+        height: 30,
+    },
+    // settingsImage: {
+    //     width: 25,
+    //     height: 25,
+    // },
+    subTitleBox: {
+        width: "100%",
+        paddingBottom: 20,
+
+    },subTitleText:{
+        fontFamily: "Lexend-Regular",
+        color: colors.gray,
+        fontSize: 18,
+        
+    },
     scroll: {
         width: "100%",
         maxWidth: 600
@@ -202,22 +222,18 @@ const styles = StyleSheet.create({
     contentStyleScroll: {
         color: colors.blue,
         paddingHorizontal: 14,
-        paddingTop: 10,
 
     },
     bemVindoContainer: {
-        marginTop: 20,
-        paddingBottom: 30,
+        paddingVertical: 30,
         paddingHorizontal: 20,
         backgroundColor: colors.white,
         borderRadius: 20,
     },
     bemVindoText: {
-        textAlign: "center",
         fontSize: 22,
-        fontFamily: "Lexend-Bold",
-        paddingBottom: 30,
-        paddingTop: 20,
+        fontFamily: "Lexend-SemiBold",
+
         color: colors.blue,
     },
     buttonsContainer: {
@@ -230,7 +246,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 22,
-        fontFamily: "Lexend-Bold",
+        fontFamily: "Lexend-SemiBold",
         color: colors.blue,
         marginBottom: 15,
     },
