@@ -5,7 +5,7 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "rea
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather, FontAwesome5, Octicons } from "@expo/vector-icons";
 
 export default function Home() {
 
@@ -69,41 +69,69 @@ export default function Home() {
     return (
 
         <SafeAreaView className="bg-red-200" style={styles.container}>
-            <View style={styles.header}>
-                {/* <Text style={styles.headerText}>Validade</Text> */}
-                <Text style={styles.bemVindoText}>
-                    Olá, {primeiroNome}.
-                </Text>
-                <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
-                    {/* <Image style={styles.settingsImage} source={require("../../../assets/images/White-Gear.png")} /> */}
-                    <Ionicons
-                        name="settings-sharp"
-                        color={colors.gray}
-                        size={30}
-                    />
-                </TouchableOpacity>
-            </View>
             <ScrollView style={styles.scroll} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
-                <View style={styles.subTitleBox}>
-                    <Text style={styles.subTitleText}>
-                        SennaApp
-                    </Text>
+
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.helloText}>
+                            Olá, {primeiroNome}.
+                        </Text>
+                        <Text style={styles.subTitleText}>
+                            SennaApp
+                        </Text>
+
+                    </View>
+
+                    <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
+                        <Ionicons
+                            name="settings-sharp"
+                            color={colors.gray}
+                            size={30}
+
+                        />
+                    </TouchableOpacity>
                 </View>
 
-                <View style={styles.bemVindoContainer}>
+                <View style={styles.buttonsBox}>
 
-
-                    <View style={styles.buttonsContainer}>
-                        <SmallButton
+                    {/* <SmallButton
                             title="Histórico"
                             onPress={goToHistorico}
                             backgroundColor={colors.gray}
+                        /> */}
+                    <TouchableOpacity
+                        style={styles.historicBox}
+                        onPress={goToHistorico}
+                    >
+                        <MaterialIcons
+                            name="history"
+                            size={50}
+                            color={colors.white}
                         />
-                        <SmallButton
+                        <Text style={styles.buttonsText}>
+                            Histórico
+                        </Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.addBox}
+                        onPress={goToSelecaoTipoVistoria}
+                    >
+                        <Feather
+                            name="clipboard"
+                            size={50}
+                            color={colors.white}
+                        />
+                        <Text style={styles.buttonsText}>
+                            Vistoria
+                        </Text>
+                    </TouchableOpacity>
+                    {/* <SmallButton
                             title="Add"
                             onPress={goToSelecaoTipoVistoria}
-                            backgroundColor={colors.red2} />
-                    </View>
+                            backgroundColor={colors.red2}
+                        /> */}
+
                 </View>
 
                 <View style={styles.dashboardBox}>
@@ -132,21 +160,28 @@ export default function Home() {
                         Acesso rápido
                     </Text>
                     <View>
-
-                        {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3 && (
+                        {/* {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3 && (
                             <TouchableOpacity onPress={goToSelecaoFilial2}>
                                 <View style={styles.opcaoMenu}>
+                                    <Octicons
+                                        name="plus-circle"
+                                        color={colors.gray}
+                                        size={21}
+                                    />
                                     <Image style={styles.imgIcon} source={require("../../../assets/images/SinoIcon.png")} />
                                     <Text style={styles.textOptions}>Criar Solicitação</Text>
                                 </View>
                             </TouchableOpacity>
-                        )}
-
-
+                        )} */}
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../../assets/images/MenuIcon.png")} />
+                                <Octicons
+                                    name="checklist"
+                                    color={colors.gray}
+                                    size={25}
+                                />
+                                {/* <Image style={styles.imgIcon} source={require("../../../assets/images/MenuIcon.png")} /> */}
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>
@@ -177,8 +212,18 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: colors.black,
         alignItems: "center",
+    },
+    scroll: {
+        backgroundColor: colors.background,
+        width: "100%",
+        maxWidth: 600
+    },
+    contentStyleScroll: {
+        color: colors.blue,
+        paddingHorizontal: 14,
+        paddingVertical: 20,
 
     },
     header: {
@@ -186,59 +231,49 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         width: "100%",
-        paddingTop: 20,
-        paddingHorizontal: 14,
+        paddingBottom: 20,
     },
-
-    // headerText: {
-    //     fontSize: 22,
-    //     fontFamily: "Lexend-Bold",
-    //     color: "white",
-    // },
-
+    helloText: {
+        fontSize: 22,
+        fontFamily: "Lexend-SemiBold",
+        color: colors.blue,
+    },
+    subTitleText: {
+        fontFamily: "Lexend-Regular",
+        color: colors.gray,
+        fontSize: 18,
+    },
     settings: {
         width: 30,
         height: 30,
     },
-    // settingsImage: {
-    //     width: 25,
-    //     height: 25,
-    // },
-    subTitleBox: {
-        width: "100%",
-        paddingBottom: 20,
-
-    },subTitleText:{
-        fontFamily: "Lexend-Regular",
-        color: colors.gray,
-        fontSize: 18,
-        
-    },
-    scroll: {
-        width: "100%",
-        maxWidth: 600
-    },
-
-    contentStyleScroll: {
-        color: colors.blue,
-        paddingHorizontal: 14,
-
-    },
-    bemVindoContainer: {
+    buttonsBox: {
         paddingVertical: 30,
         paddingHorizontal: 20,
         backgroundColor: colors.white,
         borderRadius: 20,
-    },
-    bemVindoText: {
-        fontSize: 22,
-        fontFamily: "Lexend-SemiBold",
-
-        color: colors.blue,
-    },
-    buttonsContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
+    },
+    historicBox: {
+        paddingVertical: 20,
+        alignItems: "center",
+        backgroundColor: colors.gray,
+        borderRadius: 20,
+        width: "47%",
+        gap: 5,
+    },
+    addBox: {
+        paddingVertical: 20,
+        alignItems: "center",
+        backgroundColor: colors.red2,
+        borderRadius: 20,
+        width: "47%",
+        gap: 5,
+    },
+    buttonsText: {
+        fontFamily: "Lexend-SemiBold",
+        color: colors.white,
     },
     dashboardBox: {
         paddingTop: 20,
@@ -280,20 +315,17 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         backgroundColor: colors.white,
         borderRadius: 20,
-        paddingHorizontal: 20,
+        padding: 20,
     },
     opcaoMenu: {
         flexDirection: "row",
-        marginBottom: 20,
+        paddingVertical: 10,
         alignItems: "center",
-        gap: 20
+        gap: 20,
     },
     textOptions: {
         color: colors.gray,
         fontSize: 16,
         fontFamily: "Lexend-Regular",
     },
-    imgIcon: {
-
-    }
 })

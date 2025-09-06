@@ -9,7 +9,6 @@ export default function Layout() {
     "Lexend-Regular": require("../../assets/fonts/Lexend/Lexend-Regular.ttf"),
     "Lexend-Bold": require("../../assets/fonts/Lexend/Lexend-Bold.ttf"),
     "Lexend-SemiBold": require("../../assets/fonts/Lexend/Lexend-SemiBold.ttf"),
-
   });
 
   if (!fontsLoaded) {
