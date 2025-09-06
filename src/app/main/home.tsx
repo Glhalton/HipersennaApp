@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     dashboardItem: {
         backgroundColor: colors.white,
         padding: 24,
-        width: "45%",
+        width: "48%",
         borderRadius: 12,
     },
     dashboardItemText: {
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     dashboardLargeItem: {
         backgroundColor: colors.white,
         borderRadius: 12,
-        marginTop: 20,
+        marginTop: 15,
         padding: 24
     },
     containerAcessoRapido: {
