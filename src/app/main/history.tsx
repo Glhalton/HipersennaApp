@@ -1,4 +1,3 @@
-import { Header } from "@/components/header";
 import React, { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,10 +8,7 @@ export default function History() {
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <Header
-                text="Histórico"
-                navigationType="back"
-            />
+
         </SafeAreaView>
     );
 }

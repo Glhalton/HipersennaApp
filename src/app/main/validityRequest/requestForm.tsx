@@ -1,4 +1,4 @@
-import { Header } from "@/components/header";
+
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import FontAwesome from "@expo/vector-icons/build/FontAwesome";
@@ -88,11 +88,6 @@ export default function RequestForm() {
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
-            <Header
-                text="Solicitação Vistoria"
-                navigationType="back"
-            />
-
             <View style={styles.form}>
                 <View>
                     <View style={styles.productInfoBox}>

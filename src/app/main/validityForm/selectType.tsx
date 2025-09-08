@@ -1,4 +1,4 @@
-import { Header } from "@/components/header";
+
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
 import React, { useEffect } from "react";
@@ -18,12 +18,7 @@ export default function SelectType() {
     }, [])
 
     return (
-        <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <Header
-                text="Seleção de Filial"
-                navigationType="back"
-            />
-
+        <SafeAreaView style={styles.container}>
             <View style={styles.formBox}>
                 <View style={styles.titleBox}>
                     <Text style={styles.titleText}>
@@ -58,7 +53,6 @@ const styles = StyleSheet.create({
     formBox: {
         flex: 1,
         marginHorizontal: 14,
-        paddingTop: 100,
     },
     titleBox: {
         paddingVertical: 20,
@@ -66,7 +60,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 30,
         color: colors.blue,
-        fontFamily: "Lexend-Bold",
+        fontFamily: "Lexend-SemiBold",
         textAlign: "center",
     },
     avulsaButton: {

@@ -1,21 +1,20 @@
 import { DateInput } from "@/components/dateInput";
-import { Header } from "@/components/header";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import { FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View, BackHandler } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
+import ModalPopup from "@/components/modalPopup";
 
-
+import { useNavigation } from "expo-router";
 
 export default function ValidityForm() {
 
     //Dados do Store
-    const validity = validityInsertStore((state) => state.validityData)
     const productsList = validityInsertStore((state) => state.productsList);
     const addProduct = validityInsertStore((state) => state.addProduct);
 
@@ -37,6 +36,11 @@ export default function ValidityForm() {
 
     //Timer para consulta do produto
     const [timer, setTimer] = useState<number | null>(null);
+
+    const navigation = useNavigation();
+
+    const [showExitModal, setShowExitModal] = useState(false);
+    const [exitAction, setExitAction] = useState<any>(null);
 
     // Consumindo API em python para consulta de produto:
     const buscarProduto2 = async () => {
@@ -105,13 +109,31 @@ export default function ValidityForm() {
         setTimer(newTimer);
     }, [codProduct]);
 
+    //Função para capturar o botão de voltar
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+            e.preventDefault(); // bloqueia a navegação
+            setExitAction(e.data.action); // salva a ação para executar depois
+            setShowExitModal(true); // mostra o modal personalizado
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    const handleConfirmExit = () => {
+        setShowExitModal(false);
+        if (exitAction) {
+            navigation.dispatch(exitAction); // executa a navegação original
+        }
+    };
+
+    const handleCancelExit = () => {
+        setShowExitModal(false);
+        setExitAction(null);
+    };
+
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
-            <Header
-                text="Vistoria"
-                navigationType="back"
-            />
-
             <View style={styles.formBox}>
                 <View style={styles.productInfoBox}>
                     <View style={styles.productCodeBox}>
@@ -183,6 +205,14 @@ export default function ValidityForm() {
 
                 </View>
             </View>
+
+            <ModalPopup
+                visible={showExitModal}
+                onRequestClose={handleCancelExit}
+                buttonLeft={handleCancelExit}
+                buttonRight={handleConfirmExit}
+            />
+
         </SafeAreaView>
 
     );

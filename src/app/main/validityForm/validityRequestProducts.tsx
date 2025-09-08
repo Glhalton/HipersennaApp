@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput } from "react-native";
-import { Header } from "@/components/header";
+import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
@@ -8,10 +7,13 @@ import { SmallButton } from "@/components/smallButton";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
 import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
 import { LargeButton } from "@/components/largeButton";
+import { router, useNavigation } from "expo-router";
+import ModalPopup from "@/components/modalPopup";
 
 export default function ValidityRequestProducts() {
 
     const productList = validityInsertStore((state) => state.productsList);
+    const resetProducts = validityInsertStore((state) => state.resetProducts);
 
     const updateQuantity = validityInsertStore((state) => state.updateProductQuantity)
     const updateStatus = validityInsertStore((state) => state.updateProductStatus)
@@ -23,6 +25,11 @@ export default function ValidityRequestProducts() {
 
     const [quantity, setQuantity] = useState("");
     const [index, setIndex] = useState<any>("");
+
+    const navigation = useNavigation();
+
+    const [showExitModal, setShowExitModal] = useState(false);
+    const [exitAction, setExitAction] = useState<any>(null);
 
     const hasEmpty = productList.some(p => !p.quantity || p.quantity.trim() === "")
 
@@ -67,13 +74,68 @@ export default function ValidityRequestProducts() {
         console.log(validityData)
     }, [])
 
+    //Função para capturar o botão de voltar
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+            e.preventDefault(); // bloqueia a navegação
+            setExitAction(e.data.action); // salva a ação para executar depois
+            setShowExitModal(true); // mostra o modal personalizado
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    const handleConfirmExit = () => {
+        setShowExitModal(false);
+        if (exitAction) {
+            navigation.dispatch(exitAction); // executa a navegação original
+        }
+    };
+
+    const handleCancelExit = () => {
+        setShowExitModal(false);
+        setExitAction(null);
+    };
+
+    //Requisição para inserir validade no banco via API
+    const insertValidity = async () => {
+
+        if (productList.length === 0) {
+            Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
+            router.replace("/main/validityForm/selectType");
+            return;
+        }
+
+        try {
+
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    validity: validityData,
+                    itens: productList
+                })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                Alert.alert("Sucesso", resultado.mensagem);
+                resetProducts();
+                router.replace("/main/validityForm/selectType");
+            } else {
+                Alert.alert("Erro", resultado.mensagem)
+            }
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
+        }
+    };
+
+
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <Header
-                text="Produtos da Solicitação"
-                navigationType="back"
-            />
-
             <View style={styles.cardsContainer}>
                 <View style={styles.titleBox}>
                     <Text style={styles.titleText}>
@@ -91,24 +153,24 @@ export default function ValidityRequestProducts() {
                         >
                             <View style={[styles.card, { backgroundColor: getColor(item.productStatus) }]}>
                                 <View style={styles.listId}>
-                                    <Text style={[styles.label, {color: getColorText(item.productStatus)}]}>
+                                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
                                         {index + 1}°
                                     </Text>
                                 </View>
                                 <View>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]}> {item.codProduct}: <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}>{item.description}</Text> </Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.codProduct}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]} > Dt. vencimento: <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}>{item.validityDate.toString()}</Text></Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.validityDate.toString()}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={[styles.label, {color: getColorText(item.productStatus)}]}> Quant: </Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> Quant: </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.productDataText, {color: getColorText(item.productStatus)}]}> {item.quantity} </Text>
+                                        <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}> {item.quantity} </Text>
                                     </View>
                                 </View>
                             </View>
@@ -120,6 +182,7 @@ export default function ValidityRequestProducts() {
                     <View>
                         <LargeButton
                             text="Finalizar validade"
+                            onPress={insertValidity}
                         />
                     </View>
                 )}
@@ -127,6 +190,13 @@ export default function ValidityRequestProducts() {
 
 
             </View>
+
+            <ModalPopup
+                visible={showExitModal}
+                onRequestClose={handleCancelExit}
+                buttonLeft={handleCancelExit}
+                buttonRight={handleConfirmExit}
+            />
 
             <Modal
                 animationType="fade"
@@ -167,7 +237,6 @@ export default function ValidityRequestProducts() {
                         </View>
                     </View>
                 </View>
-                {/* </BlurView> */}
             </Modal>
         </SafeAreaView >
     );
@@ -176,7 +245,7 @@ export default function ValidityRequestProducts() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white"
+        backgroundColor: colors.background,
 
     },
     titleBox: {
@@ -184,7 +253,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     titleText: {
-        fontFamily: "Lexend-Bold",
+        fontFamily: "Lexend-SemiBold",
         color: colors.blue,
         fontSize: 25
     },

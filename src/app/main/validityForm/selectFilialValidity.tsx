@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { DropdownInput } from "@/components/dropdownInput";
-import { Header } from "@/components/header";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -59,11 +58,7 @@ export default function SelectFilialValidity() {
 
 
     return (
-        <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <Header
-                text="Seleção de Filial"
-                navigationType="back"
-            />
+        <SafeAreaView style={styles.container}>
             <View style={styles.formBox}>
                 <View style={styles.titleBox}>
                     <Text style={styles.titleText}>
@@ -87,7 +82,6 @@ export default function SelectFilialValidity() {
                         />
                     </View>
                 )}
-
             </View>
         </SafeAreaView>
     )
@@ -96,12 +90,11 @@ export default function SelectFilialValidity() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white",
+        backgroundColor: colors.white,
     },
     formBox: {
         flex: 1,
-        marginHorizontal: 30,
-        paddingTop: 100,
+        marginHorizontal: 20,
     },
     titleBox: {
         paddingVertical: 20,
@@ -109,10 +102,9 @@ const styles = StyleSheet.create({
     titleText: {
         fontSize: 30,
         color: colors.blue,
-        fontFamily: "Lexend-Regular",
+        fontFamily: "Lexend-SemiBold",
         textAlign: "center",
     },
-
     buttonBox: {
         marginTop: 10,
     }

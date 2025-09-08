@@ -1,8 +1,7 @@
-import { Header } from "@/components/header";
-import { LargeButton } from "@/components/largeButton";
-import { router } from "expo-router";
 import React from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { LargeButton } from "@/components/largeButton";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../../constants/colors";
 import { userDataStore } from "../../../../store/userDataStore";
@@ -55,10 +54,6 @@ export default function ValiditySummary() {
 
     return (
         <SafeAreaView style={styles.container} edges={["bottom"]}>
-            <Header
-                text="Resumo da vistoria"
-                navigationType="back"
-            />
             <View style={styles.cardsBox}>
 
                 <View style={styles.filialTitleBox}>
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lexend-Regular",
         color: colors.blue,
     },
-    productDataText:{
+    productDataText: {
         fontFamily: "Lexend-Regular",
         color: colors.gray,
     },

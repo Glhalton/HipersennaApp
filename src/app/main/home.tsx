@@ -1,11 +1,10 @@
-import { SmallButton } from "@/components/smallButton";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
-import { Ionicons, MaterialIcons, Feather, FontAwesome5, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather, Octicons } from "@expo/vector-icons";
 
 export default function Home() {
 
@@ -13,10 +12,6 @@ export default function Home() {
     const nivelAcesso = userDataStore((state) => state.nivelAcesso)
     const [primeiroNome, setPrimeiroNome] = useState("");
     const [countValidade, setCountValidade] = useState(0);
-
-    const goToHistorico = () => {
-        router.push("./history");
-    }
 
     const goToRelatorios = () => {
         router.push("./selectReport");
@@ -26,42 +21,37 @@ export default function Home() {
         router.push("./validityRequest/requests");
     }
 
-    const goToSelecaoTipoVistoria = () => {
-        router.push("./validityForm/selectType");
-    }
-
     const goToSelecaoFilial2 = () => {
         router.push("./validityRequest/selectFilialRequest");
     }
 
+    const contarVistorias = async () => {
+        try {
+            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    userId
+                })
+            });
+
+            const resultado = await resposta.json();
+
+            if (resultado.sucesso) {
+                setCountValidade(resultado.quantidade_vistorias);
+                console.log("Foi buscado a contagem de vistorias")
+                setPrimeiroNome(resultado.primeiroNome);
+            }
+
+        } catch (error) {
+            console.error("Erro ao buscar contagem: ", error);
+        }
+    };
+
     useEffect(() => {
         if (!userId) return;
-
-        const contarVistorias = async () => {
-            try {
-                const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        userId
-                    })
-                });
-
-                const resultado = await resposta.json();
-
-                if (resultado.sucesso) {
-                    setCountValidade(resultado.quantidade_vistorias);
-                    console.log("Foi buscado a contagem de vistorias")
-                    setPrimeiroNome(resultado.primeiroNome);
-                }
-
-            } catch (error) {
-                console.error("Erro ao buscar contagem: ", error);
-            }
-        };
-
         contarVistorias();
 
     }, []);
@@ -82,6 +72,7 @@ export default function Home() {
 
                     </View>
 
+
                     <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
                         <Ionicons
                             name="settings-sharp"
@@ -93,15 +84,9 @@ export default function Home() {
                 </View>
 
                 <View style={styles.buttonsBox}>
-
-                    {/* <SmallButton
-                            title="Histórico"
-                            onPress={goToHistorico}
-                            backgroundColor={colors.gray}
-                        /> */}
                     <TouchableOpacity
                         style={styles.historicBox}
-                        onPress={goToHistorico}
+                        onPress={() => { router.push("./history"); }}
                     >
                         <MaterialIcons
                             name="history"
@@ -115,7 +100,7 @@ export default function Home() {
 
                     <TouchableOpacity
                         style={styles.addBox}
-                        onPress={goToSelecaoTipoVistoria}
+                        onPress={() => { router.push("./validityForm/selectType"); }}
                     >
                         <Feather
                             name="clipboard"
@@ -176,12 +161,14 @@ export default function Home() {
 
                         <TouchableOpacity onPress={goToVistoriaDemanda}>
                             <View style={styles.opcaoMenu}>
-                                <Octicons
-                                    name="checklist"
-                                    color={colors.gray}
-                                    size={25}
-                                />
-                                {/* <Image style={styles.imgIcon} source={require("../../../assets/images/MenuIcon.png")} /> */}
+                                <View style={styles.optionIcon}>
+                                    <Octicons
+                                        name="checklist"
+                                        color={colors.gray}
+                                        size={25}
+                                    />
+                                </View>
+
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>
@@ -244,8 +231,15 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     settings: {
-        width: 30,
-        height: 30,
+        width: 45,
+        height: 45,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: colors.white,
+        borderRadius: 10,
+
+        // borderColor: colors.gray,
+        // borderWidth: 2,
     },
     buttonsBox: {
         paddingVertical: 30,
@@ -254,6 +248,15 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: "row",
         justifyContent: "space-between",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     historicBox: {
         paddingVertical: 20,
@@ -294,6 +297,15 @@ const styles = StyleSheet.create({
         padding: 24,
         width: "48%",
         borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     dashboardItemText: {
         fontSize: 16,
@@ -309,13 +321,30 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderRadius: 12,
         marginTop: 15,
-        padding: 24
+        padding: 24,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     containerAcessoRapido: {
-        paddingTop: 20,
         backgroundColor: colors.white,
         borderRadius: 20,
         padding: 20,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+
+        elevation: 7,
     },
     opcaoMenu: {
         flexDirection: "row",
@@ -328,4 +357,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Lexend-Regular",
     },
+    optionIcon: {
+        justifyContent: "center",
+        alignItems: "center",
+        borderColor: colors.gray,
+        borderWidth: 2,
+        borderRadius: 10,
+        width: 40,
+        height: 40,
+    }
 })

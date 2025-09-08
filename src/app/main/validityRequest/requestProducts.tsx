@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
-import { Header } from "@/components/header";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import colors from "../../../../constants/colors";
@@ -15,13 +14,8 @@ export default function RequestProducts() {
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <Header
-                text="Produtos da Solicitação"
-                navigationType="back"
-            />
 
             <View style={styles.cardsContainer}>
-
                 <FlatList
                     data={products}
                     keyExtractor={(_, index) => index.toString()}

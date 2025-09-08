@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Header } from "@/components/header";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { userDataStore } from "../../../../store/userDataStore";
 import colors from "../../../../constants/colors";
+import { Octicons } from "@expo/vector-icons";
 
 export default function Requests() {
 
@@ -61,18 +61,14 @@ export default function Requests() {
     }
 
     return (
-        <SafeAreaView style={styles.container} edges={["bottom"]}>
-            <Header
-                text="Demanda"
-                navigationType="back"
-            />
-            <View style={styles.listBox}>
+        <SafeAreaView style={styles.container} edges={['bottom']}>
+            <View style={styles.contentBox}>
                 <View style={styles.filterBox}>
                     <Text style={styles.filterText}>
                         Ordernar Por:
                     </Text>
                 </View>
-                <View style={styles.cardsContainer}>
+                <View style={styles.flatListBox}>
 
                     <FlatList
                         data={requests}
@@ -87,15 +83,15 @@ export default function Requests() {
                                     <Text style={styles.cardTitle}>
                                         # {item.requestId}
                                     </Text>
-                                    <View style={styles.requestBox}>
+                                    <View style={styles.requestDataBox}>
                                         <View>
                                             <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.branchId}</Text>
                                             {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
-                                            <View style={styles.datas}>
+                                            <View style={styles.dates}>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
                                                 <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
                                             </View>
-                                            <View style={styles.statusContainer}>
+                                            <View style={styles.statusBox}>
                                                 <Text style={styles.label}>
                                                     Status:
                                                 </Text>
@@ -106,11 +102,11 @@ export default function Requests() {
                                             </View>
 
                                         </View>
-                                        <View style={styles.containerButton}>
-                                            <Image
-                                                style={styles.verMaisIcon}
-                                                source={require("../../../../assets/images/Vector-1x.png")}
-                                                resizeMode="contain"
+                                        <View style={styles.iconBox}>
+                                            <Octicons
+                                                name="chevron-right"
+                                                size={40}
+                                                color={colors.gray}
                                             />
                                         </View>
                                     </View>
@@ -129,34 +125,33 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
-    listBox: {
+    contentBox: {
         paddingHorizontal: 14,
-        paddingTop: 20,
         flex: 1,
     },
     filterBox: {
         backgroundColor: colors.gray,
-        width: "35%",
-        height: "4%",
-        borderRadius: 4,
+        height: 30,
+        width: 140,
+        borderRadius: 20,
         alignItems: "center",
-        justifyContent: "center"
+        justifyContent: "center",
+        marginVertical: 15,
     },
     filterText: {
         fontFamily: "Lexend-Regular",
         color: "white"
     },
-    cardsContainer: {
-        paddingVertical: 20
+    flatListBox: {
+        paddingBottom: 60
     },
     card: {
         backgroundColor: "white",
         borderRadius: 12,
         paddingHorizontal: 12,
-        paddingVertical: 8,
+        paddingVertical: 14,
         marginBottom: 15,
         borderColor: colors.gray,
-        // borderWidth: 1,
     },
     cardTitle: {
         fontSize: 16,
@@ -171,38 +166,31 @@ const styles = StyleSheet.create({
         color: colors.gray,
         fontFamily: "Lexend-Regular"
     },
-    requestBox: {
+    requestDataBox: {
         flexDirection: "row",
-        marginBottom: 8,
         alignItems: "center",
         justifyContent: "space-between"
     },
-    containerButton: {
+    dates: {
     },
-    verMaisIcon: {
-        width: 24,
-        height: 24,
-    },
-    buttonVerMais: {
-        paddingLeft: 100,
-        paddingRight: 10,
-        paddingVertical: 10,
-        alignItems: "center",
-    },
-    datas: {
-    },
-    statusContainer: {
+    statusBox: {
         flexDirection: "row",
         alignItems: "center",
         gap: 10
+    },
+    statusText: {
+        fontFamily: "Lexend-Regular"
     },
     dotView: {
         borderRadius: 50,
         width: 13,
         height: 13,
     },
-    statusText: {
-        fontFamily: "Lexend-Regular"
-    }
+    iconBox: {
+        width: 40,
+        height: 40,
+        alignItems: "center",
+        justifyContent: "center"
+    },
 
 })
