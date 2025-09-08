@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-nati
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
-import { Ionicons, MaterialIcons, Feather, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Feather, Octicons, FontAwesome6, } from "@expo/vector-icons";
 
 export default function Home() {
 
@@ -13,16 +13,8 @@ export default function Home() {
     const [primeiroNome, setPrimeiroNome] = useState("");
     const [countValidade, setCountValidade] = useState(0);
 
-    const goToRelatorios = () => {
-        router.push("./selectReport");
-    }
-
     const goToVistoriaDemanda = () => {
         router.push("./validityRequest/requests");
-    }
-
-    const goToSelecaoFilial2 = () => {
-        router.push("./validityRequest/selectFilialRequest");
     }
 
     const contarVistorias = async () => {
@@ -83,39 +75,41 @@ export default function Home() {
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.buttonsBox}>
-                    <TouchableOpacity
-                        style={styles.historicBox}
-                        onPress={() => { router.push("./history"); }}
-                    >
-                        <MaterialIcons
-                            name="history"
-                            size={50}
-                            color={colors.white}
-                        />
-                        <Text style={styles.buttonsText}>
-                            Histórico
-                        </Text>
-                    </TouchableOpacity>
+                <View style={styles.validityBox}>
+                    <Text style={styles.title}>
+                        Vistoria
+                    </Text>
+                    <View style={styles.buttonsBox}>
 
-                    <TouchableOpacity
-                        style={styles.addBox}
-                        onPress={() => { router.push("./validityForm/selectType"); }}
-                    >
-                        <Feather
-                            name="clipboard"
-                            size={50}
-                            color={colors.white}
-                        />
-                        <Text style={styles.buttonsText}>
-                            Vistoria
-                        </Text>
-                    </TouchableOpacity>
-                    {/* <SmallButton
-                            title="Add"
-                            onPress={goToSelecaoTipoVistoria}
-                            backgroundColor={colors.red2}
-                        /> */}
+                        <TouchableOpacity
+                            style={styles.requestBox}
+                            onPress={() => { router.push("./validityForm/selectRequest"); }}
+                        >
+                            <FontAwesome6
+                                name="envelope-open-text"
+                                size={50}
+                                color={colors.white}
+                            />
+                            <Text style={styles.buttonsText}>
+                                Solicitação
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={styles.singleBox}
+                            onPress={() => { router.push("./validityForm/selectFilialValidity"); }}
+                        >
+                            <FontAwesome6
+                                name="clipboard"
+                                size={50}
+                                color={colors.white}
+                            />
+                            <Text style={styles.buttonsText}>
+                                Avulsa
+                            </Text>
+                        </TouchableOpacity>
+
+                    </View>
 
                 </View>
 
@@ -159,7 +153,7 @@ export default function Home() {
                             </TouchableOpacity>
                         )} */}
 
-                        <TouchableOpacity onPress={goToVistoriaDemanda}>
+                        <TouchableOpacity onPress={goToVistoriaDemanda} style={{ borderBottomWidth: 1, borderColor: colors.gray }}>
                             <View style={styles.opcaoMenu}>
                                 <View style={styles.optionIcon}>
                                     <Octicons
@@ -170,6 +164,21 @@ export default function Home() {
                                 </View>
 
                                 <Text style={styles.textOptions}>Vistorias à fazer</Text>
+                            </View>
+                        </TouchableOpacity>
+
+
+                        <TouchableOpacity onPress={() => { router.push("./history") }}>
+                            <View style={styles.opcaoMenu}>
+                                <View style={styles.optionIcon}>
+                                    <Octicons
+                                        name="history"
+                                        color={colors.gray}
+                                        size={25}
+                                    />
+                                </View>
+
+                                <Text style={styles.textOptions}>Histórico</Text>
                             </View>
                         </TouchableOpacity>
 
@@ -238,16 +247,11 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white,
         borderRadius: 10,
 
-        // borderColor: colors.gray,
-        // borderWidth: 2,
-    },
-    buttonsBox: {
-        paddingVertical: 30,
-        paddingHorizontal: 20,
+    }, validityBox: {
+
+        padding: 20,
         backgroundColor: colors.white,
         borderRadius: 20,
-        flexDirection: "row",
-        justifyContent: "space-between",
         shadowColor: "#000",
         shadowOffset: {
             width: 0,
@@ -255,10 +259,13 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.29,
         shadowRadius: 4.65,
-
         elevation: 7,
     },
-    historicBox: {
+    buttonsBox: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    requestBox: {
         paddingVertical: 20,
         alignItems: "center",
         backgroundColor: colors.gray,
@@ -266,7 +273,7 @@ const styles = StyleSheet.create({
         width: "47%",
         gap: 5,
     },
-    addBox: {
+    singleBox: {
         paddingVertical: 20,
         alignItems: "center",
         backgroundColor: colors.red2,
