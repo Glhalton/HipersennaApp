@@ -5,7 +5,7 @@ import ModalPopup from "@/components/modalPopup";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
@@ -13,6 +13,9 @@ import { validityInsertStore } from "../../../../store/validityInsertStore";
 import { useNavigation } from "expo-router";
 
 export default function ValidityForm() {
+
+       const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     //Dados do Store
     const productsList = validityInsertStore((state) => state.productsList);
@@ -133,7 +136,7 @@ export default function ValidityForm() {
     };
 
     return (
-        <SafeAreaView style={styles.container} edges={["bottom"]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background}]} edges={["bottom"]}>
             <View style={styles.formBox}>
                 <View style={styles.productInfoBox}>
                     <View style={styles.productCodeBox}>
@@ -148,9 +151,9 @@ export default function ValidityForm() {
                         />
                     </View>
                 </View>
-                <View style={styles.productNameBox}>
+                <View style={[styles.productNameBox, {backgroundColor: theme.uiBackground}]}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <Text style={styles.productNameText}>
+                        <Text style={[styles.productNameText, {color: theme.title}]}>
                             {loading ? <ActivityIndicator /> : description || "Produto não encontrado"}
                         </Text>
                     </ScrollView>
@@ -199,6 +202,7 @@ export default function ValidityForm() {
                             <LargeButton
                                 text="Resumo"
                                 onPress={() => { console.log(productsList); router.push("./validitySummary") }}
+                                backgroundColor={theme.red}
                             />
                         </View>
                     )}

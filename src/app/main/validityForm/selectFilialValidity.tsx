@@ -81,6 +81,7 @@ export default function SelectFilialValidity() {
                         <LargeButton
                             text="Continuar"
                             onPress={() => { addValidity(); router.replace("./validityForm"); }}
+                            backgroundColor={theme.red}
                         />
                     </View>
                 )}

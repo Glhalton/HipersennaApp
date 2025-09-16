@@ -1,3 +1,4 @@
+
 {
   "expo": {
     "name": "hipersennaApp",
@@ -14,7 +15,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/HipersennaBlackLogo.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#22252f"
       },
       "edgeToEdgeEnabled": true
     },
@@ -31,7 +32,7 @@
           "image": "./assets/images/HipersennaBlackLogo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#22252f"
         }
       ],
       "expo-font"

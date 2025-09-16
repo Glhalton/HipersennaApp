@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, useColorScheme, View } from "react-native";
 import { Colors } from "../../../constants/colors";
 import { styles } from "./styles";
 
@@ -10,7 +10,11 @@ type Props = TouchableOpacityProps & {
     loading?: boolean,
 }
 
+
 export function LargeButton({ text, color = "white", backgroundColor = Colors.red2, loading, ...rest }: Props) {
+
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     return (
         <View>

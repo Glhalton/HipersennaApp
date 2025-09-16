@@ -1,13 +1,16 @@
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
 import React from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 
 export default function ValiditySummary() {
+
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     //Lista de itens inseridos do Formulário
     const validityData = validityInsertStore((state) => state.validityData)
@@ -52,11 +55,10 @@ export default function ValiditySummary() {
     };
 
     return (
-        <SafeAreaView style={styles.container} edges={["bottom"]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
             <View style={styles.cardsBox}>
-
                 <View style={styles.filialTitleBox}>
-                    <Text style={styles.filialTitleText}>
+                    <Text style={[styles.filialTitleText, { color: theme.title }]}>
                         Filial:  {validityData.branchId}
                     </Text>
                 </View>
@@ -66,21 +68,21 @@ export default function ValiditySummary() {
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
-                        <View style={styles.card}>
-                            <Text style={styles.cardTitleText}>#{index + 1} - {item.description}</Text>
+                        <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                            <Text style={[styles.cardTitleText, { color: theme.title }]}>#{index + 1} - {item.description}</Text>
                             <View style={styles.productDataBox}>
                                 <View>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Código:</Text> {item.codProduct}</Text>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Validade:</Text> {new Date(item.validityDate).toLocaleDateString("pt-BR")}</Text>
+                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.codProduct}</Text>
+                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Validade:</Text> {new Date(item.validityDate).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
-                                    <Text style={styles.productDataText}><Text style={styles.label}>Quantidade:</Text> {item.quantity}</Text>
+                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}</Text>
                                 </View>
                             </View>
 
 
                             <TouchableOpacity
-                                style={styles.removeButton}
+                                style={[styles.removeButton, {backgroundColor: theme.red}]}
                                 onPress={() => removeProduct(index)}
                             >
                                 <Text style={styles.removeText}>Remover</Text>
@@ -93,6 +95,7 @@ export default function ValiditySummary() {
                     <LargeButton
                         text="Salvar dados"
                         onPress={inserirValidade}
+                        backgroundColor={theme.red}
                     />
                 </View>
             </View>

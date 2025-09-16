@@ -51,8 +51,7 @@ export default function Home() {
     }, []);
 
     return (
-
-        <SafeAreaView className="bg-red-200" style={[styles.container, { backgroundColor: theme.background }]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView style={[styles.scroll, { backgroundColor: theme.background, }]} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
 
                 <View style={styles.header}>
@@ -311,7 +310,6 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.29,
         shadowRadius: 4.65,
-
         elevation: 7,
     },
     dashboardItemText: {

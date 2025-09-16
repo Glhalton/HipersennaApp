@@ -3,12 +3,15 @@ import ModalPopup from "@/components/modalPopup";
 import { SmallButton } from "@/components/smallButton";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function ValidityRequestProducts() {
+
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     const productList = validityInsertStore((state) => state.productsList);
     const resetProducts = validityInsertStore((state) => state.resetProducts);
@@ -60,12 +63,13 @@ export default function ValidityRequestProducts() {
     function getColor(status: string | undefined) {
         if (status === "1") return "#5FE664";
         if (status === "3") return Colors.red2;
-        return "white";
+        return theme.uiBackground;
     }
 
     function getColorText(status: string | undefined) {
         if (status === "3") return "white";
-        return Colors.blue;
+        if (status === "1") return Colors.blue;
+        return theme.text;
     }
 
     useEffect(() => {
@@ -133,10 +137,10 @@ export default function ValidityRequestProducts() {
 
 
     return (
-        <SafeAreaView edges={["bottom"]} style={styles.container}>
+        <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={styles.cardsContainer}>
                 <View style={styles.titleBox}>
-                    <Text style={styles.titleText}>
+                    <Text style={[styles.titleText, { color: theme.title }]}>
                         Digite a quantidade para cada produto:
                     </Text>
                 </View>
@@ -181,6 +185,7 @@ export default function ValidityRequestProducts() {
                         <LargeButton
                             text="Finalizar validade"
                             onPress={insertValidity}
+                            backgroundColor={theme.red}
                         />
                     </View>
                 )}
@@ -206,17 +211,16 @@ export default function ValidityRequestProducts() {
                 <View style={styles.modalContainerCenter}>
                     <View style={styles.modalBox}>
                         <View style={styles.productDataBox}>
-                            <Text style={styles.label}>Cod. Produto: <Text style={styles.productDataText}>{selectedProduct?.codProduct}</Text></Text>
-                            <Text style={styles.label}>Descrição: <Text style={styles.productDataText}>{selectedProduct?.description}</Text></Text>
-                            <Text style={styles.label}>Dt. Validade: <Text style={styles.productDataText}>{selectedProduct?.validityDate}</Text></Text>
+                            <Text style={styles.labelModal}>Cod. Produto: <Text style={styles.productDataText}>{selectedProduct?.codProduct}</Text></Text>
+                            <Text style={styles.labelModal}>Descrição: <Text style={styles.productDataText}>{selectedProduct?.description}</Text></Text>
+                            <Text style={styles.labelModal}>Dt. Validade: <Text style={styles.productDataText}>{selectedProduct?.validityDate}</Text></Text>
                             <View style={styles.inputBox}>
-                                <Text style={styles.label}>Quant:</Text>
+                                <Text style={styles.labelModal}>Quant:</Text>
                                 <TextInput
                                     style={styles.input}
                                     inputMode="numeric"
                                     value={quantity}
                                     onChangeText={setQuantity}
-
                                 />
                             </View>
 
@@ -280,6 +284,11 @@ const styles = StyleSheet.create({
         fontFamily: "Lexend-Bold",
         color: Colors.blue,
     },
+    labelModal: {
+        fontFamily: "Lexend-Bold",
+        fontSize: 16,
+        color: Colors.blue,
+    },
     textHeader: {
         fontFamily: "Lexend-Regular",
         color: "white",
@@ -318,7 +327,7 @@ const styles = StyleSheet.create({
     productDataBox: {
         paddingTop: 60,
         gap: 6,
-        alignItems: "center",
+        
 
     },
     inputBox: {

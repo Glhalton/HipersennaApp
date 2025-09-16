@@ -28,21 +28,23 @@ export function Input(Props: Props) {
     return (
         <Fragment>
             {label &&
-                <Text style={styles.label}>{label}</Text>
+                <Text style={[styles.label, { color: theme.text}]}>{label}</Text>
             }
-            <View style={[styles.boxInput, {backgroundColor: theme.uiBackground}]}>
+            <View style={[styles.boxInput, {backgroundColor: theme.inputColor}]}>
                 {IconLeft && iconLeftName && (
                     <TouchableOpacity onPress={onIconLeftPress}>
-                        <IconLeft name={iconLeftName as any} size={20} color={Colors.gray} style={styles.iconLeft} />
+                        <IconLeft name={iconLeftName as any} size={20} color={theme.iconColor} style={styles.iconLeft} />
                     </TouchableOpacity>
                 )}
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: theme.inputColor, color: theme.text}]}
+                    placeholderTextColor={theme.inputPlaceholder}
+                    
                     {...rest}
                 />
                 {IconRight && iconRightName && (
                     <TouchableOpacity onPress={onIconRightPress}>
-                        <IconRight name={iconRightName as any} size={20} color={Colors.gray} style={styles.iconRight} />
+                        <IconRight name={iconRightName as any} size={20} color={theme.iconColor} style={styles.iconRight} />
                     </TouchableOpacity>
                 )}
             </View>

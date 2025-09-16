@@ -3,12 +3,15 @@ import { LargeButton } from "@/components/largeButton";
 import { FontAwesome, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
 
 export default function Login() {
+
+  const colorScheme = useColorScheme() ?? "light";
+  const theme = Colors[colorScheme];
 
   const setUserId = userDataStore((state) => state.setUserId);
   const setNivelAcesso = userDataStore((state) => state.setNivelAcesso);
@@ -72,7 +75,7 @@ export default function Login() {
         </Text>
       </View>
 
-      <View style={styles.formBox}>
+      <View style={[styles.formBox, { backgroundColor: theme.background }]}>
         <View style={styles.inputBox}>
           <Input
             value={username}
@@ -100,7 +103,7 @@ export default function Login() {
         </View>
 
         <TouchableOpacity style={styles.forgotPasswordButton}>
-          <Text style={styles.forgotPasswordText}>
+          <Text style={[styles.forgotPasswordText, {color: theme.title}]}>
             Esqueceu a sua senha?
           </Text>
         </TouchableOpacity>
@@ -109,11 +112,12 @@ export default function Login() {
           text="Login"
           onPress={getLogin}
           loading={loading}
+          backgroundColor={theme.red}
         />
 
         <TouchableOpacity style={styles.buttonBox} onPress={goToSignup}>
-          <Text style={styles.signupText}>
-            Não tem uma conta? <Text style={{ color: Colors.blue, }}>Crie agora!</Text>
+          <Text style={[styles.signupText, {color: theme.title}]}>
+            Não tem uma conta? <Text style={{ color: theme.link }}>Crie agora!</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -124,7 +128,7 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0D0D0D",
+    backgroundColor: "#0e0e0eff",
     alignItems: "center",
   },
   header: {

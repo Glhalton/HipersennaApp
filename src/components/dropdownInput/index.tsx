@@ -22,11 +22,11 @@ export function DropdownInput({ label, value, items, onChange }: DropDownInputPr
     return (
         <Fragment>
             {label && (
-                <Text style={[styles.label, {color: theme.text}]}>
+                <Text style={[styles.label, { color: theme.text }]}>
                     {label}
                 </Text>
             )}
-            <View style={[styles.container, {backgroundColor: theme.inputColor}]}>
+            <View style={[styles.container, { backgroundColor: theme.inputColor }]}>
                 <DropDownPicker
                     open={open}
                     value={value}
@@ -38,10 +38,10 @@ export function DropdownInput({ label, value, items, onChange }: DropDownInputPr
                     }}
                     setItems={setDropDownItems}
                     placeholder="Selecione uma opção"
-                    style={[styles.dropdownInput, {backgroundColor: theme.inputColor}]}
-                    dropDownContainerStyle={styles.optionsBox}
-                    textStyle={styles.optionsText}
-                    placeholderStyle={[styles.placeholder,{color: theme.text}]}
+                    style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+                    dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
+                    textStyle={[styles.optionsText, { color: theme.text }]}
+                    placeholderStyle={[styles.placeholder, { color: theme.text }]}
                 />
             </View>
         </Fragment>
