@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import colors from "../../../constants/colors";
+import { Colors } from "../../../constants/colors";
 
 export const styles = StyleSheet.create({
     container: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     dataInputBox: {
         width: "100%",
         height: "100%",
-        backgroundColor: colors.inputColor,
+        backgroundColor: Colors.inputColor,
         borderRadius: 20,
         justifyContent: "center"
     },
@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
         paddingLeft: 15,
     },
     label: {
-        color: colors.blue,
+        color: Colors.blue,
         marginBottom: 6,
         fontFamily: "Lexend-Regular",
     },

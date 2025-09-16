@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../constants/colors";
+import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
 
 export default function Login() {
@@ -113,7 +113,7 @@ export default function Login() {
 
         <TouchableOpacity style={styles.buttonBox} onPress={goToSignup}>
           <Text style={styles.signupText}>
-            Não tem uma conta? <Text style={{ color: colors.blue, }}>Crie agora!</Text>
+            Não tem uma conta? <Text style={{ color: Colors.blue, }}>Crie agora!</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   forgotPasswordText: {
-    color: colors.blue,
+    color: Colors.blue,
     fontFamily: "Lexend-Regular",
   },
   buttonBox: {
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   signupText: {
-    color: colors.gray,
+    color: Colors.gray,
     fontSize: 14,
     fontFamily: "Lexend-Regular",
   }

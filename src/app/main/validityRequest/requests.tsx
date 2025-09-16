@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { userDataStore } from "../../../../store/userDataStore";
-import colors from "../../../../constants/colors";
-import { Octicons } from "@expo/vector-icons";
 
 export default function Requests() {
 
@@ -106,7 +106,7 @@ export default function Requests() {
                                             <Octicons
                                                 name="chevron-right"
                                                 size={40}
-                                                color={colors.gray}
+                                                color={Colors.gray}
                                             />
                                         </View>
                                     </View>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     filterBox: {
-        backgroundColor: colors.gray,
+        backgroundColor: Colors.gray,
         height: 30,
         width: 140,
         borderRadius: 20,
@@ -151,19 +151,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 14,
         marginBottom: 15,
-        borderColor: colors.gray,
+        borderColor: Colors.gray,
     },
     cardTitle: {
         fontSize: 16,
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     label: {
         fontFamily: "Lexend-Regular",
-        color: colors.blue,
+        color: Colors.blue,
     },
     text: {
-        color: colors.gray,
+        color: Colors.gray,
         fontFamily: "Lexend-Regular"
     },
     requestDataBox: {

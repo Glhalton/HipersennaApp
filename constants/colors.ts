@@ -1,6 +1,4 @@
-import { Background } from "@react-navigation/elements";
-
-export default{
+export const Colors = {
     red: "#DA0100",
     red2: "#F22727",
     blue: "#205072",
@@ -9,5 +7,30 @@ export default{
     inputColor: "#F4F6F8",
     background: "#F2F3F5",
     white: "#ffffff",
-    black: "#202020"
+    black: "#202020",
+
+    dark: {
+        text: "#cfcfcfff",
+        title: "#F2F3F5",
+        background: "#22252f",
+        navBackground: "#950101",
+        iconColor: "#F2F3F5",
+        iconColorFocused: "#4A5A6A",
+        uiBackground: "#292c38",
+        inputColor: "#474c61ff",
+        red: "#950101",
+        gray: "#333446",
+    },
+    light: {
+        text: "#4A5A6A",
+        title: "#205072",
+        background: "#F4F6F8",
+        navBackground: "#F22727",
+        iconColor: "#4A5A6A",
+        iconColorFocused: "#4A5A6A",
+        uiBackground: "#F4F6F8",
+        inputColor: "#F4F6F8",
+        red: "#F22727",
+        gray: "#4A5A6A",
+    },
 }

@@ -1,10 +1,9 @@
-import React from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
+import React from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
-import { userDataStore } from "../../../../store/userDataStore";
+import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 
@@ -112,7 +111,7 @@ const styles = StyleSheet.create({
     filialTitleText: {
         fontFamily: "Lexend-Bold",
         fontSize: 30,
-        color: colors.blue,
+        color: Colors.blue,
     },
     cardsBox: {
         paddingHorizontal: 14,
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Lexend-Bold",
         marginBottom: 6,
-        color: colors.blue,
+        color: Colors.blue,
 
     },
     productDataBox: {
@@ -139,11 +138,11 @@ const styles = StyleSheet.create({
     },
     label: {
         fontFamily: "Lexend-Regular",
-        color: colors.blue,
+        color: Colors.blue,
     },
     productDataText: {
         fontFamily: "Lexend-Regular",
-        color: colors.gray,
+        color: Colors.gray,
     },
     removeButton: {
         backgroundColor: "#f72929ff",

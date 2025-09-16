@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
-import { userDataStore } from "../../../../store/userDataStore";
-import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
 import { Octicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import React, { useEffect } from "react";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../../../constants/colors";
+import { userDataStore } from "../../../../store/userDataStore";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
 
 export default function SelectRequest() {
 
@@ -130,7 +130,7 @@ export default function SelectRequest() {
                                             <Octicons
                                                 name="chevron-right"
                                                 size={40}
-                                                color={colors.gray}
+                                                color={Colors.gray}
                                             />
                                         </View>
 
@@ -149,7 +149,7 @@ export default function SelectRequest() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background
+        backgroundColor: Colors.background
     },
     contentBox: {
         paddingHorizontal: 14,
@@ -160,11 +160,11 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontFamily: "Lexend-SemiBold",
-        color: colors.blue,
+        color: Colors.blue,
         fontSize: 25
     },
     filterBox: {
-        backgroundColor: colors.gray,
+        backgroundColor: Colors.gray,
         height: 30,
         width: 140,
         borderRadius: 20,
@@ -185,19 +185,19 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 14,
         marginBottom: 15,
-        borderColor: colors.gray,
+        borderColor: Colors.gray,
     },
     cardTitle: {
         fontSize: 16,
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     label: {
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     text: {
-        color: colors.gray,
+        color: Colors.gray,
         fontFamily: "Lexend-Regular"
     },
     requestDataBox: {

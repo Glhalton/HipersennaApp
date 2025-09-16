@@ -1,7 +1,8 @@
 import React, { Fragment, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, useColorScheme } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { styles } from "./styles";
+import { Colors } from "../../../constants/colors";
 
 interface DropDownInputProps {
     value: string | null;
@@ -10,18 +11,22 @@ interface DropDownInputProps {
     label?: string;
 }
 
-export function DropdownInput({label, value, items, onChange }: DropDownInputProps) {
+export function DropdownInput({ label, value, items, onChange }: DropDownInputProps) {
+
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
+
     const [open, setOpen] = React.useState(false);
     const [dropDownItems, setDropDownItems] = React.useState(items);
 
     return (
         <Fragment>
-            { label && (
-                <Text style={styles.label}>
+            {label && (
+                <Text style={[styles.label, {color: theme.text}]}>
                     {label}
                 </Text>
             )}
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: theme.inputColor}]}>
                 <DropDownPicker
                     open={open}
                     value={value}
@@ -33,10 +38,10 @@ export function DropdownInput({label, value, items, onChange }: DropDownInputPro
                     }}
                     setItems={setDropDownItems}
                     placeholder="Selecione uma opção"
-                    style={styles.dropdownInput}
+                    style={[styles.dropdownInput, {backgroundColor: theme.inputColor}]}
                     dropDownContainerStyle={styles.optionsBox}
                     textStyle={styles.optionsText}
-                    placeholderStyle={styles.placeholder}
+                    placeholderStyle={[styles.placeholder,{color: theme.text}]}
                 />
             </View>
         </Fragment>

@@ -1,12 +1,14 @@
-import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../constants/colors";
+import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
-import { Ionicons, MaterialIcons, Feather, Octicons, FontAwesome6, } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 
 export default function Home() {
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     const userId = userDataStore((state) => state.userId);
     const nivelAcesso = userDataStore((state) => state.nivelAcesso)
@@ -50,45 +52,43 @@ export default function Home() {
 
     return (
 
-        <SafeAreaView className="bg-red-200" style={styles.container}>
-            <ScrollView style={styles.scroll} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
+        <SafeAreaView className="bg-red-200" style={[styles.container, { backgroundColor: theme.background }]}>
+            <ScrollView style={[styles.scroll, { backgroundColor: theme.background, }]} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
 
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.helloText}>
+                        <Text style={[styles.helloText, { color: theme.title }]}>
                             Olá, {primeiroNome}.
                         </Text>
-                        <Text style={styles.subTitleText}>
+                        <Text style={[styles.subTitleText, { color: theme.text }]}>
                             SennaApp
                         </Text>
 
                     </View>
 
-
-                    <TouchableOpacity style={styles.settings} onPress={() => router.push("./settings")}>
+                    <TouchableOpacity style={[styles.settings, { backgroundColor: theme.uiBackground }]} onPress={() => router.push("./settings")}>
                         <Ionicons
                             name="settings-sharp"
-                            color={colors.gray}
+                            color={theme.iconColor}
                             size={30}
-
                         />
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.validityBox}>
-                    <Text style={styles.title}>
+                <View style={[styles.validityBox, { backgroundColor: theme.uiBackground }]}>
+                    <Text style={[styles.title, { color: theme.title }]}>
                         Vistoria
                     </Text>
                     <View style={styles.buttonsBox}>
 
                         <TouchableOpacity
-                            style={styles.requestBox}
+                            style={[styles.requestBox, {backgroundColor: theme.gray}]}
                             onPress={() => { router.push("./validityForm/selectRequest"); }}
                         >
                             <FontAwesome6
                                 name="envelope-open-text"
                                 size={50}
-                                color={colors.white}
+                                color={Colors.white}
                             />
                             <Text style={styles.buttonsText}>
                                 Solicitação
@@ -96,13 +96,13 @@ export default function Home() {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={styles.singleBox}
+                            style={[styles.singleBox, {backgroundColor: theme.red}]}
                             onPress={() => { router.push("./validityForm/selectFilialValidity"); }}
                         >
                             <FontAwesome6
                                 name="clipboard"
                                 size={50}
-                                color={colors.white}
+                                color={Colors.white}
                             />
                             <Text style={styles.buttonsText}>
                                 Avulsa
@@ -113,29 +113,29 @@ export default function Home() {
 
                 </View>
 
-                <View style={styles.dashboardBox}>
-                    <Text style={styles.title}>
+                <View style={[styles.dashboardBox]}>
+                    <Text style={[styles.title, { color: theme.title }]}>
                         Dashboard
                     </Text>
 
-                    <View style={styles.dashboardRowItens}>
-                        <View style={styles.dashboardItem}>
-                            <Text style={styles.dashboardItemText}>Total de vistorias: </Text>
-                            <Text style={styles.dashboardItemValue}>{countValidade}</Text>
+                    <View style={[styles.dashboardRowItens,]}>
+                        <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+                            <Text style={[styles.dashboardItemText, { color: theme.text }]}>Total de vistorias: </Text>
+                            <Text style={[styles.dashboardItemValue, { color: theme.text }]}>{countValidade}</Text>
                         </View>
-                        <View style={styles.dashboardItem}>
-                            <Text style={styles.dashboardItemText}>Vencerão em breve:</Text>
-                            <Text style={styles.dashboardItemValue}>0</Text>
+                        <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+                            <Text style={[styles.dashboardItemText, { color: theme.text }]}>Vencerão em breve:</Text>
+                            <Text style={[styles.dashboardItemValue, { color: theme.text }]}>0</Text>
                         </View>
                     </View>
-                    <View style={styles.dashboardLargeItem}>
-                        <Text style={styles.dashboardItemText}>Vencidos:</Text>
-                        <Text style={styles.dashboardItemValue}>0</Text>
+                    <View style={[styles.dashboardLargeItem, { backgroundColor: theme.uiBackground }]}>
+                        <Text style={[styles.dashboardItemText, { color: theme.text }]}>Vencidos:</Text>
+                        <Text style={[styles.dashboardItemValue, { color: theme.text }]}>0</Text>
                     </View>
                 </View>
 
-                <View style={styles.containerAcessoRapido}>
-                    <Text style={styles.title}>
+                <View style={[styles.containerAcessoRapido, { backgroundColor: theme.uiBackground }]}>
+                    <Text style={[styles.title, { color: theme.title }]}>
                         Acesso rápido
                     </Text>
                     <View>
@@ -144,7 +144,7 @@ export default function Home() {
                                 <View style={styles.opcaoMenu}>
                                     <Octicons
                                         name="plus-circle"
-                                        color={colors.gray}
+                                        color={Colors.gray}
                                         size={21}
                                     />
                                     <Image style={styles.imgIcon} source={require("../../../assets/images/SinoIcon.png")} />
@@ -153,17 +153,17 @@ export default function Home() {
                             </TouchableOpacity>
                         )} */}
 
-                        <TouchableOpacity onPress={goToVistoriaDemanda} style={{ borderBottomWidth: 1, borderColor: colors.gray }}>
+                        <TouchableOpacity onPress={goToVistoriaDemanda} style={{ borderBottomWidth: 1, borderColor: Colors.gray }}>
                             <View style={styles.opcaoMenu}>
                                 <View style={styles.optionIcon}>
                                     <Octicons
                                         name="checklist"
-                                        color={colors.gray}
+                                        color={theme.iconColor}
                                         size={25}
                                     />
                                 </View>
 
-                                <Text style={styles.textOptions}>Vistorias à fazer</Text>
+                                <Text style={[styles.textOptions, { color: theme.text }]}>Vistorias à fazer</Text>
                             </View>
                         </TouchableOpacity>
 
@@ -173,12 +173,12 @@ export default function Home() {
                                 <View style={styles.optionIcon}>
                                     <Octicons
                                         name="history"
-                                        color={colors.gray}
+                                        color={theme.iconColor}
                                         size={25}
                                     />
                                 </View>
 
-                                <Text style={styles.textOptions}>Histórico</Text>
+                                <Text style={[styles.textOptions, { color: theme.text }]}>Histórico</Text>
                             </View>
                         </TouchableOpacity>
 
@@ -208,16 +208,16 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.black,
+        backgroundColor: Colors.black,
         alignItems: "center",
     },
     scroll: {
-        backgroundColor: colors.background,
+        backgroundColor: Colors.background,
         width: "100%",
         maxWidth: 600
     },
     contentStyleScroll: {
-        color: colors.blue,
+        color: Colors.blue,
         paddingHorizontal: 14,
         paddingVertical: 20,
 
@@ -232,11 +232,11 @@ const styles = StyleSheet.create({
     helloText: {
         fontSize: 22,
         fontFamily: "Lexend-SemiBold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     subTitleText: {
         fontFamily: "Lexend-Regular",
-        color: colors.gray,
+        color: Colors.gray,
         fontSize: 18,
     },
     settings: {
@@ -244,13 +244,13 @@ const styles = StyleSheet.create({
         height: 45,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         borderRadius: 10,
 
     }, validityBox: {
 
         padding: 20,
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         borderRadius: 20,
         shadowColor: "#000",
         shadowOffset: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     requestBox: {
         paddingVertical: 20,
         alignItems: "center",
-        backgroundColor: colors.gray,
+        backgroundColor: Colors.gray,
         borderRadius: 20,
         width: "47%",
         gap: 5,
@@ -276,14 +276,14 @@ const styles = StyleSheet.create({
     singleBox: {
         paddingVertical: 20,
         alignItems: "center",
-        backgroundColor: colors.red2,
+        backgroundColor: Colors.red2,
         borderRadius: 20,
         width: "47%",
         gap: 5,
     },
     buttonsText: {
         fontFamily: "Lexend-SemiBold",
-        color: colors.white,
+        color: Colors.white,
     },
     dashboardBox: {
         paddingTop: 20,
@@ -292,7 +292,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 22,
         fontFamily: "Lexend-SemiBold",
-        color: colors.blue,
+        color: Colors.blue,
         marginBottom: 15,
     },
     dashboardRowItens: {
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     dashboardItem: {
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         padding: 24,
         width: "48%",
         borderRadius: 12,
@@ -316,16 +316,16 @@ const styles = StyleSheet.create({
     },
     dashboardItemText: {
         fontSize: 16,
-        color: colors.blue,
+        color: Colors.blue,
         fontFamily: "Lexend-Regular",
     },
     dashboardItemValue: {
         fontSize: 22,
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     dashboardLargeItem: {
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         borderRadius: 12,
         marginTop: 15,
         padding: 24,
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
         elevation: 7,
     },
     containerAcessoRapido: {
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
         borderRadius: 20,
         padding: 20,
         shadowColor: "#000",
@@ -360,14 +360,14 @@ const styles = StyleSheet.create({
         gap: 20,
     },
     textOptions: {
-        color: colors.gray,
+        color: Colors.gray,
         fontSize: 16,
         fontFamily: "Lexend-Regular",
     },
     optionIcon: {
         justifyContent: "center",
         alignItems: "center",
-        borderColor: colors.gray,
+        borderColor: Colors.gray,
         borderWidth: 2,
         borderRadius: 10,
         width: 40,

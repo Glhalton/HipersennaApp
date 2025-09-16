@@ -6,7 +6,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
+import { Colors } from "../../../../constants/colors";
 import { requestsInsertStore } from "../../../../store/requestsInsertStore";
 
 export default function RequestForm() {
@@ -46,7 +46,7 @@ export default function RequestForm() {
             }
         } catch (erro) {
             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-        } finally{
+        } finally {
             setLoading(false)
         }
     };
@@ -106,7 +106,7 @@ export default function RequestForm() {
                     <View style={styles.productNameBox}>
                         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                             <Text style={styles.productNameText}>
-                                {loading ? <ActivityIndicator color={colors.blue} /> : nomeProduto || "Produto não encontrado"}
+                                {loading ? <ActivityIndicator color={Colors.blue} /> : nomeProduto || "Produto não encontrado"}
                             </Text>
                         </ScrollView>
                     </View>
@@ -116,7 +116,7 @@ export default function RequestForm() {
                     <View style={styles.inserirButton}>
                         <LargeButton
                             text="Inserir"
-                            backgroundColor={colors.gray}
+                            backgroundColor={Colors.gray}
                             onPress={handlerAdicionar}
                         />
                     </View>
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     },
     productNameText: {
         fontSize: 15,
-        color: colors.gray,
+        color: Colors.gray,
         fontFamily: "Lexend-Bold",
     },
 

@@ -1,8 +1,8 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
 import { LargeButton } from "@/components/largeButton";
-import colors from "../../../../constants/colors";
 import { router } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { Colors } from "../../../../constants/colors";
 
 const relatorioVencimento = () => {
     router.push("./relatorioVencimento")
@@ -22,15 +22,15 @@ export default function SelectReport() {
                 </View>
                 <View style={styles.relatorioVencimentos}>
                     <LargeButton
-                        title="Relatório de Vencimentos"
+                        text="Relatório de Vencimentos"
                         onPress={relatorioVencimento}
                     />
                 </View>
                 <View style={styles.relatorioBonus}>
                     <LargeButton
-                        title="Relatório de Bônus"
+                        text="Relatório de Bônus"
                         onPress={relatorioBonus}
-                        
+
                     />
                 </View>
             </View>
@@ -44,11 +44,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         paddingTop: 150,
     },
-    titulo:{
-        textAlign:"center",
+    titulo: {
+        textAlign: "center",
         fontWeight: "bold",
         fontSize: 30,
-        color: colors.blue
+        color: Colors.blue
 
     },
     relatorioVencimentos: {

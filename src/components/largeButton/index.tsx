@@ -1,6 +1,6 @@
-import { View, Text, TouchableOpacity, TouchableOpacityProps, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
+import { Colors } from "../../../constants/colors";
 import { styles } from "./styles";
-import colors from "../../../constants/colors";
 
 
 type Props = TouchableOpacityProps & {
@@ -10,7 +10,7 @@ type Props = TouchableOpacityProps & {
     loading?: boolean,
 }
 
-export function LargeButton({ text, color = "white", backgroundColor = colors.red2, loading, ...rest }: Props) {
+export function LargeButton({ text, color = "white", backgroundColor = Colors.red2, loading, ...rest }: Props) {
 
     return (
         <View>

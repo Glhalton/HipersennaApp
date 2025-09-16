@@ -1,8 +1,8 @@
-import React, { Fragment } from "react";
-import { View, Text, TextInput, TextInputProps, TouchableOpacity } from "react-native"
-import { styles } from "./styles"
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import colors from "../../../constants/colors";
+import React, { Fragment } from "react";
+import { Text, TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Colors } from "../../../constants/colors";
+import { styles } from "./styles";
 
 type IconComponent = React.ComponentType<React.ComponentProps<typeof MaterialIcons>> |
     React.ComponentType<React.ComponentProps<typeof FontAwesome>> |
@@ -10,7 +10,7 @@ type IconComponent = React.ComponentType<React.ComponentProps<typeof MaterialIco
 
 type Props = TextInputProps & {
     IconLeft?: IconComponent,
-    IconRight?: IconComponent, 
+    IconRight?: IconComponent,
     iconLeftName?: string,
     iconRightName?: string,
     label?: string,
@@ -20,6 +20,9 @@ type Props = TextInputProps & {
 
 export function Input(Props: Props) {
 
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
+
     const { IconLeft, IconRight, iconLeftName, iconRightName, label, onIconLeftPress, onIconRightPress, ...rest } = Props;
 
     return (
@@ -27,10 +30,10 @@ export function Input(Props: Props) {
             {label &&
                 <Text style={styles.label}>{label}</Text>
             }
-            <View style={styles.boxInput}>
+            <View style={[styles.boxInput, {backgroundColor: theme.uiBackground}]}>
                 {IconLeft && iconLeftName && (
                     <TouchableOpacity onPress={onIconLeftPress}>
-                        <IconLeft name={iconLeftName as any} size={20} color={colors.gray} style={styles.iconLeft} />
+                        <IconLeft name={iconLeftName as any} size={20} color={Colors.gray} style={styles.iconLeft} />
                     </TouchableOpacity>
                 )}
                 <TextInput
@@ -39,7 +42,7 @@ export function Input(Props: Props) {
                 />
                 {IconRight && iconRightName && (
                     <TouchableOpacity onPress={onIconRightPress}>
-                        <IconRight name={iconRightName as any} size={20} color={colors.gray} style={styles.iconRight} />
+                        <IconRight name={iconRightName as any} size={20} color={Colors.gray} style={styles.iconRight} />
                     </TouchableOpacity>
                 )}
             </View>

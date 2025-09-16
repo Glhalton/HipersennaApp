@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
-import colors from "../../../../constants/colors";
 
 export default function RequestProducts() {
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         gap: 10,
         borderWidth: 1,
         borderRadius: 8,
-        borderColor: colors.gray,
+        borderColor: Colors.gray,
         marginBottom: 10
     },
     codDescricaoProdutoRow: {
@@ -70,11 +70,11 @@ const styles = StyleSheet.create({
     },
     productDataText: {
         fontFamily: "Lexend-Regular",
-        color: colors.gray
+        color: Colors.gray
     },
     label: {
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     textHeader: {
         fontFamily: "Lexend-Regular",

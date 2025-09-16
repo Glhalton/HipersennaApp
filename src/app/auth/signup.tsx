@@ -3,8 +3,8 @@ import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
 import React from "react";
-import { Text, Alert, StyleSheet, View } from "react-native";
-import colors from "../../../constants/colors";
+import { Alert, StyleSheet, Text, View } from "react-native";
+import { Colors } from "../../../constants/colors";
 
 export default function signup() {
     const [nomeCompleto, setNomeCompleto] = React.useState("");
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     },
     label: {
-        color: colors.blue,
+        color: Colors.blue,
         marginBottom: 4,
         fontWeight: "bold"
     },

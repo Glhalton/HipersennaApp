@@ -1,9 +1,9 @@
-import React from "react";
-import { View, Modal, Text, ModalProps } from "react-native";
-import { styles } from "./styles";
 import { Octicons } from "@expo/vector-icons";
-import colors from "../../../constants/colors";
+import React from "react";
+import { Modal, ModalProps, Text, View } from "react-native";
+import { Colors } from "../../../constants/colors";
 import { SmallButton } from "../smallButton";
+import { styles } from "./styles";
 
 type Props = ModalProps & {
     buttonLeft: () => void,
@@ -23,17 +23,17 @@ export default function ModalPopup({ buttonLeft, buttonRight, ...rest }: Props) 
                     <Octicons
                         name="alert"
                         size={80}
-                        color={colors.red2}
+                        color={Colors.red2}
                     />
                     <Text style={styles.titleText}>
                         Deseja sair?
                     </Text>
                     <Text style={styles.text}>
-                        Se sair agora, poderá perder dados que não foram salvos
+                        Se sair agora, poderá perder dados que não foram salvos.
                     </Text>
                     <View style={styles.modalButtonsBox}>
                         <SmallButton
-                            backgroundColor={colors.gray}
+                            backgroundColor={Colors.gray}
                             title={"Cancelar"}
                             onPress={buttonLeft}
                         />

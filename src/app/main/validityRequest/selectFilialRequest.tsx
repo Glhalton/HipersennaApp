@@ -1,11 +1,11 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 import { DropdownInput } from "@/components/dropdownInput";
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
+import { Colors } from "../../../../constants/colors";
 import { requestsInsertStore } from "../../../../store/requestsInsertStore";
 
 export default function SelectFilialRequest() {
@@ -64,7 +64,7 @@ export default function SelectFilialRequest() {
                             text="Continuar"
                             onPress={() => router.push("./requestForm")}
                         />
-                        
+
                     </View>
                 )}
 
@@ -89,12 +89,12 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
-        color: colors.blue,
+        color: Colors.blue,
         fontFamily: "Lexend-Regular",
         textAlign: "center",
     },
     label: {
-        color: colors.blue,
+        color: Colors.blue,
         marginBottom: 4,
         fontFamily: "Lexend-Bold",
     },

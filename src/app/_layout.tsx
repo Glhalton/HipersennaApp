@@ -1,11 +1,16 @@
-import { router, Stack } from "expo-router";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import { ActivityIndicator, useColorScheme, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import colors from "../../constants/colors";
+import { Colors } from "../../constants/colors";
+
 
 
 export default function Layout() {
+  const colorScheme = useColorScheme() ?? "light";
+  const theme = Colors[colorScheme];
+  console.log(colorScheme);
+
   const [fontsLoaded] = useFonts({
     "Lexend-Regular": require("../../assets/fonts/Lexend/Lexend-Regular.ttf"),
     "Lexend-Bold": require("../../assets/fonts/Lexend/Lexend-Bold.ttf"),
@@ -24,13 +29,14 @@ export default function Layout() {
     <SafeAreaProvider>
       <Stack
         screenOptions={{
-          headerStyle: { backgroundColor: colors.red2,},
-          headerTintColor: colors.white,
+          headerStyle: { backgroundColor: theme.navBackground, },
+          headerTintColor: theme.title,
           headerTitleStyle: { fontFamily: "Lexend-Bold" }
         }}
       >
         <Stack.Screen name="index" />
         <Stack.Screen name="auth/login" options={{ title: "Cadastro", headerShown: false, }} />
+        <Stack.Screen name="auth/forgotPassword" options={{ title: "Mudar Senha", headerShown: false, }} />
         <Stack.Screen name="main/home" options={{ title: "Cadastro", headerShown: false, }} />
         <Stack.Screen name="main/settings" options={{ title: "Configurações" }} />
         <Stack.Screen name="main/history" options={{ title: "Histórico" }} />

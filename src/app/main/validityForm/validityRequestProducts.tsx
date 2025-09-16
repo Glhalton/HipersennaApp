@@ -1,14 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View, TextInput, Alert } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
-import { requestProductsStore } from "../../../../store/requestProductsStore";
-import { SmallButton } from "@/components/smallButton";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
-import { validityRequestProductsStore } from "../../../../store/validityRequestProductsStore";
 import { LargeButton } from "@/components/largeButton";
-import { router, useNavigation } from "expo-router";
 import ModalPopup from "@/components/modalPopup";
+import { SmallButton } from "@/components/smallButton";
+import { router, useNavigation } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "../../../../constants/colors";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function ValidityRequestProducts() {
 
@@ -61,13 +59,13 @@ export default function ValidityRequestProducts() {
 
     function getColor(status: string | undefined) {
         if (status === "1") return "#5FE664";
-        if (status === "3") return colors.red2;
+        if (status === "3") return Colors.red2;
         return "white";
     }
 
     function getColorText(status: string | undefined) {
         if (status === "3") return "white";
-        return colors.blue;
+        return Colors.blue;
     }
 
     useEffect(() => {
@@ -245,7 +243,7 @@ export default function ValidityRequestProducts() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background,
+        backgroundColor: Colors.background,
 
     },
     titleBox: {
@@ -254,7 +252,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontFamily: "Lexend-SemiBold",
-        color: colors.blue,
+        color: Colors.blue,
         fontSize: 25
     },
     cardsContainer: {
@@ -266,7 +264,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         borderWidth: 1,
         borderRadius: 8,
-        borderColor: colors.gray,
+        borderColor: Colors.gray,
         marginBottom: 10,
         padding: 10,
 
@@ -276,11 +274,11 @@ const styles = StyleSheet.create({
     },
     productDataText: {
         fontFamily: "Lexend-Regular",
-        color: colors.gray
+        color: Colors.gray
     },
     label: {
         fontFamily: "Lexend-Bold",
-        color: colors.blue,
+        color: Colors.blue,
     },
     textHeader: {
         fontFamily: "Lexend-Regular",
@@ -333,7 +331,7 @@ const styles = StyleSheet.create({
         height: 40,
         minHeight: 10,
         width: 100,
-        backgroundColor: colors.inputColor,
+        backgroundColor: Colors.inputColor,
         borderRadius: 20,
         borderWidth: 1,
         paddingLeft: 20

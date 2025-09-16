@@ -4,9 +4,8 @@ import { router } from "expo-router";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
+import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 export default function SelectType() {
 
@@ -59,7 +58,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 30,
-        color: colors.blue,
+        color: Colors.blue,
         fontFamily: "Lexend-SemiBold",
         textAlign: "center",
     },

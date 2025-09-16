@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
 import { DropdownInput } from "@/components/dropdownInput";
 import { LargeButton } from "@/components/largeButton";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { Colors } from "../../../../constants/colors";
 import { userDataStore } from "../../../../store/userDataStore";
+import { validityInsertStore } from "../../../../store/validityInsertStore";
 
 export default function SelectFilialValidity() {
 
-    //Codigo da filial
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
+
 
     const resetarLista = validityInsertStore((state) => state.resetProducts);
     const resetValidity = validityInsertStore((state) => state.resetValidity);
@@ -58,10 +60,10 @@ export default function SelectFilialValidity() {
 
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: theme.background}]}>
             <View style={styles.formBox}>
                 <View style={styles.titleBox}>
-                    <Text style={styles.titleText}>
+                    <Text style={[styles.titleText, {color: theme.title}]}>
                         Selecione a filial desejada:
                     </Text>
                 </View>
@@ -90,7 +92,7 @@ export default function SelectFilialValidity() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.white,
+        backgroundColor: Colors.white,
     },
     formBox: {
         flex: 1,
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 30,
-        color: colors.blue,
+        color: Colors.blue,
         fontFamily: "Lexend-SemiBold",
         textAlign: "center",
     },

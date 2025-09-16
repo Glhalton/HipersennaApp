@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native"
-import colors from "../../../constants/colors"
+import { Colors } from "../../../constants/colors"
 
 export const styles = StyleSheet.create({
     modalContainerCenter: {
@@ -28,11 +28,11 @@ export const styles = StyleSheet.create({
     titleText: {
         fontFamily: "Lexend-Bold",
         fontSize: 28,
-        color: colors.blue
+        color: Colors.blue
     },
     text: {
         fontFamily: "Lexend-Regular",
         textAlign: "center",
-        color: colors.gray
+        color: Colors.gray
     }
 })

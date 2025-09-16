@@ -4,7 +4,7 @@ import { router } from "expo-router";
 import React from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import colors from "../../../../constants/colors";
+import { Colors } from "../../../../constants/colors";
 import { requestsInsertStore } from "../../../../store/requestsInsertStore";
 import { userDataStore } from "../../../../store/userDataStore";
 
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     titleText: {
         fontFamily: "Lexend-Bold",
         fontSize: 28,
-        color: colors.blue,
+        color: Colors.blue,
 
     },
     card: {
@@ -140,12 +140,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Lexend-Bold",
         marginBottom: 6,
-        color: colors.blue,
+        color: Colors.blue,
 
     },
     label: {
         fontFamily: "Lexend-Regular",
-        color: colors.blue,
+        color: Colors.blue,
     },
     dadosItem: {
         flexDirection: "row",
