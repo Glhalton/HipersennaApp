@@ -29,14 +29,14 @@ export function DateInput({ label, placeholder, value, onChange }: DateInputProp
     return (
         <Fragment>
             {label && (
-                <Text style={[styles.label, { color: theme.text }]}>
+                <Text style={[styles.label, { color: theme.title }]}>
                     {label}
                 </Text>)
             }
             <View style={[styles.container]}>
 
                 <Pressable style={[styles.dataInputBox, { backgroundColor: theme.inputColor }]} onPress={() => setShow(true)}>
-                    <Text style={[styles.dataInputText, {color: theme.text}, !value && { color: theme.inputPlaceholder }]}>
+                    <Text style={[styles.dataInputText, {color: theme.title}, !value && { color: theme.inputPlaceholder }]}>
                         {value ? value.toLocaleDateString("pt-BR") : placeholder}
                     </Text>
                 </Pressable>

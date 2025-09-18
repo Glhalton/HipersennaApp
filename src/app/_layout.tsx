@@ -42,6 +42,7 @@ export default function Layout() {
           <Stack.Screen name="main/home" options={{ title: "Cadastro", headerShown: false, }} />
           <Stack.Screen name="main/settings" options={{ title: "Configurações" }} />
           <Stack.Screen name="main/history" options={{ title: "Histórico" }} />
+          <Stack.Screen name="main/historyProducts" options={{ title: "Histórico" }} />
           <Stack.Screen name="main/validityForm/selectType" options={{ title: "Seleção de Tipo" }} />
           <Stack.Screen name="main/validityForm/selectFilialValidity" options={{ title: "Seleção de Filial" }} />
           <Stack.Screen name="main/validityForm/validityForm" options={{ title: "Vistoria" }} />

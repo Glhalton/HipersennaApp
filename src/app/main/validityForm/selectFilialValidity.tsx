@@ -39,15 +39,10 @@ export default function SelectFilialValidity() {
             return;
         }
 
-        const createdAt = new Date().toLocaleString('pt-BR', {
-            timeZone: 'America/Sao_Paulo'
-        });
-
         setValidity({
-            branchId,
-            createdAt,
-            userId,
-            requestId: null,
+            branch_id : Number(branchId),
+            employee_id : userId,
+            request_id: null,
         })
 
     }

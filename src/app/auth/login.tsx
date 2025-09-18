@@ -13,7 +13,10 @@ export default function Login() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
+  const setToken = userDataStore((state) => state.setToken);
   const setUserId = userDataStore((state) => state.setUserId);
+  const setName = userDataStore((state) => state.setName);
+  const setUsernameStore = userDataStore((state) => state.setUsername);
   const setNivelAcesso = userDataStore((state) => state.setNivelAcesso);
   const nivelAcesso = userDataStore((state) => state.nivelAcesso);
 
@@ -22,11 +25,46 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  // const getLogin = async () => {
+  //   try {
+  //     setLoading(true);
+
+  //     const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/autenticacao/login.php", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       },
+  //       body: JSON.stringify({ username, password })
+  //     });
+
+  //     const resultado = await resposta.json();
+
+  //     if (resultado.sucesso) {
+  //       setUserId(resultado.userId);
+  //       setNivelAcesso(resultado.nivelAcesso);
+  //       console.log(nivelAcesso)
+  //       router.replace("../main/home");
+  //       setUsername("");
+  //       setPassword("");
+
+  //     } else {
+  //       Alert.alert("Erro", resultado.mensagem);
+  //       setPassword("");
+  //     }
+  //   } catch (erro) {
+  //     Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
+  //     setUsername("");
+  //     setPassword("");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const getLogin = async () => {
     try {
       setLoading(true);
 
-      const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/autenticacao/login.php", {
+      const response = await fetch("http://10.101.2.7:3333/auth/signin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -34,24 +72,31 @@ export default function Login() {
         body: JSON.stringify({ username, password })
       });
 
-      const resultado = await resposta.json();
+      const responseData = await response.json();
 
-      if (resultado.sucesso) {
-        setUserId(resultado.userId);
-        setNivelAcesso(resultado.nivelAcesso);
-        console.log(nivelAcesso)
-        router.replace("../main/home");
+      if (responseData.token) {
+
+        setToken(responseData.token);
+        setUserId(responseData.user.id)
+        setName(responseData.user.name);
+        setUsernameStore(responseData.user.username)
+
+        router.replace("/main/home");
+        console.log(responseData.user)
+
         setUsername("");
         setPassword("");
 
       } else {
-        Alert.alert("Erro", resultado.mensagem);
+        Alert.alert("Erro", responseData.error || "Login inválido");
         setPassword("");
       }
     } catch (erro) {
+      console.log(erro)
       Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
       setUsername("");
       setPassword("");
+
     } finally {
       setLoading(false);
     }
@@ -103,7 +148,7 @@ export default function Login() {
         </View>
 
         <TouchableOpacity style={styles.forgotPasswordButton}>
-          <Text style={[styles.forgotPasswordText, {color: theme.title}]}>
+          <Text style={[styles.forgotPasswordText, { color: theme.title }]}>
             Esqueceu a sua senha?
           </Text>
         </TouchableOpacity>
@@ -116,7 +161,7 @@ export default function Login() {
         />
 
         <TouchableOpacity style={styles.buttonBox} onPress={goToSignup}>
-          <Text style={[styles.signupText, {color: theme.title}]}>
+          <Text style={[styles.signupText, { color: theme.title }]}>
             Não tem uma conta? <Text style={{ color: theme.link }}>Crie agora!</Text>
           </Text>
         </TouchableOpacity>

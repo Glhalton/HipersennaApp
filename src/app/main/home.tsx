@@ -1,54 +1,56 @@
 import React, { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
 import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
+import ContentLoader from "react-content-loader/native"
 
 export default function Home() {
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
     const userId = userDataStore((state) => state.userId);
-    const nivelAcesso = userDataStore((state) => state.nivelAcesso)
-    const [primeiroNome, setPrimeiroNome] = useState("");
-    const [countValidade, setCountValidade] = useState(0);
+    const name = userDataStore((state) => state.name)
+
+    const [validities, setValidities] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    const countValidade = validities.length
 
     const goToVistoriaDemanda = () => {
         router.push("./validityRequest/requests");
     }
 
-    const contarVistorias = async () => {
+    const selectValidities = async () => {
         try {
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/home/dadosUsuario.php", {
-                method: "POST",
+            const response = await fetch(`http://10.101.2.7:3333/validities/employee/${userId}`, {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({
-                    userId
-                })
             });
 
-            const resultado = await resposta.json();
+            const responseData = await response.json();
 
-            if (resultado.sucesso) {
-                setCountValidade(resultado.quantidade_vistorias);
-                console.log("Foi buscado a contagem de vistorias")
-                setPrimeiroNome(resultado.primeiroNome);
+            if (responseData.validitiesByEmployee) {
+                setValidities(responseData.validitiesByEmployee);
+            } else {
+                Alert.alert("Erro", responseData.mensagem);
             }
-
         } catch (error) {
-            console.error("Erro ao buscar contagem: ", error);
+            Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
+        } finally {
+            setLoading(false);
         }
-    };
+    }
 
     useEffect(() => {
-        if (!userId) return;
-        contarVistorias();
+        selectValidities();
+    }, [])
 
-    }, []);
+
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -57,7 +59,7 @@ export default function Home() {
                 <View style={styles.header}>
                     <View>
                         <Text style={[styles.helloText, { color: theme.title }]}>
-                            Olá, {primeiroNome}.
+                            Olá, {name}.
                         </Text>
                         <Text style={[styles.subTitleText, { color: theme.text }]}>
                             SennaApp
@@ -81,7 +83,7 @@ export default function Home() {
                     <View style={styles.buttonsBox}>
 
                         <TouchableOpacity
-                            style={[styles.requestBox, {backgroundColor: theme.gray}]}
+                            style={[styles.requestBox, { backgroundColor: theme.gray }]}
                             onPress={() => { router.push("./validityForm/selectRequest"); }}
                         >
                             <FontAwesome6
@@ -95,7 +97,7 @@ export default function Home() {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={[styles.singleBox, {backgroundColor: theme.red}]}
+                            style={[styles.singleBox, { backgroundColor: theme.red }]}
                             onPress={() => { router.push("./validityForm/selectFilialValidity"); }}
                         >
                             <FontAwesome6

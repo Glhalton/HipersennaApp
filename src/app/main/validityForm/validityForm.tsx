@@ -84,10 +84,10 @@ export default function ValidityForm() {
         }
 
         addProduct({
-            codProduct,
+            product_cod: Number(codProduct),
             description,
-            validityDate,
-            quantity,
+            validity_date : validityDate.toLocaleDateString("en-CA"),
+            quantity : Number(quantity),
             observation
         });
 

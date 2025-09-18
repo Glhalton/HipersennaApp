@@ -32,7 +32,7 @@ export default function ValidityRequestProducts() {
     const [showExitModal, setShowExitModal] = useState(false);
     const [exitAction, setExitAction] = useState<any>(null);
 
-    const hasEmpty = productList.some(p => !p.quantity || p.quantity.trim() === "")
+    const hasEmpty = productList.some(p => !p.quantity || p.quantity === null)
 
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
@@ -45,7 +45,7 @@ export default function ValidityRequestProducts() {
     //Botão de voltar o modal
     const backButtonModal = ((quant: string) => {
         if (quantity) {
-            updateQuantity(index, quant);
+            updateQuantity(index, Number(quant));
             updateStatus(index, "1");
 
         }
@@ -56,7 +56,7 @@ export default function ValidityRequestProducts() {
     const notFoundButtonModal = (() => {
         updateStatus(index, "3");
         setModalVisible(false);
-        updateQuantity(index, "0");
+        updateQuantity(index, 0);
         setQuantity("");
     })
 
@@ -161,10 +161,10 @@ export default function ValidityRequestProducts() {
                                 </View>
                                 <View>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.codProduct}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.product_cod}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.validityDate.toString()}</Text></Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.validity_date.toString()}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
@@ -209,15 +209,15 @@ export default function ValidityRequestProducts() {
             >
                 {/* <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill}> */}
                 <View style={styles.modalContainerCenter}>
-                    <View style={styles.modalBox}>
+                    <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
                         <View style={styles.productDataBox}>
-                            <Text style={styles.labelModal}>Cod. Produto: <Text style={styles.productDataText}>{selectedProduct?.codProduct}</Text></Text>
-                            <Text style={styles.labelModal}>Descrição: <Text style={styles.productDataText}>{selectedProduct?.description}</Text></Text>
-                            <Text style={styles.labelModal}>Dt. Validade: <Text style={styles.productDataText}>{selectedProduct?.validityDate}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Cod. Produto: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.codProduct}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Descrição: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.validityDate}</Text></Text>
                             <View style={styles.inputBox}>
-                                <Text style={styles.labelModal}>Quant:</Text>
+                                <Text style={[styles.labelModal, { color: theme.title }]}>Quant:</Text>
                                 <TextInput
-                                    style={styles.input}
+                                    style={[styles.input, { backgroundColor: theme.inputColor, borderColor: theme.iconColor, color: theme.title }]}
                                     inputMode="numeric"
                                     value={quantity}
                                     onChangeText={setQuantity}
@@ -226,14 +226,14 @@ export default function ValidityRequestProducts() {
 
                         </View>
                         <View style={styles.modalButtonsBox}>
-                            <SmallButton
-                                title={"Não encontrei"}
+                            <LargeButton
+                                text={"Não encontrei"}
                                 onPress={() => { notFoundButtonModal() }}
 
                             />
-                            <SmallButton
+                            <LargeButton
                                 backgroundColor={"#13BE19"}
-                                title={"Confirmar"}
+                                text={"Confirmar"}
                                 onPress={() => backButtonModal(quantity)}
                             />
                         </View>
@@ -309,41 +309,41 @@ const styles = StyleSheet.create({
     },
     modalBox: {
         width: "100%",
-        height: 300,
+        height: 330,
         borderRadius: 20,
         backgroundColor: "white",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalButtonsBox: {
-        flexDirection: "row",
-        flex: 1,
-        width: "100%",
-        height: "100%",
-        justifyContent: "space-around",
-        alignItems: "flex-end",
-        paddingVertical: 30,
+        paddingVertical: 50,
+        paddingHorizontal: 30,
+        gap: 20
     },
     productDataBox: {
-        paddingTop: 60,
-        gap: 6,
-        
-
+        width: "100%",
+        gap: 4,
     },
     inputBox: {
         flexDirection: "row",
         alignItems: "center",
         gap: 20
-
     },
     input: {
         height: 40,
         minHeight: 10,
         width: 100,
         backgroundColor: Colors.inputColor,
-        borderRadius: 20,
-        borderWidth: 1,
-        paddingLeft: 20
-    }
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        borderBottomWidth: 1,
+        paddingLeft: 20,
+        fontSize: 18,
+        padding: 0,
+        margin: 0,  
+        borderWidth: 0, 
+        fontFamily: "Lexend-Regular"
+    },
+    modalButtonsBox: {
+
+        width: "100%",
+        gap: 8,
+    },
 
 })

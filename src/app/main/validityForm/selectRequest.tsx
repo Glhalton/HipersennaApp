@@ -49,15 +49,10 @@ export default function SelectRequest() {
             return;
         }
 
-        const createdAt = new Date().toLocaleString('pt-BR', {
-            timeZone: 'America/Sao_Paulo'
-        });
-
         setValidity({
-            branchId,
-            createdAt,
-            userId,
-            requestId,
+            branch_id: Number(branchId),
+            employee_id: userId,
+            request_id : requestId,
         })
     }
 

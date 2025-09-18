@@ -1,18 +1,17 @@
 import { create } from "zustand";
 
 type ValidityData = {
-  branchId: string,
-  createdAt: string,
-  userId: number,
-  requestId: number | null
+  branch_id: number,
+  employee_id: string,
+  request_id: number | null
 }
 
 type ProductData = {
-  codProduct: string;
+  product_cod: number;
   description?: string;
   productStatus?: string,
-  validityDate: Date,
-  quantity: string;
+  validity_date: string,
+  quantity: number;
   observation?: string | null;
 }
 
@@ -25,7 +24,7 @@ type VistoriaStore = {
   removeProduct: (index: number) => void;
   resetProducts: () => void;
   resetValidity: () => void;
-  updateProductQuantity: (index: number, quantity: string) => void;
+  updateProductQuantity: (index: number, quantity: number) => void;
   updateProductStatus: (index: number, value: string) => void
 }
 
@@ -33,10 +32,9 @@ type VistoriaStore = {
 export const validityInsertStore = create<VistoriaStore>((set) => ({
   productsList: [],
   validityData: {
-    branchId: "",
-    createdAt: "",
-    userId: 0,
-    requestId: null
+    branch_id: 0,
+    employee_id: "",
+    request_id: null
   },
   addValidity: (validityData) => set({ validityData }),
   addProduct: (item) => set((state) => ({ productsList: [...state.productsList, item] })),
@@ -48,13 +46,12 @@ export const validityInsertStore = create<VistoriaStore>((set) => ({
   resetProducts: () => set({ productsList: [] }),
   resetValidity: () => set({
     validityData: {
-      branchId: "",
-      createdAt: "",
-      userId: 0,
-      requestId: null
+      branch_id: 0,
+      employee_id: "",
+      request_id: null
     },
   }),
-  updateProductQuantity: (index: number, quantity: string) =>
+  updateProductQuantity: (index: number, quantity: number) =>
     set((state) => {
       const updated = [...state.productsList];
       updated[index] = { ...updated[index], quantity };

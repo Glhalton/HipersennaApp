@@ -19,7 +19,42 @@ export default function ValiditySummary() {
     const resetProducts = validityInsertStore((state) => state.resetProducts);
 
     //Requisição para inserir validade no banco via API
-    const inserirValidade = async () => {
+    // const inserirValidade = async () => {
+
+    //     if (productsList.length === 0) {
+    //         Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
+    //         router.back();
+    //         return;
+    //     }
+
+    //     try {
+
+    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+    //                 validity: validityData,
+    //                 itens: productsList
+    //             })
+    //         });
+
+    //         const responseData = await resposta.json();
+
+    //         if (responseData.sucesso) {
+    //             Alert.alert("Sucesso", responseData.mensagem);
+    //             resetProducts();
+    //             router.back();
+    //         } else {
+    //             Alert.alert("Erro", responseData.mensagem)
+    //         }
+    //     } catch (erro) {
+    //         Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
+    //     }
+    // };
+
+    const validityInsert = async () => {
 
         if (productsList.length === 0) {
             Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
@@ -27,27 +62,33 @@ export default function ValiditySummary() {
             return;
         }
 
+        console.log(validityData);
+        console.log(productsList);
+
+
         try {
 
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+            const response = await fetch("http://10.101.2.7:3333/validities", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     validity: validityData,
-                    itens: productsList
+                    products: productsList
                 })
             });
 
-            const resultado = await resposta.json();
 
-            if (resultado.sucesso) {
-                Alert.alert("Sucesso", resultado.mensagem);
+
+            const responseData = await response.json();
+
+            if (responseData.createdValidity) {
+                Alert.alert("Sucesso", responseData.mensagem);
                 resetProducts();
                 router.back();
             } else {
-                Alert.alert("Erro", resultado.mensagem)
+                Alert.alert("Erro no Servidor", responseData.error)
             }
         } catch (erro) {
             Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
@@ -59,7 +100,7 @@ export default function ValiditySummary() {
             <View style={styles.cardsBox}>
                 <View style={styles.filialTitleBox}>
                     <Text style={[styles.filialTitleText, { color: theme.title }]}>
-                        Filial:  {validityData.branchId}
+                        Filial:  {validityData.branch_id}
                     </Text>
                 </View>
 
@@ -72,8 +113,8 @@ export default function ValiditySummary() {
                             <Text style={[styles.cardTitleText, { color: theme.title }]}>#{index + 1} - {item.description}</Text>
                             <View style={styles.productDataBox}>
                                 <View>
-                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.codProduct}</Text>
-                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Validade:</Text> {new Date(item.validityDate).toLocaleDateString("pt-BR")}</Text>
+                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod}</Text>
+                                    <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Validade:</Text> {new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text>
                                 </View>
                                 <View>
                                     <Text style={[styles.productDataText, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}</Text>
@@ -82,7 +123,7 @@ export default function ValiditySummary() {
 
 
                             <TouchableOpacity
-                                style={[styles.removeButton, {backgroundColor: theme.red}]}
+                                style={[styles.removeButton, { backgroundColor: theme.red }]}
                                 onPress={() => removeProduct(index)}
                             >
                                 <Text style={styles.removeText}>Remover</Text>
@@ -94,7 +135,7 @@ export default function ValiditySummary() {
                 <View style={styles.insertButton}>
                     <LargeButton
                         text="Salvar dados"
-                        onPress={inserirValidade}
+                        onPress={validityInsert}
                         backgroundColor={theme.red}
                     />
                 </View>

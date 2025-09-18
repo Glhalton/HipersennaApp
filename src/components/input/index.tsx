@@ -28,7 +28,7 @@ export function Input(Props: Props) {
     return (
         <Fragment>
             {label &&
-                <Text style={[styles.label, { color: theme.text}]}>{label}</Text>
+                <Text style={[styles.label, { color: theme.title}]}>{label}</Text>
             }
             <View style={[styles.boxInput, {backgroundColor: theme.inputColor}]}>
                 {IconLeft && iconLeftName && (
@@ -37,7 +37,7 @@ export function Input(Props: Props) {
                     </TouchableOpacity>
                 )}
                 <TextInput
-                    style={[styles.input, { backgroundColor: theme.inputColor, color: theme.text}]}
+                    style={[styles.input, { backgroundColor: theme.inputColor, color: theme.title}]}
                     placeholderTextColor={theme.inputPlaceholder}
                     
                     {...rest}

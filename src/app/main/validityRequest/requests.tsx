@@ -1,13 +1,16 @@
 import { Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { requestProductsStore } from "../../../../store/requestProductsStore";
 import { userDataStore } from "../../../../store/userDataStore";
 
 export default function Requests() {
+
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
     type Request = {
         requestId: number;
@@ -79,20 +82,20 @@ export default function Requests() {
                                 activeOpacity={0.6}
                                 onPress={() => { router.push("./requestProducts"); setProdutos(item.products); }}
                             >
-                                <View style={styles.card}>
-                                    <Text style={styles.cardTitle}>
+                                <View style={[styles.card, {backgroundColor: theme.uiBackground}]}>
+                                    <Text style={[styles.cardTitle, {color: theme.title}]}>
                                         # {item.requestId}
                                     </Text>
                                     <View style={styles.requestDataBox}>
                                         <View>
-                                            <Text style={styles.text}><Text style={styles.label}>Filial:</Text> {item.branchId}</Text>
+                                            <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Filial:</Text> {item.branchId}</Text>
                                             {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.dates}>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
-                                                <Text style={styles.text}><Text style={styles.label}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
                                             </View>
                                             <View style={styles.statusBox}>
-                                                <Text style={styles.label}>
+                                                <Text style={[styles.label, {color: theme.title}]}>
                                                     Status:
                                                 </Text>
                                                 <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
@@ -106,7 +109,7 @@ export default function Requests() {
                                             <Octicons
                                                 name="chevron-right"
                                                 size={40}
-                                                color={Colors.gray}
+                                                color={theme.iconColor}
                                             />
                                         </View>
                                     </View>
