@@ -1,35 +1,46 @@
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { validitiesEmployeeStore } from "../../../store/validitiesEmployeeStore";
 import { userDataStore } from "../../../store/userDataStore";
+import DropDownPicker from "react-native-dropdown-picker";
+
+type validity = {
+    id: number;
+    branch_id: number;
+    employee_id: number;
+    status: string | null;
+    request_id: number | null;
+    created_at: string;
+    modified_at: string;
+    hsvalidity_products: [];
+};
 
 export default function History() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    type validity = {
-        id: number;
-        branch_id: number;
-        employee_id: number;
-        status: string | null;
-        request_id: number | null;
-        created_at: string;
-        modified_at: string;
-        hsvalidity_products: [];
-    };
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [ordinationItems, setOrdinationItems] = useState([
+        { label: "Recentes", value: "1" },
+        { label: "Antigos", value: "2" }
+    ])
+    const [ordination, setOrdination] = useState("");
+    const [open, setOpen] = React.useState(false);
 
     const userId = userDataStore((state) => state.userId);
-    const [validities, setValidities] = useState<validity[]>([]);
     const setProducts = validitiesEmployeeStore((state) => state.setProducts);
+    const [validities, setValidities] = useState<validity[]>([]);
+    const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 
     const selectValidities = async () => {
         try {
-            const response = await fetch(`http://10.101.2.7:3333/validities/employee/${userId}` , {
+            const response = await fetch(`http://10.101.2.7:3333/validities/employee/${userId}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json"
@@ -40,31 +51,78 @@ export default function History() {
 
             if (responseData.validitiesByEmployee) {
                 setValidities(responseData.validitiesByEmployee);
-            } else{
+            } else {
                 Alert.alert("Erro", responseData.mensagem);
             }
         } catch (error) {
             Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
+        } finally {
+            setIsLoading(false);
         }
     }
+
+    const sortValidities = (option: string | null) => {
+
+        let sorted = [...validities];
+
+        switch (option) {
+            case "1":
+                sorted.sort((a, b) => b.id - a.id);
+                break;
+            case "2":
+                sorted.sort((a, b) => a.id - b.id);
+                break;
+        }
+
+        setSortedValidities(sorted);
+    }
+
+    const handleOrdinationChange = (newValue: string) => {
+        setOrdination(newValue);
+        sortValidities(newValue);
+    };
 
     useEffect(() => {
         selectValidities();
     }, []);
 
+    useEffect(() => {
+        sortValidities(ordination || "1");
+    }, [validities]);
 
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color={theme.iconColor} />
+            </View>
+        )
+    }
     return (
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.contentBox}>
                 <View style={styles.filterBox}>
-                    <Text style={styles.filterText}>
-                        Ordernar Por:
-                    </Text>
+                    <DropDownPicker
+                        open={open}
+                        value={ordination}
+                        items={ordinationItems}
+                        setOpen={setOpen}
+                        setValue={(callback) => {
+                            const newValue = callback(ordination);
+                            handleOrdinationChange(newValue);
+                        }}
+                        setItems={setOrdinationItems}
+                        placeholder="Ordenar por"
+                        style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+                        dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
+                        textStyle={[styles.optionsText, { color: theme.title }]}
+                        placeholderStyle={[styles.placeholder, { color: theme.text }]}
+                    />
                 </View>
                 <View style={styles.flatListBox}>
 
                     <FlatList
-                        data={validities}
+                        data={sortedValidities}
                         keyExtractor={(_, index) => index.toString()}
                         contentContainerStyle={{ paddingBottom: 20 }}
                         renderItem={({ item, index }) => (
@@ -79,7 +137,6 @@ export default function History() {
                                     <View style={styles.requestDataBox}>
                                         <View>
                                             <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}</Text>
-                                            {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.dates}>
                                                 <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text> {new Date(item.created_at).toLocaleDateString("pt-BR")}</Text>
                                             </View>
@@ -96,7 +153,6 @@ export default function History() {
                             </TouchableOpacity>
                         )}
                     />
-
                 </View>
             </View>
         </SafeAreaView>
@@ -112,17 +168,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     filterBox: {
-        backgroundColor: Colors.gray,
-        height: 30,
-        width: 140,
-        borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center",
-        marginVertical: 15,
-    },
-    filterText: {
-        fontFamily: "Lexend-Regular",
-        color: "white"
+        paddingVertical: 15,
     },
     flatListBox: {
         paddingBottom: 60
@@ -174,5 +220,33 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-
+    dropdownInput: {
+        minHeight: 30,
+        width: 140,
+        zIndex: 1,
+        borderWidth: 0,
+        borderRadius: 20,
+    },
+    optionsBox: {
+        minHeight: 40,
+        width: 140,
+        borderColor: "gray",
+        paddingLeft: 4,
+        borderWidth: 0,
+        borderTopWidth: 1,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
+    },
+    optionsText: {
+        fontFamily: "Lexend-Regular",
+    },
+    placeholder: {
+        fontFamily: "Lexend-Regular",
+    },
 })

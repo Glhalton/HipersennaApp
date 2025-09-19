@@ -18,43 +18,7 @@ export default function ValiditySummary() {
     const removeProduct = validityInsertStore((state) => state.removeProduct);
     const resetProducts = validityInsertStore((state) => state.resetProducts);
 
-    //Requisição para inserir validade no banco via API
-    // const inserirValidade = async () => {
-
-    //     if (productsList.length === 0) {
-    //         Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-    //         router.back();
-    //         return;
-    //     }
-
-    //     try {
-
-    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({
-    //                 validity: validityData,
-    //                 itens: productsList
-    //             })
-    //         });
-
-    //         const responseData = await resposta.json();
-
-    //         if (responseData.sucesso) {
-    //             Alert.alert("Sucesso", responseData.mensagem);
-    //             resetProducts();
-    //             router.back();
-    //         } else {
-    //             Alert.alert("Erro", responseData.mensagem)
-    //         }
-    //     } catch (erro) {
-    //         Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
-    //     }
-    // };
-
-    const validityInsert = async () => {
+    const postValidity = async () => {
 
         if (productsList.length === 0) {
             Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
@@ -135,7 +99,7 @@ export default function ValiditySummary() {
                 <View style={styles.insertButton}>
                     <LargeButton
                         text="Salvar dados"
-                        onPress={validityInsert}
+                        onPress={postValidity}
                         backgroundColor={theme.red}
                     />
                 </View>

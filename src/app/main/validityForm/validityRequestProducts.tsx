@@ -13,7 +13,7 @@ export default function ValidityRequestProducts() {
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    const productList = validityInsertStore((state) => state.productsList);
+    const productsList = validityInsertStore((state) => state.productsList) || [];
     const resetProducts = validityInsertStore((state) => state.resetProducts);
 
     const updateQuantity = validityInsertStore((state) => state.updateProductQuantity)
@@ -32,7 +32,7 @@ export default function ValidityRequestProducts() {
     const [showExitModal, setShowExitModal] = useState(false);
     const [exitAction, setExitAction] = useState<any>(null);
 
-    const hasEmpty = productList.some(p => !p.quantity || p.quantity === null)
+    const hasEmpty = productsList.some(p => !p.quantity || p.quantity === null)
 
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
@@ -74,6 +74,7 @@ export default function ValidityRequestProducts() {
 
     useEffect(() => {
         console.log(validityData)
+        console.log(productsList)
     }, [])
 
     //Função para capturar o botão de voltar
@@ -99,40 +100,90 @@ export default function ValidityRequestProducts() {
         setExitAction(null);
     };
 
-    //Requisição para inserir validade no banco via API
-    const insertValidity = async () => {
+    // //Requisição para inserir validade no banco via API
+    // const insertValidity = async () => {
 
-        if (productList.length === 0) {
+    //     if (productsList.length === 0) {
+    //         Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
+    //         router.replace("/main/validityForm/selectType");
+    //         return;
+    //     }
+
+    //     try {
+
+    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+    //                 validity: validityData,
+    //                 itens: productsList
+    //             })
+    //         });
+
+    //         const resultado = await resposta.json();
+
+    //         if (resultado.sucesso) {
+    //             Alert.alert("Sucesso", resultado.mensagem);
+    //             resetProducts();
+    //             router.replace("/main/validityForm/selectType");
+    //         } else {
+    //             Alert.alert("Erro", resultado.mensagem)
+    //         }
+    //     } catch (erro) {
+    //         Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
+    //     }
+    // };
+
+    const postValidity = async () => {
+
+        if (productsList.length === 0) {
             Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-            router.replace("/main/validityForm/selectType");
+            router.back();
             return;
         }
 
+
+
         try {
 
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
+            const response = await fetch("http://10.101.2.7:3333/validities", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     validity: validityData,
-                    itens: productList
+                    products: productsList
                 })
             });
 
-            const resultado = await resposta.json();
 
-            if (resultado.sucesso) {
-                Alert.alert("Sucesso", resultado.mensagem);
+
+            const responseData = await response.json();
+
+            if (responseData.createdValidity) {
+                Alert.alert("Sucesso", responseData.mensagem);
                 resetProducts();
-                router.replace("/main/validityForm/selectType");
+                router.replace("/main/home");
             } else {
-                Alert.alert("Erro", resultado.mensagem)
+                Alert.alert("Erro no Servidor", responseData.error)
             }
         } catch (erro) {
             Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
         }
+    };
+
+
+
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString); // transforma a string em objeto Date
+        const day = String(date.getDate()).padStart(2, "0");
+        const month = String(date.getMonth() + 1).padStart(2, "0"); // mês começa em 0
+        const year = date.getFullYear();
+
+        return `${day}/${month}/${year}`;
     };
 
 
@@ -146,7 +197,7 @@ export default function ValidityRequestProducts() {
                 </View>
 
                 <FlatList
-                    data={productList}
+                    data={productsList}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
@@ -164,7 +215,7 @@ export default function ValidityRequestProducts() {
                                         <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.product_cod}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.validity_date.toString()}</Text></Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{formatDate(item.validity_date)}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
@@ -184,7 +235,7 @@ export default function ValidityRequestProducts() {
                     <View>
                         <LargeButton
                             text="Finalizar validade"
-                            onPress={insertValidity}
+                            onPress={postValidity}
                             backgroundColor={theme.red}
                         />
                     </View>
@@ -211,9 +262,9 @@ export default function ValidityRequestProducts() {
                 <View style={styles.modalContainerCenter}>
                     <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
                         <View style={styles.productDataBox}>
-                            <Text style={[styles.labelModal, { color: theme.title }]}>Cod. Produto: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.codProduct}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Cod. Produto: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text></Text>
                             <Text style={[styles.labelModal, { color: theme.title }]}>Descrição: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text></Text>
-                            <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.validityDate}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: <Text style={[styles.productDataText, { color: theme.text }]}>{formatDate(selectedProduct?.validity_date)}</Text></Text>
                             <View style={styles.inputBox}>
                                 <Text style={[styles.labelModal, { color: theme.title }]}>Quant:</Text>
                                 <TextInput
@@ -336,8 +387,8 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         fontSize: 18,
         padding: 0,
-        margin: 0,  
-        borderWidth: 0, 
+        margin: 0,
+        borderWidth: 0,
         fontFamily: "Lexend-Regular"
     },
     modalButtonsBox: {

@@ -5,7 +5,7 @@ import ModalPopup from "@/components/modalPopup";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { validityInsertStore } from "../../../../store/validityInsertStore";
@@ -14,7 +14,7 @@ import { useNavigation } from "expo-router";
 
 export default function ValidityForm() {
 
-       const colorScheme = useColorScheme() ?? "light";
+    const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
     //Dados do Store
@@ -46,7 +46,7 @@ export default function ValidityForm() {
     const [exitAction, setExitAction] = useState<any>(null);
 
     // Consumindo API em python para consulta de produto:
-    const buscarProduto2 = async () => {
+    const productSearch = async () => {
         try {
             setLoading(true);
             const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProduct, {
@@ -86,31 +86,32 @@ export default function ValidityForm() {
         addProduct({
             product_cod: Number(codProduct),
             description,
-            validity_date : validityDate.toLocaleDateString("en-CA"),
-            quantity : Number(quantity),
+            validity_date: validityDate.toLocaleDateString("en-CA"),
+            quantity: Number(quantity),
             observation
         });
 
         setCodProduct("");
         setQuantity("");
+        setDescription("");
         setValidityDate(undefined);
 
     }
 
-    useEffect(() => {
-        if (codProduct.trim() === "") {
-            setDescription("");
-            return;
-        }
+    // useEffect(() => {
+    //     if (codProduct.trim() === "") {
+    //         setDescription("");
+    //         return;
+    //     }
 
-        if (timer) clearTimeout(timer);
+    //     if (timer) clearTimeout(timer);
 
-        const newTimer = setTimeout(() => {
-            buscarProduto2();
-        }, 800);
+    //     const newTimer = setTimeout(() => {
+    //         buscarProduto2();
+    //     }, 800);
 
-        setTimer(newTimer);
-    }, [codProduct]);
+    //     setTimer(newTimer);
+    // }, [codProduct]);
 
     //Função para capturar o botão de voltar
     useEffect(() => {
@@ -136,24 +137,37 @@ export default function ValidityForm() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { backgroundColor: theme.background}]} edges={["bottom"]}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
             <View style={styles.formBox}>
                 <View style={styles.productInfoBox}>
                     <View style={styles.productCodeBox}>
-                        <Input
-                            IconRight={FontAwesome}
-                            iconRightName="filter"
-                            label="Código do produto *"
-                            placeholder="Produto"
-                            keyboardType="numeric"
-                            value={codProduct}
-                            onChangeText={(codProd) => setCodProduct(codProd.replace(/[^0-9]/g, ""))}
-                        />
+                        <View style={{ width: "65%" }}>
+                            <Input
+                                IconRight={FontAwesome}
+                                iconRightName="search"
+                                label="Código do produto *"
+                                placeholder="Produto"
+                                keyboardType="numeric"
+                                value={codProduct}
+                                onChangeText={(codProd) => setCodProduct(codProd.replace(/[^0-9]/g, ""))}
+                            />
+                        </View>
+                        <View style={styles.searchBox}>
+                            <TouchableOpacity
+                                style={[styles.searchButton, { backgroundColor: theme.red }]}
+                                onPress={productSearch}
+                            >
+                                <Text style={[styles.searchText, { color: theme.navText }]}>
+                                    Buscar
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
                 </View>
-                <View style={[styles.productNameBox, {backgroundColor: theme.uiBackground}]}>
+                <View style={[styles.productNameBox, { backgroundColor: theme.uiBackground }]}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        <Text style={[styles.productNameText, {color: theme.title}]}>
+                        <Text style={[styles.productNameText, { color: theme.title }]}>
                             {loading ? <ActivityIndicator /> : description || "Produto não encontrado"}
                         </Text>
                     </ScrollView>
@@ -201,7 +215,9 @@ export default function ValidityForm() {
                         <View style={styles.summaryButton}>
                             <LargeButton
                                 text="Resumo"
-                                onPress={() => { console.log(productsList); router.push("./validitySummary") }}
+                                onPress={() => {
+                                    console.log(productsList); router.push("./validitySummary")
+                                }}
                                 backgroundColor={theme.red}
                             />
                         </View>
@@ -235,6 +251,28 @@ const styles = StyleSheet.create({
     productInfoBox: {
     },
     productCodeBox: {
+        flexDirection: "row",
+
+    },
+    searchBox: {
+        justifyContent: "flex-end",
+        alignItems: "flex-end",
+        flex: 1,
+        paddingBottom: 10,
+        paddingLeft: 10
+    },
+    searchButton: {
+        width: "100%",
+        height: 45,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 20,
+
+    },
+    searchText: {
+        fontFamily: "Lexend-Bold",
+        fontSize: 18
+
     },
     productNameBox: {
         backgroundColor: "#e4e4e4cc",

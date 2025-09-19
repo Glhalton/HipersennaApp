@@ -1,21 +1,21 @@
 import { create } from "zustand"
 
 type RequestDataItem = {
-  requestId: number,
-  branchId: number,
+  id: number,
+  branch_id: number,
   status: string,
-  createdAt: string,
-  targetDate: string,
-  analystId: number,
+  created_at: string,
+  target_date: string,
+  analyst_id: number,
   products: Product[]
 }
 
 type Product = {
-  codProduct: string,
+  product_cod: string,
+  validity_date: Date,
   description: string,
-  validityDate: Date,
   quantity: string,
-  productStatus: string,
+  status: string,
 }
 
 type SelectedRequestsStore = {

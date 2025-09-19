@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
 import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import ContentLoader from "react-content-loader/native"
+
 
 export default function Home() {
     const colorScheme = useColorScheme() ?? "light";
@@ -15,7 +16,7 @@ export default function Home() {
     const name = userDataStore((state) => state.name)
 
     const [validities, setValidities] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
     const countValidade = validities.length
 
@@ -42,16 +43,21 @@ export default function Home() {
         } catch (error) {
             Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     }
 
     useEffect(() => {
         selectValidities();
-    }, [])
+    }, []);
 
-
-
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator size="large" color={theme.iconColor} />
+            </View>
+        )
+    }
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView style={[styles.scroll, { backgroundColor: theme.background, }]} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
@@ -206,6 +212,7 @@ export default function Home() {
     )
 }
 
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -271,6 +278,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: Colors.gray,
         borderRadius: 20,
+        height: 115,
         width: "47%",
         gap: 5,
     },
@@ -280,6 +288,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.red2,
         borderRadius: 20,
         width: "47%",
+        height: 115,
         gap: 5,
     },
     buttonsText: {
