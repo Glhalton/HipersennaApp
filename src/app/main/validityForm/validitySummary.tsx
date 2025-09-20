@@ -43,12 +43,10 @@ export default function ValiditySummary() {
                 })
             });
 
-
-
             const responseData = await response.json();
 
             if (responseData.createdValidity) {
-                Alert.alert("Sucesso", responseData.mensagem);
+                Alert.alert("Sucesso", responseData.message);
                 resetProducts();
                 router.back();
             } else {
@@ -104,7 +102,6 @@ export default function ValiditySummary() {
                     />
                 </View>
             </View>
-
         </SafeAreaView>
     )
 }

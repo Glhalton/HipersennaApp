@@ -10,7 +10,7 @@ type ProductData = {
   product_cod: number;
   description?: string;
   productStatus?: string,
-  validity_date: string,
+  validity_date: Date,
   quantity: number;
   observation?: string | null;
 }

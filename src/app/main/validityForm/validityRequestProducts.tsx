@@ -29,10 +29,11 @@ export default function ValidityRequestProducts() {
 
     const navigation = useNavigation();
 
+    const [forceExit, setForceExit] = useState(false);
     const [showExitModal, setShowExitModal] = useState(false);
     const [exitAction, setExitAction] = useState<any>(null);
 
-    const hasEmpty = productsList.some(p => !p.quantity || p.quantity === null)
+    const hasEmpty = productsList.some(p => p.quantity === undefined || p.quantity === null);
 
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
@@ -44,10 +45,13 @@ export default function ValidityRequestProducts() {
 
     //Botão de voltar o modal
     const backButtonModal = ((quant: string) => {
-        if (quantity) {
+        if (Number(quantity) > 0) {
             updateQuantity(index, Number(quant));
             updateStatus(index, "1");
 
+        } if (Number(quantity) == 0) {
+            updateQuantity(index, Number(quant));
+            updateStatus(index, "3")
         }
         setModalVisible(false);
         setQuantity("")
@@ -80,13 +84,21 @@ export default function ValidityRequestProducts() {
     //Função para capturar o botão de voltar
     useEffect(() => {
         const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-            e.preventDefault(); // bloqueia a navegação
-            setExitAction(e.data.action); // salva a ação para executar depois
-            setShowExitModal(true); // mostra o modal personalizado
+            if (forceExit) return; // não intercepta se for saída forçada
+
+            e.preventDefault();
+            setExitAction(e.data.action);
+            setShowExitModal(true);
         });
 
         return unsubscribe;
-    }, [navigation]);
+    }, [navigation, forceExit]);
+
+    // Quando quiser substituir a tela sem abrir modal:
+    const goHome = () => {
+        setForceExit(true);
+        router.replace("/main/home");
+    };
 
     const handleConfirmExit = () => {
         setShowExitModal(false);
@@ -100,51 +112,35 @@ export default function ValidityRequestProducts() {
         setExitAction(null);
     };
 
-    // //Requisição para inserir validade no banco via API
-    // const insertValidity = async () => {
+    const updateStatusRequest = async () => {
+        try {
+            const response = await fetch("http://10.101.2.7:3333/validityRequests", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    requestId: validityData.request_id,
+                    status: "Concluido"
+                })
+            });
 
-    //     if (productsList.length === 0) {
-    //         Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-    //         router.replace("/main/validityForm/selectType");
-    //         return;
-    //     }
+            const responseData = await response.json();
 
-    //     try {
-
-    //         const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/insercaoValidade.php", {
-    //             method: "POST",
-    //             headers: {
-    //                 "Content-Type": "application/json"
-    //             },
-    //             body: JSON.stringify({
-    //                 validity: validityData,
-    //                 itens: productsList
-    //             })
-    //         });
-
-    //         const resultado = await resposta.json();
-
-    //         if (resultado.sucesso) {
-    //             Alert.alert("Sucesso", resultado.mensagem);
-    //             resetProducts();
-    //             router.replace("/main/validityForm/selectType");
-    //         } else {
-    //             Alert.alert("Erro", resultado.mensagem)
-    //         }
-    //     } catch (erro) {
-    //         Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
-    //     }
-    // };
+            if (!responseData.validityRequestUpdate) {
+                Alert.alert("Erro ao mudar status da requisição", responseData.mensagem);
+            }
+        } catch (erro) {
+            Alert.alert("Erro", "Não foi possível conectar ao servidor:" + erro);
+        }
+    }
 
     const postValidity = async () => {
 
         if (productsList.length === 0) {
             Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-            router.back();
             return;
         }
-
-
 
         try {
 
@@ -159,14 +155,13 @@ export default function ValidityRequestProducts() {
                 })
             });
 
-
-
             const responseData = await response.json();
 
             if (responseData.createdValidity) {
-                Alert.alert("Sucesso", responseData.mensagem);
+                Alert.alert("Sucesso", responseData.message);
+                updateStatusRequest();
                 resetProducts();
-                router.replace("/main/home");
+                goHome();
             } else {
                 Alert.alert("Erro no Servidor", responseData.error)
             }
@@ -215,7 +210,7 @@ export default function ValidityRequestProducts() {
                                         <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.product_cod}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{formatDate(item.validity_date)}</Text></Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
@@ -280,6 +275,7 @@ export default function ValidityRequestProducts() {
                             <LargeButton
                                 text={"Não encontrei"}
                                 onPress={() => { notFoundButtonModal() }}
+                                backgroundColor={theme.red}
 
                             />
                             <LargeButton

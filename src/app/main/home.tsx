@@ -5,8 +5,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { userDataStore } from "../../../store/userDataStore";
 import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
-import ContentLoader from "react-content-loader/native"
-
 
 export default function Home() {
     const colorScheme = useColorScheme() ?? "light";
@@ -20,9 +18,6 @@ export default function Home() {
 
     const countValidade = validities.length
 
-    const goToVistoriaDemanda = () => {
-        router.push("./validityRequest/requests");
-    }
 
     const selectValidities = async () => {
         try {
@@ -61,7 +56,6 @@ export default function Home() {
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView style={[styles.scroll, { backgroundColor: theme.background, }]} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
-
                 <View style={styles.header}>
                     <View>
                         <Text style={[styles.helloText, { color: theme.title }]}>
@@ -70,7 +64,6 @@ export default function Home() {
                         <Text style={[styles.subTitleText, { color: theme.text }]}>
                             SennaApp
                         </Text>
-
                     </View>
 
                     <TouchableOpacity style={[styles.settings, { backgroundColor: theme.uiBackground }]} onPress={() => router.push("./settings")}>
@@ -160,7 +153,7 @@ export default function Home() {
                             </TouchableOpacity>
                         )} */}
 
-                        <TouchableOpacity onPress={goToVistoriaDemanda} style={{ borderBottomWidth: 1, borderColor: Colors.gray }}>
+                        <TouchableOpacity onPress={() => router.push("/main/validityRequest/requests")} style={{ borderBottomWidth: 1, borderColor: Colors.gray }}>
                             <View style={styles.opcaoMenu}>
                                 <View style={styles.optionIcon}>
                                     <Octicons

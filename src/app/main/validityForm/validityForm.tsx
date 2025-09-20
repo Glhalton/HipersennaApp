@@ -86,7 +86,7 @@ export default function ValidityForm() {
         addProduct({
             product_cod: Number(codProduct),
             description,
-            validity_date: validityDate.toLocaleDateString("en-CA"),
+            validity_date: validityDate,
             quantity: Number(quantity),
             observation
         });
@@ -97,21 +97,6 @@ export default function ValidityForm() {
         setValidityDate(undefined);
 
     }
-
-    // useEffect(() => {
-    //     if (codProduct.trim() === "") {
-    //         setDescription("");
-    //         return;
-    //     }
-
-    //     if (timer) clearTimeout(timer);
-
-    //     const newTimer = setTimeout(() => {
-    //         buscarProduto2();
-    //     }, 800);
-
-    //     setTimer(newTimer);
-    // }, [codProduct]);
 
     //Função para capturar o botão de voltar
     useEffect(() => {
@@ -192,14 +177,14 @@ export default function ValidityForm() {
                     />
                 </View>
 
-                <View>
+                {/* <View>
                     <Input
                         label="Observação"
                         placeholder="Digite a sua observação"
                         value={observation}
                         onChangeText={setObservation}
                     />
-                </View>
+                </View> */}
 
                 <View style={styles.buttonsBox}>
                     <View style={styles.summaryButton}>
