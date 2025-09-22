@@ -1,25 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, ActivityIndicator } from "react-native";
+import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { userDataStore } from "../../../store/userDataStore";
-import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
+import { employeeDataStore } from "../../../store/employeeDataStore";
 
 export default function Home() {
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    const userId = userDataStore((state) => state.userId);
-    const name = userDataStore((state) => state.name)
+    const userId = employeeDataStore((state) => state.userId);
+    const name = employeeDataStore((state) => state.name)
 
     const [validities, setValidities] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const countValidade = validities.length
 
-
-    const selectValidities = async () => {
+    const getValidities = async () => {
         try {
             const response = await fetch(`http://10.101.2.7:3333/validities/employee/${userId}`, {
                 method: "GET",
@@ -33,7 +32,7 @@ export default function Home() {
             if (responseData.validitiesByEmployee) {
                 setValidities(responseData.validitiesByEmployee);
             } else {
-                Alert.alert("Erro", responseData.mensagem);
+                Alert.alert("Erro", responseData.message);
             }
         } catch (error) {
             Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
@@ -43,7 +42,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        selectValidities();
+        getValidities();
     }, []);
 
     if (isLoading) {
@@ -53,13 +52,14 @@ export default function Home() {
             </View>
         )
     }
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView style={[styles.scroll, { backgroundColor: theme.background, }]} contentContainerStyle={styles.contentStyleScroll} showsVerticalScrollIndicator={false}>
                 <View style={styles.header}>
                     <View>
                         <Text style={[styles.helloText, { color: theme.title }]}>
-                            Olá, {name}.
+                            Olá, {name}
                         </Text>
                         <Text style={[styles.subTitleText, { color: theme.text }]}>
                             SennaApp
@@ -110,14 +110,12 @@ export default function Home() {
                         </TouchableOpacity>
 
                     </View>
-
                 </View>
 
                 <View style={[styles.dashboardBox]}>
                     <Text style={[styles.title, { color: theme.title }]}>
                         Dashboard
                     </Text>
-
                     <View style={[styles.dashboardRowItens,]}>
                         <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
                             <Text style={[styles.dashboardItemText, { color: theme.text }]}>Total de vistorias: </Text>
@@ -139,21 +137,7 @@ export default function Home() {
                         Acesso rápido
                     </Text>
                     <View>
-                        {/* {Number(nivelAcesso) == 2 || Number(nivelAcesso) == 3 && (
-                            <TouchableOpacity onPress={goToSelecaoFilial2}>
-                                <View style={styles.opcaoMenu}>
-                                    <Octicons
-                                        name="plus-circle"
-                                        color={Colors.gray}
-                                        size={21}
-                                    />
-                                    <Image style={styles.imgIcon} source={require("../../../assets/images/SinoIcon.png")} />
-                                    <Text style={styles.textOptions}>Criar Solicitação</Text>
-                                </View>
-                            </TouchableOpacity>
-                        )} */}
-
-                        <TouchableOpacity onPress={() => router.push("/main/validityRequest/requests")} style={{ borderBottomWidth: 1, borderColor: Colors.gray }}>
+                        <TouchableOpacity onPress={() => router.push("/main/validityRequest/requests")} style={styles.optionButton}>
                             <View style={styles.opcaoMenu}>
                                 <View style={styles.optionIcon}>
                                     <Octicons
@@ -168,7 +152,7 @@ export default function Home() {
                         </TouchableOpacity>
 
 
-                        <TouchableOpacity onPress={() => { router.push("./history") }}>
+                        <TouchableOpacity onPress={() => { router.push("./history") }} style={styles.optionButton}>
                             <View style={styles.opcaoMenu}>
                                 <View style={styles.optionIcon}>
                                     <Octicons
@@ -181,23 +165,6 @@ export default function Home() {
                                 <Text style={[styles.textOptions, { color: theme.text }]}>Histórico</Text>
                             </View>
                         </TouchableOpacity>
-
-
-
-                        {/* <TouchableOpacity>
-                            <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/GraficosIcon.png")} />
-                                <Text style={styles.textOptions}>Monitor de metas</Text>
-                            </View >
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={goToRelatorios}>
-                            <View style={styles.opcaoMenu}>
-                                <Image style={styles.imgIcon} source={require("../../assets/images/ArquivoIcon.png")} />
-                                <Text style={styles.textOptions}>Gerar relatórios</Text>
-                            </View>
-                        </TouchableOpacity> */}
-
                     </View>
                 </View>
             </ScrollView>
@@ -209,7 +176,6 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.black,
         alignItems: "center",
     },
     scroll: {
@@ -221,7 +187,6 @@ const styles = StyleSheet.create({
         color: Colors.blue,
         paddingHorizontal: 14,
         paddingVertical: 20,
-
     },
     header: {
         flexDirection: "row",
@@ -248,8 +213,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.white,
         borderRadius: 10,
 
-    }, validityBox: {
-
+    }, 
+    validityBox: {
         padding: 20,
         backgroundColor: Colors.white,
         borderRadius: 20,
@@ -360,6 +325,9 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         alignItems: "center",
         gap: 20,
+    },
+    optionButton: {
+        borderTopWidth: 1, borderColor: Colors.gray
     },
     textOptions: {
         color: Colors.gray,

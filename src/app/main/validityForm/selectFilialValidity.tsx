@@ -5,25 +5,21 @@ import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { userDataStore } from "../../../../store/userDataStore";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { employeeDataStore } from "../../../../store/employeeDataStore";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 export default function SelectFilialValidity() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-
-    const resetarLista = validityInsertStore((state) => state.resetProducts);
-    const resetValidity = validityInsertStore((state) => state.resetValidity);
-    const validity = validityInsertStore((state) => state.validityData);
-    const setValidity = validityInsertStore((state) => state.addValidity);
-    const userId = userDataStore((state) => state.userId);
+    const userId = employeeDataStore((state) => state.userId);
+    const setValidity = postValidityDataStore((state) => state.addValidity);
+    const resetValidity = postValidityDataStore((state) => state.resetValidityData);
+    const resetList = postValidityDataStore((state) => state.resetProductsList);
 
     const [branchId, setBranchId] = useState("");
-
-    //Opções do select de filial
-    const filiais = [
+    const branches = [
         { label: "1 - Matriz", value: "1" },
         { label: "2 - Faruk", value: "2" },
         { label: "3 - Carajás", value: "3" },
@@ -33,6 +29,7 @@ export default function SelectFilialValidity() {
         { label: "7 - Cidade Jardim", value: "7" },
     ];
 
+    //Cria a validade com request = null, pois é avulsa
     function addValidity() {
         if (!branchId || !userId) {
             Alert.alert("Erro!", "Erro na coleta de dados!");
@@ -48,11 +45,9 @@ export default function SelectFilialValidity() {
     }
 
     useEffect(() => {
-        resetarLista();
+        resetList();
         resetValidity();
-        console.log("Resetou a lista")
     }, [])
-
 
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: theme.background}]}>
@@ -67,7 +62,7 @@ export default function SelectFilialValidity() {
                     <DropdownInput
                         label={"Filial:"}
                         value={branchId}
-                        items={filiais}
+                        items={branches}
                         onChange={(val) => setBranchId(val)}
                     />
                 </View>

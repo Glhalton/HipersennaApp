@@ -4,7 +4,7 @@ import React from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 
 export default function ValiditySummary() {
@@ -13,10 +13,10 @@ export default function ValiditySummary() {
     const theme = Colors[colorScheme];
 
     //Lista de itens inseridos do Formulário
-    const validityData = validityInsertStore((state) => state.validityData)
-    const productsList = validityInsertStore((state) => state.productsList);
-    const removeProduct = validityInsertStore((state) => state.removeProduct);
-    const resetProducts = validityInsertStore((state) => state.resetProducts);
+    const validityData = postValidityDataStore((state) => state.validity)
+    const productsList = postValidityDataStore((state) => state.productsList);
+    const removeProduct = postValidityDataStore((state) => state.removeProduct);
+    const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
     const postValidity = async () => {
 

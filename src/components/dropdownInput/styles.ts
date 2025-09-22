@@ -13,7 +13,6 @@ export const styles = StyleSheet.create({
     dropdownInput: {
         height: "100%",
         minHeight: 45,
-        // backgroundColor: Colors.inputColor,
         zIndex: 1,
         borderWidth: 0,
         borderRadius: 20,
@@ -27,7 +26,6 @@ export const styles = StyleSheet.create({
     },
     optionsText: {
         fontFamily: "Lexend-Regular",
-
     },
     placeholder: {
         fontFamily: "Lexend-Regular",

@@ -1,51 +1,49 @@
 import { create } from "zustand";
 
-type ValidityData = {
-  branch_id: number,
-  employee_id: string,
-  request_id: number | null
+type Validity = {
+  branch_id: number;
+  employee_id: string;
+  request_id: number | null;
 }
 
-type ProductData = {
+type Product = {
   product_cod: number;
   description?: string;
-  productStatus?: string,
+  productStatus?: string;
   validity_date: Date,
   quantity: number;
-  observation?: string | null;
 }
 
 type VistoriaStore = {
-  validityData: ValidityData;
-  productsList: ProductData[];
-  addValidity: (validityData: ValidityData) => void;
-  addProduct: (Item: ProductData) => void;
-  setProductList: (products: ProductData[]) => void
+  validity: Validity;
+  productsList: Product[];
+  addValidity: (validity: Validity) => void;
+  addProduct: (product: Product) => void;
+  setProductList: (products: Product[]) => void;
   removeProduct: (index: number) => void;
-  resetProducts: () => void;
-  resetValidity: () => void;
+  resetProductsList: () => void;
+  resetValidityData: () => void;
   updateProductQuantity: (index: number, quantity: number) => void;
-  updateProductStatus: (index: number, value: string) => void
+  updateProductStatus: (index: number, status: string) => void;
 }
 
-//Criação do store
-export const validityInsertStore = create<VistoriaStore>((set) => ({
+export const postValidityDataStore = create<VistoriaStore>((set) => ({
   productsList: [],
-  validityData: {
+  validity: {
     branch_id: 0,
     employee_id: "",
     request_id: null
   },
-  addValidity: (validityData) => set({ validityData }),
+  addValidity: (validity) => set({ validity }),
   addProduct: (item) => set((state) => ({ productsList: [...state.productsList, item] })),
   setProductList: (products) => set({ productsList: products }),
   removeProduct: (index) =>
     set((state) => ({
       productsList: state.productsList.filter((_, i) => i !== index),
     })),
-  resetProducts: () => set({ productsList: [] }),
-  resetValidity: () => set({
-    validityData: {
+  resetProductsList: () => set({ productsList: [] }),
+  resetValidityData: () => set({
+    validity: {
       branch_id: 0,
       employee_id: "",
       request_id: null

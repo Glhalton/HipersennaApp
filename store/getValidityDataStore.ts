@@ -24,7 +24,7 @@ type ValidityStore = {
     setProducts: (lista: Product[]) => void;
 }
 
-export const validitiesEmployeeStore = create<ValidityStore>((set) => ({
+export const getValidityDataStore = create<ValidityStore>((set) => ({
     products: [],
     setProducts: (lista) => set({products: lista})
 }))

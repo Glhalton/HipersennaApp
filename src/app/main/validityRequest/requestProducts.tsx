@@ -1,39 +1,36 @@
 import React, { useEffect } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { requestProductsStore } from "../../../../store/requestProductsStore";
+import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 
 export default function RequestProducts() {
 
-    const products = requestProductsStore((state) => state.produtos);
+    const colorScheme = useColorScheme() ?? "light";
+    const theme = Colors[colorScheme];
 
-    useEffect(() => {
-        console.log(products);
-    }, [])
+    const productsList = validityRequestDataStore((state) => state.products);
 
     return (
-        <SafeAreaView edges={["bottom"]} style={styles.container}>
-
-            <View style={styles.cardsContainer}>
+        <SafeAreaView edges={["bottom"]} style={[styles.container, {backgroundColor: theme.background}]}>
+            <View style={[styles.cardsContainer, ]}>
                 <FlatList
-                    data={products}
+                    data={productsList}
                     keyExtractor={(_, index) => index.toString()}
                     contentContainerStyle={{ paddingBottom: 20 }}
                     renderItem={({ item, index }) => (
-                        <View style={styles.card}>
+                        <View style={[styles.card, { backgroundColor: theme.uiBackground}]}>
                             <View style={styles.listId}>
-                                <Text style={styles.label}>
+                                <Text style={[styles.label, {color: theme.title}]}>
                                     {index + 1}°
                                 </Text>
                             </View>
                             <View style={styles.dadosItem}>
                                 <View style={styles.codDescricaoProdutoRow}>
-                                    <Text style={styles.label}> {item.codProduct} <Text style={styles.productDataText} > : {item.description}</Text> </Text>
-
+                                    <Text style={[styles.label, {color: theme.title}]}> {item.product_cod} <Text style={[styles.productDataText, {color: theme.text}]} > : {item.description}</Text> </Text>
                                 </View>
                                 <View>
-                                    <Text style={styles.label} > Dt. vencimento: <Text style={styles.productDataText}>{item.validityDate.toString()}</Text></Text>
+                                    <Text style={[styles.label, {color: theme.title}]} > Dt. vencimento: <Text style={[styles.productDataText, {color: theme.text}]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
                                 </View>
                             </View>
                         </View>
@@ -41,7 +38,6 @@ export default function RequestProducts() {
                 />
 
             </View>
-
         </SafeAreaView >
     );
 }

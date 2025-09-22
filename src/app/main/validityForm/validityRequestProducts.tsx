@@ -1,25 +1,24 @@
 import { LargeButton } from "@/components/largeButton";
 import ModalPopup from "@/components/modalPopup";
-import { SmallButton } from "@/components/smallButton";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 export default function ValidityRequestProducts() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    const productsList = validityInsertStore((state) => state.productsList) || [];
-    const resetProducts = validityInsertStore((state) => state.resetProducts);
+    const productsList = postValidityDataStore((state) => state.productsList) || [];
+    const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
-    const updateQuantity = validityInsertStore((state) => state.updateProductQuantity)
-    const updateStatus = validityInsertStore((state) => state.updateProductStatus)
+    const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity)
+    const updateStatus = postValidityDataStore((state) => state.updateProductStatus)
 
-    const validityData = validityInsertStore((state) => state.validityData);
+    const validityData = postValidityDataStore((state) => state.validity);
 
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [modalVisible, setModalVisible] = useState(false);

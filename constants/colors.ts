@@ -34,7 +34,7 @@ export const Colors = {
         iconColor: "#4A5A6A",
         iconColorFocused: "#4A5A6A",
         uiBackground: "#ffffffff",
-        inputColor: "#ebeaf1ff",
+        inputColor: "#eaebf1ff",
         inputPlaceholder: "#66677eff",
         red: "#F22727",
         gray: "#4A5A6A",

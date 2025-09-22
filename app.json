@@ -1,8 +1,8 @@
 
 {
   "expo": {
-    "name": "hipersennaApp",
-    "slug": "hipersennaApp",
+    "name": "SennaApp",
+    "slug": "SennaApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/HipersennaBlackLogo.png",
@@ -14,8 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/HipersennaBlackLogo.png",
-        "backgroundColor": "#22252f"
+        "foregroundImage": "./assets/images/HipersennaBlackLogo.png"
       },
       "edgeToEdgeEnabled": true
     },
@@ -29,10 +28,13 @@
       [
         "expo-splash-screen",
         {
+          "backgroundColor": "#232323",
           "image": "./assets/images/HipersennaBlackLogo.png",
-          "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#22252f"
+          "dark":{
+            "backgroundColor": "#232323"
+          },
+          "imageWidth": 200
         }
       ],
       "expo-font"

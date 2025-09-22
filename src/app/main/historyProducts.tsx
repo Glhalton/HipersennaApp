@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { validitiesEmployeeStore } from "../../../store/validitiesEmployeeStore";
+import { getValidityDataStore} from "../../../store/getValidityDataStore";
 
 export default function historyProducts() {
 
@@ -10,7 +10,7 @@ export default function historyProducts() {
     const theme = Colors[colorScheme];
 
 
-    const products = validitiesEmployeeStore((state) => state.products);
+    const products = getValidityDataStore((state) => state.products);
 
     useEffect(() => {
         console.log(products);

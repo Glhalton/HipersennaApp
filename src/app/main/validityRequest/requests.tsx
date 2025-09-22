@@ -1,101 +1,169 @@
 import { Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { requestProductsStore } from "../../../../store/requestProductsStore";
-import { userDataStore } from "../../../../store/userDataStore";
+import { employeeDataStore } from "../../../../store/employeeDataStore";
+import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+
+type Request = {
+    id: number,
+    branch_id: number,
+    status: string,
+    created_at: string,
+    target_date: string,
+    analyst_id: number,
+    hsvalidity_request_products: Product[];
+};
+
+type Product = {
+    product_cod: number,
+    description: string,
+    validity_date: Date,
+    quantity: string,
+    status: string,
+}
 
 export default function Requests() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    type Request = {
-        requestId: number;
-        branchId: number;
-        analystId: number;
-        status: string | null;
-        createdAt: string;
-        targetDate: string;
-        products: [];
-    };
+    const [filterItems, setFilterItems] = useState([
+        { label: "Novos", value: "1" },
+        { label: "Antigos", value: "2" }
+    ])
+    const [open, setOpen] = React.useState(false);
 
-    const userId = userDataStore((state) => state.userId);
+    const [ordination, setOrdination] = useState("");
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    const userId = employeeDataStore((state) => state.userId);
     const [requests, setRequests] = useState<Request[]>([]);
-    const setProdutos = requestProductsStore((state) => state.setProdutos);
+    const setProductsList = validityRequestDataStore((state) => state.setProductsList);
 
-    const consultarSolicitacoes = async () => {
+    const getValidityRequests = async () => {
         try {
-            const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarSolicitacao.php", {
-                method: "POST",
+            const response = await fetch(`http://10.101.2.7:3333/validityRequests/employee/${userId}`, {
+                method: "GET",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ userId })
             });
 
-            // const texto = await resposta.text();
-            // console.log("RESPOSTA BRUTA DA API:", texto);
+            const responseData = await response.json();
 
-            const resultado = await resposta.json();
-
-            if (resultado.sucesso) {
-                setRequests(resultado.solicitacoes);
+            if (responseData.validityRequestsByEmployee) {
+                setRequests(responseData.validityRequestsByEmployee);
             } else {
-                Alert.alert("Erro", resultado.mensagem);
+                Alert.alert("Erro", responseData.message);
             }
-        } catch (erro) {
-            Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + erro);
+        } catch (error) {
+            Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
+        } finally {
+            setIsLoading(false);
         }
+    }
+
+    const [sortedRequests, setSortedRequests] = useState<Request[]>([]);
+
+    const sortRequests = (option: string | null) => {
+
+        let sorted: Request[] = [...requests];
+
+        switch (option) {
+            case "1":
+                sorted.sort((a, b) => b.id - a.id);
+                break;
+            case "2":
+                sorted.sort((a, b) => a.id - b.id);
+                break;
+        }
+
+        setSortedRequests(sorted);
+    }
+
+    const handleOrdinationChange = (newValue: string) => {
+        setOrdination(newValue);
+        sortRequests(newValue);
     };
 
     useEffect(() => {
-        consultarSolicitacoes();
+        getValidityRequests();
     }, []);
+    useEffect(() => {
+        sortRequests(ordination || "1");
+    }, [requests]);
 
     function getColor(status: string | null) {
-        if (status === "pendente") return "#FF6200";
-        if (status === "em andamento") return "#51ABFF";
-        if (status === "concluido") return "#13BE19";
-        if (status === "expirado") return "#E80000";
+        if (status === "Pendente") return "#FF6200";
+        if (status === "Em andamento") return "#51ABFF";
+        if (status === "Concluido") return "#13BE19";
+        if (status === "Expirado") return "#E80000";
         return "black";
+    }
+
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                <ActivityIndicator color={theme.iconColor} size={60} />
+            </View>
+        )
     }
 
     return (
         <SafeAreaView style={styles.container} edges={['bottom']}>
             <View style={styles.contentBox}>
-                <View style={styles.filterBox}>
-                    <Text style={styles.filterText}>
-                        Ordernar Por:
-                    </Text>
+                <View style={styles.header}>
+                    <View style={styles.filterBox}>
+                        <View style={styles.filterBox}>
+                            <DropDownPicker
+                                open={open}
+                                value={ordination}
+                                items={filterItems}
+                                setOpen={setOpen}
+                                setValue={(callback) => {
+                                    const newValue = callback(ordination);
+                                    handleOrdinationChange(newValue);
+                                }}
+                                setItems={setFilterItems}
+                                placeholder="Ordenar por"
+                                style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+                                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
+                                textStyle={[styles.optionsText, { color: theme.title }]}
+                                placeholderStyle={[styles.placeholder, { color: theme.text }]}
+                            />
+                        </View>
+                    </View>
                 </View>
                 <View style={styles.flatListBox}>
 
                     <FlatList
-                        data={requests}
+                        data={sortedRequests}
                         keyExtractor={(_, index) => index.toString()}
                         contentContainerStyle={{ paddingBottom: 20 }}
                         renderItem={({ item, index }) => (
                             <TouchableOpacity
                                 activeOpacity={0.6}
-                                onPress={() => { router.push("./requestProducts"); setProdutos(item.products); }}
+                                onPress={() => { router.push("./requestProducts"); setProductsList(item.hsvalidity_request_products); }}
                             >
-                                <View style={[styles.card, {backgroundColor: theme.uiBackground}]}>
-                                    <Text style={[styles.cardTitle, {color: theme.title}]}>
-                                        # {item.requestId}
+                                <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                                    <Text style={[styles.cardTitle, { color: theme.title }]}>
+                                        # {item.id}
                                     </Text>
                                     <View style={styles.requestDataBox}>
                                         <View>
-                                            <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Filial:</Text> {item.branchId}</Text>
+                                            <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}</Text>
                                             {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                                             <View style={styles.dates}>
-                                                <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Dt. Criação:</Text> {new Date(item.createdAt).toLocaleDateString("pt-BR")}</Text>
-                                                <Text style={[styles.text, {color: theme.text}]}><Text style={[styles.label, {color: theme.title}]}>Dt. Limite:</Text> {new Date(item.targetDate).toLocaleDateString("pt-BR")}</Text>
+                                                <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text> {new Date(item.created_at).toLocaleDateString("pt-BR")}</Text>
+                                                {/* <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Limite:</Text> {new Date(item.target_date).toLocaleDateString("pt-BR")}</Text> */}
                                             </View>
                                             <View style={styles.statusBox}>
-                                                <Text style={[styles.label, {color: theme.title}]}>
+                                                <Text style={[styles.label, { color: theme.title }]}>
                                                     Status:
                                                 </Text>
                                                 <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
@@ -132,18 +200,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
         flex: 1,
     },
-    filterBox: {
-        backgroundColor: Colors.gray,
-        height: 30,
-        width: 140,
-        borderRadius: 20,
-        alignItems: "center",
-        justifyContent: "center",
-        marginVertical: 15,
+    header: {
+        paddingVertical: 15,
     },
-    filterText: {
-        fontFamily: "Lexend-Regular",
-        color: "white"
+    filterBox: {
+
     },
     flatListBox: {
         paddingBottom: 60
@@ -194,6 +255,38 @@ const styles = StyleSheet.create({
         height: 40,
         alignItems: "center",
         justifyContent: "center"
+    },
+    dropdownInput: {
+        minHeight: 30,
+        width: 140,
+        zIndex: 1,
+        borderWidth: 0,
+        borderRadius: 20,
+
+    },
+    optionsBox: {
+        minHeight: 40,
+        width: 140,
+        borderColor: "gray",
+        paddingLeft: 4,
+        borderWidth: 0,
+        borderTopWidth: 1,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.29,
+        shadowRadius: 4.65,
+        elevation: 7,
+
+    },
+    optionsText: {
+        fontFamily: "Lexend-Regular",
+    },
+    placeholder: {
+        fontFamily: "Lexend-Regular",
+
     },
 
 })

@@ -3,68 +3,49 @@ import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
 import ModalPopup from "@/components/modalPopup";
 import { FontAwesome } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { validityInsertStore } from "../../../../store/validityInsertStore";
-
-import { useNavigation } from "expo-router";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 export default function ValidityForm() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    //Dados do Store
-    const productsList = validityInsertStore((state) => state.productsList);
-    const addProduct = validityInsertStore((state) => state.addProduct);
+    const productsList = postValidityDataStore((state) => state.productsList);
+    const addProduct = postValidityDataStore((state) => state.addProduct);
 
-    //Codigo do produto
-    const [codProduct, setCodProduct] = useState("");
-
+    //codProductInput é o codigo digitado, o productCod é o que é pego após pesquisar o produto
+    const [codProductInput, setCodProductInput] = useState("");
+    const [productCod, setProductCod] = useState("");
     const [description, setDescription] = useState("");
 
-    //Data de Vencimento
     const [validityDate, setValidityDate] = useState<Date | undefined>(undefined);
-
-    //Quantidade
     const [quantity, setQuantity] = useState("");
-
-    //Texto de observação
-    const [observation, setObservation] = useState("");
-
     const [loading, setLoading] = useState(false);
-
-    //Timer para consulta do produto
-    const [timer, setTimer] = useState<number | null>(null);
-
-    const navigation = useNavigation();
-
     const [showExitModal, setShowExitModal] = useState(false);
     const [exitAction, setExitAction] = useState<any>(null);
+    const navigation = useNavigation();
 
-    // Consumindo API em python para consulta de produto:
     const productSearch = async () => {
         try {
             setLoading(true);
-            const resposta = await fetch("https://api.hipersenna.com/api/prod?codprod=" + codProduct, {
+            const response = await fetch(`https://api.hipersenna.com/api/prod?codprod=${codProductInput}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer fbf722488af02d0a7c596872aec73db9"
                 },
             });
 
-            //  const texto = await resposta.text();
-            //  console.log("RESPOSTA BRUTA DA API:", texto);
+            const responseData = await response.json();
 
-            const resultado = await resposta.json();
-
-            if (Array.isArray(resultado) && resultado.length > 0 && resultado[0].descricao) {
-                setDescription(resultado[0].descricao);
+            if (Array.isArray(responseData) && responseData.length > 0 && responseData[0].descricao) {
+                setDescription(responseData[0].descricao);
             } else {
-                setDescription(resultado.mensagem);
+                setDescription(responseData.mensagem);
             }
         } catch (erro) {
             Alert.alert("Erro!", "Não foi possível buscar o produto." + erro);
@@ -73,9 +54,8 @@ export default function ValidityForm() {
         }
     };
 
-    //Função de adicionar item na lista de produtos e limpar os campos
     function handlerAdicionar() {
-        if (!codProduct || !validityDate || !quantity) {
+        if (!codProductInput || !validityDate || !quantity) {
             Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
             return;
         } if (!description) {
@@ -84,14 +64,13 @@ export default function ValidityForm() {
         }
 
         addProduct({
-            product_cod: Number(codProduct),
+            product_cod: Number(productCod),
             description,
             validity_date: validityDate,
             quantity: Number(quantity),
-            observation
         });
 
-        setCodProduct("");
+        setCodProductInput("");
         setQuantity("");
         setDescription("");
         setValidityDate(undefined);
@@ -133,14 +112,14 @@ export default function ValidityForm() {
                                 label="Código do produto *"
                                 placeholder="Produto"
                                 keyboardType="numeric"
-                                value={codProduct}
-                                onChangeText={(codProd) => setCodProduct(codProd.replace(/[^0-9]/g, ""))}
+                                value={codProductInput}
+                                onChangeText={(codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, ""))}
                             />
                         </View>
                         <View style={styles.searchBox}>
                             <TouchableOpacity
                                 style={[styles.searchButton, { backgroundColor: theme.red }]}
-                                onPress={productSearch}
+                                onPress={() => { productSearch(); setProductCod(codProductInput) }}
                             >
                                 <Text style={[styles.searchText, { color: theme.navText }]}>
                                     Buscar
@@ -153,7 +132,7 @@ export default function ValidityForm() {
                 <View style={[styles.productNameBox, { backgroundColor: theme.uiBackground }]}>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <Text style={[styles.productNameText, { color: theme.title }]}>
-                            {loading ? <ActivityIndicator /> : description || "Produto não encontrado"}
+                            {loading ? <ActivityIndicator color={theme.iconColor} /> : description || "Produto não encontrado"}
                         </Text>
                     </ScrollView>
                 </View>
@@ -177,21 +156,12 @@ export default function ValidityForm() {
                     />
                 </View>
 
-                {/* <View>
-                    <Input
-                        label="Observação"
-                        placeholder="Digite a sua observação"
-                        value={observation}
-                        onChangeText={setObservation}
-                    />
-                </View> */}
-
                 <View style={styles.buttonsBox}>
                     <View style={styles.summaryButton}>
                         <LargeButton
                             text="Inserir"
                             backgroundColor={Colors.gray}
-                            onPress={handlerAdicionar}
+                            onPress={() => {handlerAdicionar(); Keyboard.dismiss()}}
                         />
                     </View>
 

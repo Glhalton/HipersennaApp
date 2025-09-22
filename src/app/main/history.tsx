@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { validitiesEmployeeStore } from "../../../store/validitiesEmployeeStore";
-import { userDataStore } from "../../../store/userDataStore";
-import DropDownPicker from "react-native-dropdown-picker";
+import { employeeDataStore } from "../../../store/employeeDataStore";
+import { getValidityDataStore } from "../../../store/getValidityDataStore";
 
 type validity = {
     id: number;
@@ -33,8 +33,8 @@ export default function History() {
     const [ordination, setOrdination] = useState("");
     const [open, setOpen] = React.useState(false);
 
-    const userId = userDataStore((state) => state.userId);
-    const setProducts = validitiesEmployeeStore((state) => state.setProducts);
+    const userId = employeeDataStore((state) => state.userId);
+    const setProducts = getValidityDataStore((state) => state.setProducts);
     const [validities, setValidities] = useState<validity[]>([]);
     const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 
@@ -94,7 +94,7 @@ export default function History() {
     if (isLoading) {
         return (
             <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                <ActivityIndicator size="large" color={theme.iconColor} />
+                <ActivityIndicator size={60} color={theme.iconColor} />
             </View>
         )
     }

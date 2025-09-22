@@ -2,18 +2,18 @@ import { create } from "zustand";
 
 interface UserDadosStore {
     token: string | null;
-    setToken: (token: string) => void;
     userId: string | null;
-    setUserId: (id: string | null) => void;
     name: string | null;
-    setName: (name: string) => void;
     username: string | null;
-    setUsername: (username: string) => void;
     nivelAcesso: string | null;
+    setToken: (token: string) => void;
+    setUserId: (id: string | null) => void;
+    setName: (name: string) => void;
+    setUsername: (username: string) => void;
     setNivelAcesso: (nivel: string | null) => void;
 }
 
-export const userDataStore = create<UserDadosStore>((set) => ({
+export const employeeDataStore = create<UserDadosStore>((set) => ({
     token: null,
     userId: null,
     name: null,

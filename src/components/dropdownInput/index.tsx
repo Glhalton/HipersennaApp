@@ -42,6 +42,7 @@ export function DropdownInput({ label, value, items, onChange }: DropDownInputPr
                     dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
                     textStyle={[styles.optionsText, { color: theme.title }]}
                     placeholderStyle={[styles.placeholder, { color: theme.text }]}
+                    
                 />
             </View>
         </Fragment>
