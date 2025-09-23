@@ -9,6 +9,8 @@ export default function RequestProducts() {
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
+    
+
     const productsList = validityRequestDataStore((state) => state.products);
 
     return (

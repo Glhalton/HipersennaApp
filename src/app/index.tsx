@@ -1,17 +1,21 @@
 import { Input } from "@/components/input";
 import { LargeButton } from "@/components/largeButton";
-import { FontAwesome, Octicons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import { employeeDataStore } from "../../store/employeeDataStore";
+import ModalAlert from "@/components/modalAlert";
 
 export default function Index() {
 
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const [errorTitle, setErrorTitle] = useState("");
+  const [errorText, setErrorText] = useState("");
 
   const setToken = employeeDataStore((state) => state.setToken);
   const setUserId = employeeDataStore((state) => state.setUserId);
@@ -22,6 +26,8 @@ export default function Index() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
   const [loading, setLoading] = useState(false);
+
+  const [modalVisible, setModalVisible] = useState(true);
 
   const getLogin = async () => {
     try {
@@ -51,12 +57,15 @@ export default function Index() {
         setPassword("");
 
       } else {
-        Alert.alert("Erro", responseData.error || "Login inválido");
+        setErrorTitle("Erro");
+        setErrorText(responseData.error || "Login inválido");
+        setModalVisible(true);
         setPassword("");
       }
     } catch (erro) {
       console.log(erro)
-      Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
+      setErrorTitle("Erro de conexão");
+      setErrorText("Não foi possível conectar ao servidor " + erro);
       setUsername("");
       setPassword("");
 
@@ -78,7 +87,7 @@ export default function Index() {
           source={require("../../assets/images/Logo-hipersenna100x71.png")}
           style={styles.logo}
         />
-        <Text style={[styles.title, ]}>
+        <Text style={[styles.title,]}>
           SennaApp
         </Text>
       </View>
@@ -129,6 +138,21 @@ export default function Index() {
           </Text>
         </TouchableOpacity>
       </View>
+
+
+
+      <ModalAlert
+        visible={modalVisible}
+        buttonPress={() => { setModalVisible(false) }}
+        title={errorTitle}
+        text={errorText}
+        iconCenterName="error-outline"
+        IconCenter={MaterialIcons}
+
+      />
+
+
+
     </SafeAreaView>
   )
 }

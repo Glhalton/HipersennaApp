@@ -8,6 +8,7 @@ import { styles } from "./styles";
 type Props = ModalProps & {
     buttonLeft: () => void,
     buttonRight: () => void,
+    
 }
 
 export default function ModalPopup({ buttonLeft, buttonRight, ...rest }: Props) {
