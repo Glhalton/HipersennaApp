@@ -1,7 +1,7 @@
-import { LargeButton } from "@/components/largeButton";
-import { router } from "expo-router";
 import React from "react";
 import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { LargeButton } from "../../../components/largeButton";
+import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";

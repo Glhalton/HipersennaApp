@@ -1,13 +1,14 @@
-import { Input } from "@/components/input";
-import { LargeButton } from "@/components/largeButton";
+import { Input } from "../components/input";
+import { LargeButton } from "../components/largeButton";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import { employeeDataStore } from "../../store/employeeDataStore";
-import ModalAlert from "@/components/modalAlert";
+import ModalAlert from "../components/modalAlert";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
 
@@ -27,10 +28,11 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const getLogin = async () => {
     try {
+      console.log("Tentou fazer login")
       setLoading(true);
 
       const response = await fetch("http://10.101.2.7:3333/auth/signin", {
@@ -49,6 +51,7 @@ export default function Index() {
         setUserId(responseData.user.id)
         setName(responseData.user.name);
         setUsernameStore(responseData.user.username)
+        await saveSession(responseData);
 
         router.replace("/main/home");
         console.log(responseData.user)
@@ -74,11 +77,48 @@ export default function Index() {
     }
   };
 
-  const goToSignup = () => {
-    // router.push("./signup");
-    // setUsername("");
-    // setPassword("");
+  async function saveSession(session: any) {
+    await AsyncStorage.setItem("session", JSON.stringify(session));
+    console.log(session)
   }
+
+  async function getSession() {
+    const value = await AsyncStorage.getItem("session");
+    console.log(value)
+    return value ? JSON.parse(value) : null;
+  }
+
+  useEffect(() => {
+    async function checkSession() {
+      const storedSession = await getSession();
+
+      if (storedSession?.token) {
+        try {
+          const response = await fetch("http://10.101.2.7:3333/auth/session", {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${storedSession.token}`,
+            },
+          });
+
+          if (response.ok) {
+            // sessão válida → redireciona pro app
+            router.replace("/main/home");
+            console.log(response)
+          } else {
+            // sessão inválida → limpa e volta pro login
+            await AsyncStorage.removeItem("session");
+          }
+        } catch {
+          console.log("catch")
+        }
+      } else {
+        console.log("else")
+      }
+    }
+
+    checkSession();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -132,7 +172,7 @@ export default function Index() {
           backgroundColor={theme.red}
         />
 
-        <TouchableOpacity style={styles.buttonBox} onPress={goToSignup}>
+        <TouchableOpacity style={styles.buttonBox} >
           <Text style={[styles.signupText, { color: theme.title }]}>
             Não tem uma conta? <Text style={{ color: theme.link }}>Crie agora!</Text>
           </Text>
@@ -148,7 +188,6 @@ export default function Index() {
         text={errorText}
         iconCenterName="error-outline"
         IconCenter={MaterialIcons}
-
       />
 
 

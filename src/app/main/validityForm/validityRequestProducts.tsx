@@ -1,5 +1,5 @@
-import { LargeButton } from "@/components/largeButton";
-import ModalPopup from "@/components/modalPopup";
+import { LargeButton } from "../../../components/largeButton";
+import ModalPopup from "../../../components/modalPopup";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -37,6 +37,7 @@ export default function ValidityRequestProducts() {
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
         setSelectedProduct(item);
+        setQuantity(item.quantity)
         setIndex(index)
         setModalVisible(true);
 
@@ -206,10 +207,10 @@ export default function ValidityRequestProducts() {
                                 </View>
                                 <View>
                                     <View style={styles.codDescricaoProdutoRow}>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> {item.product_cod}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>{item.product_cod}: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{item.description}</Text> </Text>
                                     </View>
                                     <View>
-                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
+                                        <Text style={[styles.label, { color: getColorText(item.productStatus) }]} >Dt. vencimento: <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
                                     </View>
                                 </View>
                                 <View style={styles.dadosItem}>
@@ -235,8 +236,6 @@ export default function ValidityRequestProducts() {
                     </View>
                 )}
 
-
-
             </View>
 
             <ModalPopup
@@ -252,7 +251,6 @@ export default function ValidityRequestProducts() {
                 transparent={true}
                 onRequestClose={() => setModalVisible(false)}
             >
-                {/* <BlurView intensity={50} tint="dark" style={StyleSheet.absoluteFill}> */}
                 <View style={styles.modalContainerCenter}>
                     <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
                         <View style={styles.productDataBox}>
@@ -312,6 +310,7 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         borderWidth: 1,
         borderRadius: 8,
         borderColor: Colors.gray,
@@ -320,7 +319,8 @@ const styles = StyleSheet.create({
 
     },
     codDescricaoProdutoRow: {
-        flexDirection: "row"
+        flexDirection: "row",
+        maxWidth: 200
     },
     productDataText: {
         fontFamily: "Lexend-Regular",
@@ -346,20 +346,18 @@ const styles = StyleSheet.create({
         padding: 10
     },
     modalContainerCenter: {
-
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        paddingHorizontal: 40,
+        paddingHorizontal: 30,
         backgroundColor: "rgba(0, 0, 0, 0.53)",
     },
     modalBox: {
         width: "100%",
-        height: 330,
         borderRadius: 20,
         backgroundColor: "white",
-        paddingVertical: 50,
-        paddingHorizontal: 30,
+        paddingVertical: 30,
+        paddingHorizontal: 20,
         gap: 20
     },
     productDataBox: {
@@ -367,6 +365,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     inputBox: {
+        paddingTop: 20,
         flexDirection: "row",
         alignItems: "center",
         gap: 20
@@ -387,7 +386,7 @@ const styles = StyleSheet.create({
         fontFamily: "Lexend-Regular"
     },
     modalButtonsBox: {
-
+        paddingTop: 30,
         width: "100%",
         gap: 8,
     },

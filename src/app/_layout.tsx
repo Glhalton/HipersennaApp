@@ -40,7 +40,6 @@ export default function Layout() {
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false, }} />
-          <Stack.Screen name="auth/forgotPassword" options={{ title: "Mudar Senha", headerShown: false, }} />
           <Stack.Screen name="main/home" options={{ title: "Cadastro", headerShown: false, }} />
           <Stack.Screen name="main/settings" options={{ title: "Configurações" }} />
           <Stack.Screen name="main/history" options={{ title: "Histórico" }} />

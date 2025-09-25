@@ -1,5 +1,5 @@
-import { DropdownInput } from "@/components/dropdownInput";
-import { LargeButton } from "@/components/largeButton";
+import { DropdownInput } from "../../../components/dropdownInput";
+import { LargeButton } from "../../../components/largeButton";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";

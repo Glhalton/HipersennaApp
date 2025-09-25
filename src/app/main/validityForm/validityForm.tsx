@@ -1,14 +1,15 @@
-import { DateInput } from "@/components/dateInput";
-import { Input } from "@/components/input";
-import { LargeButton } from "@/components/largeButton";
-import ModalPopup from "@/components/modalPopup";
-import { FontAwesome } from "@expo/vector-icons";
+import { DateInput } from "../../../components/dateInput";
+import { Input } from "../../../components/input";
+import { LargeButton } from "../../../components/largeButton";
+import ModalPopup from "../../../components/modalPopup";
+import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import ModalAlert from "../../../components/modalAlert";
 
 export default function ValidityForm() {
 
@@ -30,6 +31,10 @@ export default function ValidityForm() {
     const [exitAction, setExitAction] = useState<any>(null);
     const navigation = useNavigation();
 
+    const [modalVisible, setModalVisible] = useState(false);
+    const [errorTitle, setErrorTitle] = useState("");
+    const [errorText, setErrorText] = useState("");
+
     const productSearch = async () => {
         try {
             setLoading(true);
@@ -48,7 +53,9 @@ export default function ValidityForm() {
                 setDescription(responseData.mensagem);
             }
         } catch (erro) {
-            Alert.alert("Erro!", "Não foi possível buscar o produto." + erro);
+            setModalVisible(true);
+            setErrorTitle("Erro!")
+            setErrorText("Não foi possível buscar o produto" + erro)
         } finally {
             setLoading(false);
         }
@@ -56,10 +63,15 @@ export default function ValidityForm() {
 
     function handlerAdicionar() {
         if (!codProductInput || !validityDate || !quantity) {
-            Alert.alert("Atenção!", "Preencha todos os campos obrigatórios!")
+            setModalVisible(true);
+            setErrorTitle("Atenção!")
+            setErrorText("Preencha todos os campos obrigatórios!")
+
             return;
         } if (!description) {
-            Alert.alert("Erro!", "Produto não encontrado!");
+            setModalVisible(true);
+            setErrorTitle("Erro!")
+            setErrorText("Produto não encontrado!")
             return;
         }
 
@@ -161,7 +173,7 @@ export default function ValidityForm() {
                         <LargeButton
                             text="Inserir"
                             backgroundColor={Colors.gray}
-                            onPress={() => {handlerAdicionar(); Keyboard.dismiss()}}
+                            onPress={() => { handlerAdicionar(); Keyboard.dismiss() }}
                         />
                     </View>
 
@@ -186,6 +198,16 @@ export default function ValidityForm() {
                 onRequestClose={handleCancelExit}
                 buttonLeft={handleCancelExit}
                 buttonRight={handleConfirmExit}
+            />
+
+            <ModalAlert
+                visible={modalVisible}
+                buttonPress={() => { setModalVisible(false) }}
+                title={errorTitle}
+                text={errorText}
+                iconCenterName="error-outline"
+                IconCenter={MaterialIcons}
+
             />
 
         </SafeAreaView>

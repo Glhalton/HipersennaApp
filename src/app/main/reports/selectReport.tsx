@@ -1,4 +1,4 @@
-import { LargeButton } from "@/components/largeButton";
+import { LargeButton } from "../../../components/largeButton";
 import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
