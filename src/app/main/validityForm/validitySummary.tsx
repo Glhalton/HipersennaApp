@@ -6,13 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
-
 export default function ValiditySummary() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-    //Lista de itens inseridos do Formulário
     const validityData = postValidityDataStore((state) => state.validity)
     const productsList = postValidityDataStore((state) => state.productsList);
     const removeProduct = postValidityDataStore((state) => state.removeProduct);

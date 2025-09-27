@@ -62,7 +62,7 @@ export default function SelectRequest() {
                 setRequests(responseData.validityRequestsByEmployee);
                 console.log(responseData.validityRequestsByEmployee)
             } else {
-                Alert.alert("Erro", responseData.mensagem);
+                Alert.alert("Erro", responseData.message);
             }
         } catch (error) {
             Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)

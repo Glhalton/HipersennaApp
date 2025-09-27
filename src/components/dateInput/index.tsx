@@ -47,7 +47,6 @@ export function DateInput({ label, placeholder, value, onChange }: DateInputProp
                         mode="date"
                         display="spinner"
                         onChange={handleChange}
-                        
                     />
                 )}
             </View>

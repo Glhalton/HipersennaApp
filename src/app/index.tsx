@@ -1,9 +1,9 @@
+import React, { useEffect, useState } from "react";
+import { Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
-import { Alert, Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import { employeeDataStore } from "../../store/employeeDataStore";
@@ -22,6 +22,8 @@ export default function Index() {
   const setUserId = employeeDataStore((state) => state.setUserId);
   const setName = employeeDataStore((state) => state.setName);
   const setUsernameStore = employeeDataStore((state) => state.setUsername);
+  const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
+  const setBranchId = employeeDataStore((state) => state.setBranchId);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -32,7 +34,6 @@ export default function Index() {
 
   const getLogin = async () => {
     try {
-      console.log("Tentou fazer login")
       setLoading(true);
 
       const response = await fetch("http://10.101.2.7:3333/auth/signin", {
@@ -48,27 +49,28 @@ export default function Index() {
       if (responseData.token) {
 
         setToken(responseData.token);
-        setUserId(responseData.user.id)
-        setName(responseData.user.name);
-        setUsernameStore(responseData.user.username)
+        setUserId(responseData.id)
+        setName(responseData.name);
+        setUsernameStore(responseData.username);
+        setAccessLevel(responseData.accessLevel);
+        setBranchId(responseData.branchId);
+
         await saveSession(responseData);
 
         router.replace("/main/home");
-        console.log(responseData.user)
 
         setUsername("");
         setPassword("");
 
       } else {
-        setErrorTitle("Erro");
+        setErrorTitle("Erro!");
         setErrorText(responseData.error || "Login inválido");
         setModalVisible(true);
         setPassword("");
       }
-    } catch (erro) {
-      console.log(erro)
+    } catch (error) {
       setErrorTitle("Erro de conexão");
-      setErrorText("Não foi possível conectar ao servidor " + erro);
+      setErrorText("Não foi possível conectar ao servidor " + error);
       setUsername("");
       setPassword("");
 
@@ -79,41 +81,50 @@ export default function Index() {
 
   async function saveSession(session: any) {
     await AsyncStorage.setItem("session", JSON.stringify(session));
-    console.log(session)
+    console.log("Salvo a sessão: " + session);
   }
 
   async function getSession() {
     const value = await AsyncStorage.getItem("session");
-    console.log(value)
+    console.log("Retornou a sessão salva: " + value)
     return value ? JSON.parse(value) : null;
   }
 
   useEffect(() => {
     async function checkSession() {
       const storedSession = await getSession();
+      console.log("Sessão atualmente salva: " + storedSession)
 
       if (storedSession?.token) {
         try {
+          const headers = new Headers();
+          headers.set("Authorization", `Bearer ${storedSession.token}`);
+
           const response = await fetch("http://10.101.2.7:3333/auth/session", {
             method: "GET",
-            headers: {
-              Authorization: `Bearer ${storedSession.token}`,
-            },
+            headers: headers
           });
 
-          if (response.ok) {
+          const data = await response.json();
+
+          if (data.user) {
             // sessão válida → redireciona pro app
+
+            console.log("Sessão válida: ", data);
+
             router.replace("/main/home");
-            console.log(response)
+
           } else {
             // sessão inválida → limpa e volta pro login
             await AsyncStorage.removeItem("session");
+            console.log("Servidor não retornou Session: ", data)
+
           }
         } catch {
           console.log("catch")
         }
       } else {
-        console.log("else")
+        console.log("Não achou o token")
       }
     }
 
@@ -125,7 +136,6 @@ export default function Index() {
       <View style={[styles.header,]}>
         <Image
           source={require("../../assets/images/Logo-hipersenna100x71.png")}
-          style={styles.logo}
         />
         <Text style={[styles.title,]}>
           SennaApp
@@ -179,8 +189,6 @@ export default function Index() {
         </TouchableOpacity>
       </View>
 
-
-
       <ModalAlert
         visible={modalVisible}
         buttonPress={() => { setModalVisible(false) }}
@@ -189,8 +197,6 @@ export default function Index() {
         iconCenterName="error-outline"
         IconCenter={MaterialIcons}
       />
-
-
 
     </SafeAreaView>
   )
@@ -211,14 +217,10 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 30,
   },
-  logo: {
-
-  },
   formBox: {
     flex: 1,
     paddingHorizontal: 30,
     paddingTop: 30,
-    backgroundColor: "#ffffffff",
     borderTopLeftRadius: 45,
     borderTopRightRadius: 45,
     maxWidth: 500,
@@ -231,7 +233,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     marginBottom: 50,
   },
-
   forgotPasswordText: {
     color: Colors.blue,
     fontFamily: "Lexend-Regular",

@@ -8,9 +8,7 @@ export default function RequestProducts() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
-
     
-
     const productsList = validityRequestDataStore((state) => state.products);
 
     return (
@@ -29,16 +27,15 @@ export default function RequestProducts() {
                             </View>
                             <View style={styles.dadosItem}>
                                 <View style={styles.codDescricaoProdutoRow}>
-                                    <Text style={[styles.label, {color: theme.title}]}> {item.product_cod} <Text style={[styles.productDataText, {color: theme.text}]} > : {item.description}</Text> </Text>
+                                    <Text style={[styles.label, {color: theme.title}]}>{item.product_cod} <Text style={[styles.productDataText, {color: theme.text}]} > : {item.description}</Text> </Text>
                                 </View>
                                 <View>
-                                    <Text style={[styles.label, {color: theme.title}]} > Dt. vencimento: <Text style={[styles.productDataText, {color: theme.text}]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
+                                    <Text style={[styles.label, {color: theme.title}]} >Dt. vencimento: <Text style={[styles.productDataText, {color: theme.text}]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
                                 </View>
                             </View>
                         </View>
                     )}
                 />
-
             </View>
         </SafeAreaView >
     );
@@ -47,7 +44,6 @@ export default function RequestProducts() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "white"
     },
     cardsContainer: {
         paddingVertical: 20,
@@ -55,16 +51,17 @@ const styles = StyleSheet.create({
     },
     card: {
         flexDirection: "row",
-        backgroundColor: "white",
         alignItems: "center",
         gap: 10,
         borderWidth: 1,
         borderRadius: 8,
         borderColor: Colors.gray,
-        marginBottom: 10
+        marginBottom: 10,
+        paddingHorizontal: 20,
     },
     codDescricaoProdutoRow: {
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingRight: 10,
     },
     productDataText: {
         fontFamily: "Lexend-Regular",
@@ -82,6 +79,6 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     listId: {
-        padding: 10
+        padding: 10,
     }
 })

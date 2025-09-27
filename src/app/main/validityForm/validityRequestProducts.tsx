@@ -6,17 +6,23 @@ import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import ModalAlert from "@/components/modalAlert";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function ValidityRequestProducts() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
+    const [errorTitle, setErrorTitle] = useState("");
+    const [errorText, setErrorText] = useState("");
+    const [modalAlertVisible, setModalAlertVisible] = useState(false);
+
     const productsList = postValidityDataStore((state) => state.productsList) || [];
     const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
-    const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity)
-    const updateStatus = postValidityDataStore((state) => state.updateProductStatus)
+    const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity);
+    const updateStatus = postValidityDataStore((state) => state.updateProductStatus);
 
     const validityData = postValidityDataStore((state) => state.validity);
 
@@ -37,42 +43,45 @@ export default function ValidityRequestProducts() {
     //Função para abrir o modal
     const ProductPress = (item: any, index: number) => {
         setSelectedProduct(item);
-        setQuantity(item.quantity)
-        setIndex(index)
+        setQuantity(item.quantity);
+        setIndex(index);
         setModalVisible(true);
-
     }
 
     //Botão de voltar o modal
-    const backButtonModal = ((quant: string) => {
-        if (Number(quantity) > 0) {
-            updateQuantity(index, Number(quant));
-            updateStatus(index, "1");
+    const backButtonModal = (quant: string) => {
+        const quantNumber = Number(quant);
 
-        } if (Number(quantity) == 0) {
-            updateQuantity(index, Number(quant));
-            updateStatus(index, "3")
+        updateQuantity(index, quantNumber);
+
+        if (quantNumber > 0) {
+            updateStatus(index, "Vistoriado");
+            console.log("Produto Vistoriado: ", productsList[index]);
+        } else {
+            updateStatus(index, "Nao_encontrado");
+            updateQuantity(index, 0);
         }
+
         setModalVisible(false);
-        setQuantity("")
-    })
+        setQuantity("");
+    }
 
     const notFoundButtonModal = (() => {
-        updateStatus(index, "3");
+        updateStatus(index, "Nao_encontrado");
         setModalVisible(false);
         updateQuantity(index, 0);
         setQuantity("");
     })
 
     function getColor(status: string | undefined) {
-        if (status === "1") return "#5FE664";
-        if (status === "3") return Colors.red2;
+        if (status === "Vistoriado") return "#5FE664";
+        if (status === "Nao_encontrado") return Colors.red2;
         return theme.uiBackground;
     }
 
     function getColorText(status: string | undefined) {
-        if (status === "3") return "white";
-        if (status === "1") return Colors.blue;
+        if (status === "Nao_encontrado") return "white";
+        if (status === "Vistoriado") return Colors.blue;
         return theme.text;
     }
 
@@ -114,24 +123,41 @@ export default function ValidityRequestProducts() {
 
     const updateStatusRequest = async () => {
         try {
-            const response = await fetch("http://10.101.2.7:3333/validityRequests", {
+
+            const productsPayload = productsList.map(p => ({
+                product_cod: Number(p.product_cod),
+                status: p.productStatus,
+            }));
+
+            console.log("Payload enviado:", {
+                requestId: Number(validityData.request_id),
+                status: "Concluido",
+                products: productsPayload
+            });
+
+            const response = await fetch("http://10.101.2.7:3333/validityRequests/validityRequestsUpdate", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    requestId: validityData.request_id,
-                    status: "Concluido"
+                    requestId: Number(validityData.request_id),
+                    status: "Concluido",
+                    products: productsPayload
                 })
             });
 
             const responseData = await response.json();
 
             if (!responseData.validityRequestUpdate) {
-                Alert.alert("Erro ao mudar status da requisição", responseData.mensagem);
+                setErrorTitle("Erro ao mudar status da solicitação");
+                setErrorText(responseData.message)
+                setModalAlertVisible(true);
             }
         } catch (erro) {
-            Alert.alert("Erro", "Não foi possível conectar ao servidor:" + erro);
+            setErrorTitle("Erro");
+            setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
+            setModalAlertVisible(true);
         }
     }
 
@@ -163,24 +189,16 @@ export default function ValidityRequestProducts() {
                 resetProducts();
                 goHome();
             } else {
-                Alert.alert("Erro no Servidor", responseData.error)
+                setErrorTitle("Erro!");
+                setErrorText(responseData.error);
+                setModalAlertVisible(true);
             }
         } catch (erro) {
-            Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
+            setErrorTitle("Erro!");
+            setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
+            setModalAlertVisible(true);
         }
     };
-
-
-
-    const formatDate = (dateString: string) => {
-        const date = new Date(dateString); // transforma a string em objeto Date
-        const day = String(date.getDate()).padStart(2, "0");
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // mês começa em 0
-        const year = date.getFullYear();
-
-        return `${day}/${month}/${year}`;
-    };
-
 
     return (
         <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
@@ -256,7 +274,7 @@ export default function ValidityRequestProducts() {
                         <View style={styles.productDataBox}>
                             <Text style={[styles.labelModal, { color: theme.title }]}>Cod. Produto: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text></Text>
                             <Text style={[styles.labelModal, { color: theme.title }]}>Descrição: <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text></Text>
-                            <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: <Text style={[styles.productDataText, { color: theme.text }]}>{formatDate(selectedProduct?.validity_date)}</Text></Text>
+                            <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: <Text style={[styles.productDataText, { color: theme.text }]}>{new Date(selectedProduct?.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
                             <View style={styles.inputBox}>
                                 <Text style={[styles.labelModal, { color: theme.title }]}>Quant:</Text>
                                 <TextInput
@@ -284,6 +302,15 @@ export default function ValidityRequestProducts() {
                     </View>
                 </View>
             </Modal>
+
+            <ModalAlert
+                visible={modalAlertVisible}
+                buttonPress={() => { setModalAlertVisible(false) }}
+                title={errorTitle}
+                text={errorText}
+                iconCenterName="error-outline"
+                IconCenter={MaterialIcons}
+            />
         </SafeAreaView >
     );
 }
@@ -375,9 +402,8 @@ const styles = StyleSheet.create({
         minHeight: 10,
         width: 100,
         backgroundColor: Colors.inputColor,
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-        borderBottomWidth: 1,
+        borderRadius: 10,
+
         paddingLeft: 20,
         fontSize: 18,
         padding: 0,

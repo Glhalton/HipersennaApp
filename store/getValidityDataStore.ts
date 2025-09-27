@@ -15,6 +15,7 @@ type Product = {
     validity_id: number;
     product_cod: number;
     quantity: number;
+    description: string;
     validity_date: string,
     treat_id: number
 }

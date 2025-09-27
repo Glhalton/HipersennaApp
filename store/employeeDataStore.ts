@@ -5,12 +5,14 @@ interface UserDadosStore {
     userId: string | null;
     name: string | null;
     username: string | null;
-    nivelAcesso: string | null;
+    accessLevel: number | null;
+    branchId: number | null;
     setToken: (token: string) => void;
-    setUserId: (id: string | null) => void;
+    setUserId: (id: string) => void;
     setName: (name: string) => void;
     setUsername: (username: string) => void;
-    setNivelAcesso: (nivel: string | null) => void;
+    setAccessLevel: (level: number) => void;
+    setBranchId: (branch: number) => void;
 }
 
 export const employeeDataStore = create<UserDadosStore>((set) => ({
@@ -18,10 +20,13 @@ export const employeeDataStore = create<UserDadosStore>((set) => ({
     userId: null,
     name: null,
     username: null,
-    nivelAcesso: null,
+    accessLevel: null,
+    branchId: null,
     setToken: (token) => set({token: token}),
     setUserId: (id) => set({ userId: id }),
     setName: (name) => set({name: name}),
     setUsername: (username) => set({username: username}),
-    setNivelAcesso: (nivel) => set({ nivelAcesso: nivel }),
+    setAccessLevel: (level) => set({ accessLevel: level }),
+    setBranchId:(branch) => set({branchId: branch})
+
 }));

@@ -5,11 +5,12 @@ import ModalPopup from "../../../components/modalPopup";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ActivityIndicator, Alert, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, useColorScheme, View, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import ModalAlert from "../../../components/modalAlert";
+
 
 export default function ValidityForm() {
 
@@ -112,6 +113,9 @@ export default function ValidityForm() {
         setExitAction(null);
     };
 
+    const [date, setDate] = useState(new Date());
+    const [open, setOpen] = useState(false);
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
             <View style={styles.formBox}>
@@ -155,9 +159,9 @@ export default function ValidityForm() {
                         placeholder="Data de Vencimento"
                         value={validityDate}
                         onChange={setValidityDate}
+                        
                     />
                 </View>
-
                 <View>
                     <Input
                         label="Quantidade *"

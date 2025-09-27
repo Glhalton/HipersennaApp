@@ -1,4 +1,4 @@
-import { Octicons } from "@expo/vector-icons";
+import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -7,6 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import ModalAlert from "@/components/modalAlert";
 
 type Request = {
     id: number,
@@ -30,6 +31,10 @@ export default function Requests() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
+
+    const [errorTitle, setErrorTitle] = useState("");
+    const [errorText, setErrorText] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
 
     const [filterItems, setFilterItems] = useState([
         { label: "Novos", value: "1" },
@@ -59,10 +64,14 @@ export default function Requests() {
             if (responseData.validityRequestsByEmployee) {
                 setRequests(responseData.validityRequestsByEmployee);
             } else {
-                Alert.alert("Erro", responseData.message);
+                setErrorTitle("Erro!");
+                setErrorText(`Não foi possível conectar ao servidor ${responseData.error}`);
+                setModalVisible(true);
             }
         } catch (error) {
-            Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
+            setErrorTitle("Erro!");
+            setErrorText(`Não foi possível conectar ao servidor ${error}`);
+            setModalVisible(true);
         } finally {
             setIsLoading(false);
         }
@@ -188,6 +197,16 @@ export default function Requests() {
 
                 </View>
             </View>
+
+            <ModalAlert
+                visible={modalVisible}
+                buttonPress={() => { setModalVisible(false) }}
+                title={errorTitle}
+                text={errorText}
+                iconCenterName="error-outline"
+                IconCenter={MaterialIcons}
+            />
+
         </SafeAreaView>
     )
 }

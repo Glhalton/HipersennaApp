@@ -2,23 +2,17 @@ import React, { useEffect } from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { getValidityDataStore} from "../../../store/getValidityDataStore";
+import { getValidityDataStore } from "../../../store/getValidityDataStore";
 
 export default function historyProducts() {
 
     const colorScheme = useColorScheme() ?? "light";
     const theme = Colors[colorScheme];
 
-
     const products = getValidityDataStore((state) => state.products);
-
-    useEffect(() => {
-        console.log(products);
-    }, [])
 
     return (
         <SafeAreaView edges={["bottom"]} style={styles.container}>
-
             <View style={styles.cardsContainer}>
                 <FlatList
                     data={products}
@@ -33,28 +27,25 @@ export default function historyProducts() {
                             </View>
                             <View style={styles.dadosItem}>
                                 <View style={styles.codDescricaoProdutoRow}>
-                                    {/* <Text style={styles.label}> {item.product_cod} <Text style={styles.productDataText} > : {item.description}</Text> </Text> */}
-                                    <Text style={[styles.label, { color: theme.title }]}> {item.product_cod}</Text>
+                                    <Text style={[styles.label, { color: theme.title }]}>{item.product_cod}: <Text style={[styles.productDataText, { color: theme.text }]} >{item.description}</Text> </Text>
+
                                 </View>
                                 <View>
-                                    <Text style={[styles.label, { color: theme.title }]} > Dt. vencimento: <Text style={[styles.productDataText, { color: theme.text }]}>{item.validity_date.slice(0, 10)}</Text></Text>
-                                    <Text style={[styles.label, { color: theme.title }]} > Quantidade: <Text style={[styles.productDataText, { color: theme.text }]}>{item.quantity}</Text></Text> 
+                                    <Text style={[styles.label, { color: theme.title }]} >Dt. vencimento: <Text style={[styles.productDataText, { color: theme.text }]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
+                                    <Text style={[styles.label, { color: theme.title }]} >Quantidade: <Text style={[styles.productDataText, { color: theme.text }]}>{item.quantity}</Text></Text>
                                 </View>
                             </View>
                         </View>
                     )}
                 />
-
             </View>
-
-        </SafeAreaView >
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
     },
     cardsContainer: {
         paddingVertical: 20,
@@ -62,16 +53,17 @@ const styles = StyleSheet.create({
     },
     card: {
         flexDirection: "row",
-        backgroundColor: "white",
         alignItems: "center",
         gap: 10,
         borderWidth: 1,
         borderRadius: 8,
         borderColor: Colors.gray,
-        marginBottom: 10
+        marginBottom: 10,
+        paddingHorizontal: 20,
     },
     codDescricaoProdutoRow: {
-        flexDirection: "row"
+        flexDirection: "row",
+        paddingRight: 20,
     },
     productDataText: {
         fontFamily: "Lexend-Regular",

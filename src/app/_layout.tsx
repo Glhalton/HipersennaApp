@@ -3,7 +3,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
-import { FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
 
 export default function Layout() {
   const colorScheme = useColorScheme() ?? "light";
@@ -16,6 +16,8 @@ export default function Layout() {
     ...Ionicons.font,
     ...MaterialIcons.font,
     ...FontAwesome6.font,
+    ...FontAwesome.font,
+
   });
 
   if (!fontsLoaded) {

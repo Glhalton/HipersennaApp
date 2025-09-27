@@ -32,7 +32,7 @@ export default function Home() {
             if (responseData.validitiesByEmployee) {
                 setValidities(responseData.validitiesByEmployee);
             } else {
-                Alert.alert("Erro", responseData.message);
+                Alert.alert("Erro", responseData.error);
             }
         } catch (error) {
             Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error)
