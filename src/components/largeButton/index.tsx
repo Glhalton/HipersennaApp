@@ -3,6 +3,7 @@ import { Colors } from "../../../constants/colors";
 import { styles } from "./styles";
 
 
+
 type Props = TouchableOpacityProps & {
     text: string,
     color?: string,
@@ -23,7 +24,7 @@ export function LargeButton({ text, color = "white", backgroundColor = Colors.re
                 activeOpacity={0.6}
                 {...rest}
             >
-                {loading ? <ActivityIndicator /> : <Text style={[styles.buttonText, { color }]}>{text}</Text>}
+                {loading ? <ActivityIndicator color={theme.iconColor}/> : <Text style={[styles.buttonText, { color }]}>{text}</Text>}
             </TouchableOpacity>
         </View>
 

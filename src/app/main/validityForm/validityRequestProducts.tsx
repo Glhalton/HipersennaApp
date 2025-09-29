@@ -2,7 +2,7 @@ import { LargeButton } from "../../../components/largeButton";
 import ModalPopup from "../../../components/modalPopup";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
+import { Alert, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
@@ -17,6 +17,10 @@ export default function ValidityRequestProducts() {
     const [errorTitle, setErrorTitle] = useState("");
     const [errorText, setErrorText] = useState("");
     const [modalAlertVisible, setModalAlertVisible] = useState(false);
+    const [modalIcon, setModalIcon] = useState("")
+    const [iconColor, setIconColor] = useState("")
+
+    const [isLoading, setIsLoading] = useState(false);
 
     const productsList = postValidityDataStore((state) => state.productsList) || [];
     const resetProducts = postValidityDataStore((state) => state.resetProductsList);
@@ -152,16 +156,23 @@ export default function ValidityRequestProducts() {
             if (!responseData.validityRequestUpdate) {
                 setErrorTitle("Erro ao mudar status da solicitação");
                 setErrorText(responseData.message)
+                setModalIcon("error-outline")
+                setIconColor(Colors.red)
                 setModalAlertVisible(true);
+
             }
         } catch (erro) {
             setErrorTitle("Erro");
             setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
+            setModalIcon("error-outline")
+            setIconColor(Colors.red)
             setModalAlertVisible(true);
         }
     }
 
     const postValidity = async () => {
+
+        setIsLoading(true);
 
         if (productsList.length === 0) {
             Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
@@ -184,21 +195,31 @@ export default function ValidityRequestProducts() {
             const responseData = await response.json();
 
             if (responseData.createdValidity) {
-                Alert.alert("Sucesso", responseData.message);
                 updateStatusRequest();
-                resetProducts();
-                goHome();
+                setErrorTitle("Sucesso!")
+                setErrorText(responseData.message);
+                setModalIcon("check-circle-outline");
+                setIconColor("#13BE19")
+                setModalAlertVisible(true);
+
             } else {
                 setErrorTitle("Erro!");
                 setErrorText(responseData.error);
+                setModalIcon("error-outline")
                 setModalAlertVisible(true);
+                setIconColor(Colors.red)
             }
         } catch (erro) {
             setErrorTitle("Erro!");
             setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
+            setModalIcon("error-outline")
+            setIconColor(Colors.red)
             setModalAlertVisible(true);
+        } finally{
+            setIsLoading(false);
         }
     };
+
 
     return (
         <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
@@ -250,6 +271,7 @@ export default function ValidityRequestProducts() {
                             text="Finalizar validade"
                             onPress={postValidity}
                             backgroundColor={theme.red}
+                            loading={isLoading}
                         />
                     </View>
                 )}
@@ -305,11 +327,12 @@ export default function ValidityRequestProducts() {
 
             <ModalAlert
                 visible={modalAlertVisible}
-                buttonPress={() => { setModalAlertVisible(false) }}
+                buttonPress={() => { setModalAlertVisible(false); resetProducts(); goHome(); }}
                 title={errorTitle}
                 text={errorText}
-                iconCenterName="error-outline"
+                iconCenterName={modalIcon}
                 IconCenter={MaterialIcons}
+                iconColor={iconColor}
             />
         </SafeAreaView >
     );
