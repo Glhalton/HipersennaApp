@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   useColorScheme,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
@@ -13,9 +14,9 @@ import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
-import { employeeDataStore } from "../../store/employeeDataStore";
 import ModalAlert from "../components/modalAlert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { isLoading } from "expo-font";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -24,23 +25,16 @@ export default function Index() {
   const [errorTitle, setErrorTitle] = useState("");
   const [errorText, setErrorText] = useState("");
 
-  const setToken = employeeDataStore((state) => state.setToken);
-  const setUserId = employeeDataStore((state) => state.setUserId);
-  const setName = employeeDataStore((state) => state.setName);
-  const setUsernameStore = employeeDataStore((state) => state.setUsername);
-  const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
-  const setBranchId = employeeDataStore((state) => state.setBranchId);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const getLogin = async () => {
     try {
-      setLoading(true);
+      setIsLoading(true);
 
       const response = await fetch("http://10.101.2.7:3333/auth/signin", {
         method: "POST",
@@ -55,13 +49,6 @@ export default function Index() {
       if (responseData.token) {
         await AsyncStorage.setItem("token", responseData.token);
         console.log("Token salvo:", responseData.token);
-
-        setToken(responseData.token);
-        setUserId(responseData.id);
-        setName(responseData.name);
-        setUsernameStore(responseData.username);
-        setAccessLevel(responseData.accessLevel);
-        setBranchId(responseData.branchId);
 
         router.replace("/main/home");
 
@@ -79,16 +66,18 @@ export default function Index() {
       setUsername("");
       setPassword("");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    async function checkSession() {
+  const checkSession = async () => {
+    try {
+      setIsLoading(true);
+
       const token = await AsyncStorage.getItem("token");
 
       if (!token) {
-        console.log("Nenhum token salvo, redireciona pro login");
+        console.log("Nenhum token salvo, redirecionando para o login...");
         return;
       }
 
@@ -99,16 +88,32 @@ export default function Index() {
       });
 
       if (response.ok) {
-        console.log("Sessão válida");
+        console.log("Sessão válida, redirecionando para tela inicial...");
+        console.log("token: " + token)
         router.replace("/main/home");
       } else {
         console.log("Sessão inválida, limpando token");
         await AsyncStorage.removeItem("token");
       }
+    } catch (error: any) {
+      console.log("Não foi possível se conectar ao servidor:", error)
+    } finally {
+      setIsLoading(false);
     }
 
+  }
+
+  useEffect(() => {
     checkSession();
   }, []);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={theme.iconColor} />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -157,7 +162,7 @@ export default function Index() {
         <LargeButton
           text="Login"
           onPress={getLogin}
-          loading={loading}
+          loading={isLoading}
           backgroundColor={theme.red}
         />
 

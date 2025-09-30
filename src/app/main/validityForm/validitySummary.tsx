@@ -13,6 +13,7 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
@@ -36,10 +37,14 @@ export default function ValiditySummary() {
     console.log(productsList);
 
     try {
+
+      const token = await AsyncStorage.getItem("token");
+
       const response = await fetch("http://10.101.2.7:3333/validities", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           validity: validityData,

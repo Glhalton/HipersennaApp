@@ -2,7 +2,6 @@ import { create } from "zustand";
 
 type Validity = {
   branch_id: number;
-  employee_id: string;
   request_id: number | null;
 };
 
@@ -31,7 +30,6 @@ export const postValidityDataStore = create<VistoriaStore>((set) => ({
   productsList: [],
   validity: {
     branch_id: 0,
-    employee_id: "",
     request_id: null,
   },
   addValidity: (validity) => set({ validity }),
@@ -47,7 +45,6 @@ export const postValidityDataStore = create<VistoriaStore>((set) => ({
     set({
       validity: {
         branch_id: 0,
-        employee_id: "",
         request_id: null,
       },
     }),

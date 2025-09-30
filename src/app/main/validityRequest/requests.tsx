@@ -17,6 +17,7 @@ import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 import ModalAlert from "@/components/modalAlert";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Request = {
   id: number;
@@ -61,13 +62,18 @@ export default function Requests() {
   );
 
   const getValidityRequests = async () => {
+
+    const token = await AsyncStorage.getItem("token")
+    
+
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validityRequests/employee/${userId}`,
+        `http://10.101.2.7:3333/validityRequests/employee`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         },
       );

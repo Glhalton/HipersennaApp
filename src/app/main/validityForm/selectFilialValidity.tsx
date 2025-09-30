@@ -32,14 +32,13 @@ export default function SelectFilialValidity() {
 
   //Cria a validade com request = null, pois é avulsa
   function addValidity() {
-    if (!branchId || !userId) {
+    if (!branchId) {
       Alert.alert("Erro!", "Erro na coleta de dados!");
       return;
     }
 
     setValidity({
       branch_id: Number(branchId),
-      employee_id: userId,
       request_id: null,
     });
   }

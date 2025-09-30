@@ -7,6 +7,7 @@ type Request = {
   created_at: string;
   target_date: string;
   analyst_id: number;
+  conferee_id: number;
   products: Product[];
 };
 

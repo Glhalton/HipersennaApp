@@ -17,14 +17,15 @@ import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RequestDataItem = {
   id: number;
   branch_id: number;
+  analyst_id: number;
+  conferee_id: number;
   status: string;
   created_at: string;
-  target_date: string;
-  analyst_id: number;
   products: Product[];
 };
 
@@ -60,13 +61,17 @@ export default function SelectRequest() {
   const [isLoading, setIsLoading] = useState(true);
 
   const getValidityRequests = async () => {
+
+    const token = await AsyncStorage.getItem("token");
+
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validityRequests/employee/${userId}`,
+        `http://10.101.2.7:3333/validityRequests/employee`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         },
       );
@@ -87,14 +92,13 @@ export default function SelectRequest() {
   };
 
   function addValidity(branchId: string, requestId: number) {
-    if (!branchId || !userId) {
+    if (!branchId) {
       Alert.alert("Erro!", "Erro na coleta de dados!");
       return;
     }
 
     setValidity({
       branch_id: Number(branchId),
-      employee_id: userId,
       request_id: requestId,
     });
   }

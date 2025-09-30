@@ -19,6 +19,7 @@ import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import ModalAlert from "@/components/modalAlert";
 import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -145,6 +146,9 @@ export default function ValidityRequestProducts() {
   };
 
   const updateStatusRequest = async () => {
+
+    const token = await AsyncStorage.getItem("token");
+
     try {
       const productsPayload = productsList.map((p) => ({
         product_cod: Number(p.product_cod),
@@ -163,6 +167,7 @@ export default function ValidityRequestProducts() {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify({
             requestId: Number(validityData.request_id),
@@ -193,6 +198,8 @@ export default function ValidityRequestProducts() {
   const postValidity = async () => {
     setIsLoading(true);
 
+    const token = await AsyncStorage.getItem("token");
+
     if (productsList.length === 0) {
       Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
       return;
@@ -203,6 +210,7 @@ export default function ValidityRequestProducts() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
           validity: validityData,

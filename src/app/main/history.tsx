@@ -17,6 +17,7 @@ import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
 import { getValidityDataStore } from "../../../store/getValidityDataStore";
 import ModalAlert from "../../components/modalAlert";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type validity = {
   id: number;
@@ -52,13 +53,17 @@ export default function History() {
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 
   const selectValidities = async () => {
+
+    const token = await AsyncStorage.getItem("token");
+
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validities/employee/${userId}`,
+        `http://10.101.2.7:3333/validities/employee`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         },
       );

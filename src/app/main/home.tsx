@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, Octicons,  } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,6 +14,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
@@ -29,11 +30,15 @@ export default function Home() {
 
   const getValidities = async () => {
     try {
+
+      const token = await AsyncStorage.getItem("token");
+
       const response = await fetch(
-        `http://10.101.2.7:3333/validities/employee/${userId}`,
+        `http://10.101.2.7:3333/validities/employee`,
         {
           method: "GET",
           headers: {
+            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
           },
         },
