@@ -2,129 +2,120 @@ import React from "react";
 import { Text, View } from "react-native";
 
 export default function ValidityReport() {
+  //     interface DadoRelatorio {
+  //         cod_produto: string;
+  //         data_validade: string;
+  //         cod_filial: string;
+  //         tratativa_id: string;
+  //         status_id: string;
+  //     }
 
-//     interface DadoRelatorio {
-//         cod_produto: string;
-//         data_validade: string;
-//         cod_filial: string;
-//         tratativa_id: string;
-//         status_id: string;
-//     }
+  //     const [codFilial, setCodFilial] = useState("");;
 
-//     const [codFilial, setCodFilial] = useState("");;
+  //     const [codProd, setCodProd] = useState("");
+  //     const [produto, setProduto] = useState<{ descricao: string } | null>(null);
 
-//     const [codProd, setCodProd] = useState("");
-//     const [produto, setProduto] = useState<{ descricao: string } | null>(null);
+  //     const [timer, setTimer] = useState<number | null>(null);
 
-//     const [timer, setTimer] = useState<number | null>(null);
+  //     const [filtroData, setFiltroData] = useState("");
+  //     const [quantDias, setQuantDias] = useState("");
+  //     const [dataInicial, setDataInicial] = useState<Date | undefined>(undefined);
+  //     const [dataFinal, setDataFinal] = useState<Date | undefined>(undefined);
+  //     const [dados, setDados] = useState<DadoRelatorio[]>([]);
 
+  //     const filialItems = [
+  //         { label: "Matriz", value: "1" },
+  //         { label: "Faruk", value: "2" },
+  //         { label: "Carajás", value: "3" },
+  //         { label: "VS10", value: "4" },
+  //         { label: "Xinguara", value: "5" },
+  //         { label: "Cidade Jardim", value: "7" },
+  //     ];
 
-//     const [filtroData, setFiltroData] = useState("");
-//     const [quantDias, setQuantDias] = useState("");
-//     const [dataInicial, setDataInicial] = useState<Date | undefined>(undefined);
-//     const [dataFinal, setDataFinal] = useState<Date | undefined>(undefined);
-//     const [dados, setDados] = useState<DadoRelatorio[]>([]);
+  //     const filtroDataItems = [
+  //         { label: "Intervalo de data", value: "1" },
+  //         { label: "Quant. dias para vencer", value: "2" }
+  //     ]
 
-//     const filialItems = [
-//         { label: "Matriz", value: "1" },
-//         { label: "Faruk", value: "2" },
-//         { label: "Carajás", value: "3" },
-//         { label: "VS10", value: "4" },
-//         { label: "Xinguara", value: "5" },
-//         { label: "Cidade Jardim", value: "7" },
-//     ];
+  //     const buscarDados = async () => {
+  //         try {
+  //             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/relatorios/relatorioVencimento.php", {
+  //                 method: "POST",
+  //                 headers: {
+  //                     "Content-Type": "application/json"
+  //                 },
+  //                 body: JSON.stringify({
+  //                     codFilial,
+  //                     codProd,
+  //                     quantDias,
+  //                     dataInicial: dataInicial ? dataInicial.toISOString().split("T")[0] : "",
+  //                     dataFinal: dataFinal ? dataFinal.toISOString().split("T")[0] : ""
+  //                 })
+  //             });
 
-//     const filtroDataItems = [
-//         { label: "Intervalo de data", value: "1" },
-//         { label: "Quant. dias para vencer", value: "2" }
-//     ]
+  //             //const texto = await resposta.text();
+  //             //console.log("RESPOSTA BRUTA DA API:", texto);
 
+  //             const resultado = await resposta.json();
 
-//     const buscarDados = async () => {
-//         try {
-//             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/relatorios/relatorioVencimento.php", {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 },
-//                 body: JSON.stringify({
-//                     codFilial,
-//                     codProd,
-//                     quantDias,
-//                     dataInicial: dataInicial ? dataInicial.toISOString().split("T")[0] : "",
-//                     dataFinal: dataFinal ? dataFinal.toISOString().split("T")[0] : ""
-//                 })
-//             });
+  //             if (resultado.sucesso) {
+  //                 setDados(resultado.dados);
+  //             } else {
+  //                 Alert.alert("Erro", resultado.mensagem);
+  //             }
+  //         } catch (erro) {
+  //             Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
 
-//             //const texto = await resposta.text();
-//             //console.log("RESPOSTA BRUTA DA API:", texto);
+  //         }
+  //     };
 
-//             const resultado = await resposta.json();
+  //     useEffect(() => {
+  //         if (codProd.trim() === "") {
+  //             setProduto(null);
+  //             return;
+  //         }
 
-//             if (resultado.sucesso) {
-//                 setDados(resultado.dados);
-//             } else {
-//                 Alert.alert("Erro", resultado.mensagem);
-//             }
-//         } catch (erro) {
-//             Alert.alert("Erro", "Não foi possível conectar ao servidor " + erro);
+  //         if (timer) clearTimeout(timer);
 
-//         }
-//     };
+  //         const newTimer = setTimeout(() => {
+  //             buscarProduto();
+  //         }, 500);
 
+  //         setTimer(newTimer);
+  //     }, [codProd]);
 
-//     useEffect(() => {
-//         if (codProd.trim() === "") {
-//             setProduto(null);
-//             return;
-//         }
+  //     const buscarProduto = async () => {
+  //         try {
+  //             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
+  //                 method: "POST",
+  //                 headers: {
+  //                     "Content-Type": "application/json"
+  //                 },
+  //                 body: JSON.stringify({ codProd })
+  //             });
 
+  //             //const texto = await resposta.text();
+  //             //console.log("RESPOSTA BRUTA DA API:", texto);
 
-//         if (timer) clearTimeout(timer);
+  //             const resultado = await resposta.json();
 
-//         const newTimer = setTimeout(() => {
-//             buscarProduto();
-//         }, 500);
+  //             if (resultado.sucesso) {
+  //                 setProduto(resultado.produto);
+  //             } else {
+  //                 setProduto(resultado.mensagem);
+  //             }
+  //         } catch (erro) {
+  //             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
+  //         }
+  //     };
 
-//         setTimer(newTimer);
-//     }, [codProd]);
-
-//     const buscarProduto = async () => {
-//         try {
-//             const resposta = await fetch("http://10.101.2.7/ApiHipersennaApp/validade/consultarProduto.php", {
-//                 method: "POST",
-//                 headers: {
-//                     "Content-Type": "application/json"
-//                 },
-//                 body: JSON.stringify({ codProd })
-//             });
-
-//             //const texto = await resposta.text();
-//             //console.log("RESPOSTA BRUTA DA API:", texto);
-
-//             const resultado = await resposta.json();
-
-//             if (resultado.sucesso) {
-//                 setProduto(resultado.produto);
-//             } else {
-//                 setProduto(resultado.mensagem);
-//             }
-//         } catch (erro) {
-//             Alert.alert("Erro", "Não foi possível buscar o produto." + erro);
-//         }
-//     };
-
-    return (
-        <View>
-            <Text>
-                oi
-            </Text>
-        </View>
-    )
+  return (
+    <View>
+      <Text>oi</Text>
+    </View>
+  );
 }
 //         <View style={styles.container}>
-
-
 
 //             <View style={styles.form}>
 //                 <View>
@@ -153,7 +144,6 @@ export default function ValidityReport() {
 //                         <View style={styles.nomeProdutoContainer}>
 //                             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
 
-
 //                                 <Text style={styles.nomeProduto}>
 //                                     {produto?.descricao || "Produto não encontrado"}
 //                                 </Text>
@@ -172,7 +162,6 @@ export default function ValidityReport() {
 //                         onChange={(val) => setFiltroData(val)}
 //                     />
 //                 </View>
-
 
 //                 {filtroData == "1" && (
 //                     <View style={styles.intervaloDatas}>
@@ -196,9 +185,6 @@ export default function ValidityReport() {
 //                                 onChange={setDataFinal}
 //                             />
 //                         </View>
-
-
-
 
 //                     </View>
 //                 )}
@@ -225,13 +211,12 @@ export default function ValidityReport() {
 
 //                 </View>
 
-
 //             </View>
 //             {/* <View style={styles.tableContainer}>
 //                 <ScrollView horizontal>
 //                     <DataTable>
 //                         <DataTable.Header>
-//                             <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>   
+//                             <DataTable.Title style={styles.cell}>Codigo</DataTable.Title>
 //                             <DataTable.Title style={styles.cell}>Data de Validade</DataTable.Title>
 //                             <DataTable.Title style={styles.cell}>Filial</DataTable.Title>
 //                             <DataTable.Title style={styles.cell}>Tratativa</DataTable.Title>
@@ -251,7 +236,6 @@ export default function ValidityReport() {
 //                 </ScrollView>
 //             </View>
 //         </View>
-
 
 // const styles = StyleSheet.create({
 //     container: {
@@ -316,4 +300,4 @@ export default function ValidityReport() {
 //         justifyContent: "center",
 //     }
 
-// })  
+// })

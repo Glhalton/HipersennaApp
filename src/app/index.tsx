@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
@@ -11,7 +18,6 @@ import ModalAlert from "../components/modalAlert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
-
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
@@ -39,29 +45,28 @@ export default function Index() {
       const response = await fetch("http://10.101.2.7:3333/auth/signin", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
       });
 
       const responseData = await response.json();
 
       if (responseData.token) {
+        await AsyncStorage.setItem("token", responseData.token);
+        console.log("Token salvo:", responseData.token);
 
         setToken(responseData.token);
-        setUserId(responseData.id)
+        setUserId(responseData.id);
         setName(responseData.name);
         setUsernameStore(responseData.username);
         setAccessLevel(responseData.accessLevel);
         setBranchId(responseData.branchId);
 
-        await saveSession(responseData);
-
         router.replace("/main/home");
 
         setUsername("");
         setPassword("");
-
       } else {
         setErrorTitle("Erro!");
         setErrorText(responseData.error || "Login inválido");
@@ -73,58 +78,32 @@ export default function Index() {
       setErrorText("Não foi possível conectar ao servidor " + error);
       setUsername("");
       setPassword("");
-
     } finally {
       setLoading(false);
     }
   };
 
-  async function saveSession(session: any) {
-    await AsyncStorage.setItem("session", JSON.stringify(session));
-    console.log("Salvo a sessão: " + session);
-  }
-
-  async function getSession() {
-    const value = await AsyncStorage.getItem("session");
-    console.log("Retornou a sessão salva: " + value)
-    return value ? JSON.parse(value) : null;
-  }
-
   useEffect(() => {
     async function checkSession() {
-      const storedSession = await getSession();
-      console.log("Sessão atualmente salva: " + storedSession)
+      const token = await AsyncStorage.getItem("token");
 
-      if (storedSession?.token) {
-        try {
-          const headers = new Headers();
-          headers.set("Authorization", `Bearer ${storedSession.token}`);
+      if (!token) {
+        console.log("Nenhum token salvo, redireciona pro login");
+        return;
+      }
 
-          const response = await fetch("http://10.101.2.7:3333/auth/session", {
-            method: "GET",
-            headers: headers
-          });
+      const response = await fetch("http://10.101.2.7:3333/me", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
 
-          const data = await response.json();
-
-          if (data.user) {
-            // sessão válida → redireciona pro app
-
-            console.log("Sessão válida: ", data);
-
-            router.replace("/main/home");
-
-          } else {
-            // sessão inválida → limpa e volta pro login
-            await AsyncStorage.removeItem("session");
-            console.log("Servidor não retornou Session: ", data)
-
-          }
-        } catch {
-          console.log("catch")
-        }
+      if (response.ok) {
+        console.log("Sessão válida");
+        router.replace("/main/home");
       } else {
-        console.log("Não achou o token")
+        console.log("Sessão inválida, limpando token");
+        await AsyncStorage.removeItem("token");
       }
     }
 
@@ -133,20 +112,20 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={[styles.header,]}>
+      <View style={[styles.header]}>
         <Image
           source={require("../../assets/images/Logo-hipersenna100x71.png")}
         />
-        <Text style={[styles.title,]}>
-          SennaApp
-        </Text>
+        <Text style={[styles.title]}>SennaApp</Text>
       </View>
 
       <View style={[styles.formBox, { backgroundColor: theme.background }]}>
         <View style={styles.inputBox}>
           <Input
             value={username}
-            onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
+            onChangeText={(username) =>
+              setUsername(username.replace(/\s/g, ""))
+            }
             label="Usuário:"
             IconRight={FontAwesome}
             iconRightName="user"
@@ -182,24 +161,26 @@ export default function Index() {
           backgroundColor={theme.red}
         />
 
-        <TouchableOpacity style={styles.buttonBox} >
+        <TouchableOpacity style={styles.buttonBox}>
           <Text style={[styles.signupText, { color: theme.title }]}>
-            Não tem uma conta? <Text style={{ color: theme.link }}>Crie agora!</Text>
+            Não tem uma conta?{" "}
+            <Text style={{ color: theme.link }}>Crie agora!</Text>
           </Text>
         </TouchableOpacity>
       </View>
 
       <ModalAlert
         visible={modalVisible}
-        buttonPress={() => { setModalVisible(false) }}
+        buttonPress={() => {
+          setModalVisible(false);
+        }}
         title={errorTitle}
         text={errorText}
         iconCenterName="error-outline"
         IconCenter={MaterialIcons}
       />
-
     </SafeAreaView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -224,11 +205,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 45,
     borderTopRightRadius: 45,
     maxWidth: 500,
-    width: "100%"
+    width: "100%",
   },
-  inputBox: {
-
-  },
+  inputBox: {},
   forgotPasswordButton: {
     alignItems: "flex-end",
     marginBottom: 50,
@@ -247,5 +226,5 @@ const styles = StyleSheet.create({
     color: Colors.gray,
     fontSize: 14,
     fontFamily: "Lexend-Regular",
-  }
-})
+  },
+});

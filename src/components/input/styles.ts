@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native"
-import { Colors } from "../../../constants/colors"
+import { StyleSheet } from "react-native";
+import { Colors } from "../../../constants/colors";
 
 export const styles = StyleSheet.create({
   boxInput: {
@@ -25,10 +25,6 @@ export const styles = StyleSheet.create({
     marginBottom: 6,
     fontFamily: "Lexend-Regular",
   },
-  iconLeft: {
-
-  },
-  iconRight: {
-
-  }
-})
+  iconLeft: {},
+  iconRight: {},
+});

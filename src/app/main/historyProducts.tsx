@@ -5,82 +5,103 @@ import { Colors } from "../../../constants/colors";
 import { getValidityDataStore } from "../../../store/getValidityDataStore";
 
 export default function historyProducts() {
+  const colorScheme = useColorScheme() ?? "light";
+  const theme = Colors[colorScheme];
 
-    const colorScheme = useColorScheme() ?? "light";
-    const theme = Colors[colorScheme];
+  const products = getValidityDataStore((state) => state.products);
 
-    const products = getValidityDataStore((state) => state.products);
-
-    return (
-        <SafeAreaView edges={["bottom"]} style={styles.container}>
-            <View style={styles.cardsContainer}>
-                <FlatList
-                    data={products}
-                    keyExtractor={(_, index) => index.toString()}
-                    contentContainerStyle={{ paddingBottom: 20 }}
-                    renderItem={({ item, index }) => (
-                        <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
-                            <View style={styles.listId}>
-                                <Text style={[styles.label, { color: theme.title }]}>
-                                    {index + 1}°
-                                </Text>
-                            </View>
-                            <View style={styles.dadosItem}>
-                                <View style={styles.codDescricaoProdutoRow}>
-                                    <Text style={[styles.label, { color: theme.title }]}>{item.product_cod}: <Text style={[styles.productDataText, { color: theme.text }]} >{item.description}</Text> </Text>
-
-                                </View>
-                                <View>
-                                    <Text style={[styles.label, { color: theme.title }]} >Dt. vencimento: <Text style={[styles.productDataText, { color: theme.text }]}>{new Date(item.validity_date).toLocaleDateString("pt-BR")}</Text></Text>
-                                    <Text style={[styles.label, { color: theme.title }]} >Quantidade: <Text style={[styles.productDataText, { color: theme.text }]}>{item.quantity}</Text></Text>
-                                </View>
-                            </View>
-                        </View>
-                    )}
-                />
+  return (
+    <SafeAreaView edges={["bottom"]} style={styles.container}>
+      <View style={styles.cardsContainer}>
+        <FlatList
+          data={products}
+          keyExtractor={(_, index) => index.toString()}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          renderItem={({ item, index }) => (
+            <View
+              style={[styles.card, { backgroundColor: theme.uiBackground }]}
+            >
+              <View style={styles.listId}>
+                <Text style={[styles.label, { color: theme.title }]}>
+                  {index + 1}°
+                </Text>
+              </View>
+              <View style={styles.dadosItem}>
+                <View style={styles.codDescricaoProdutoRow}>
+                  <Text style={[styles.label, { color: theme.title }]}>
+                    {item.product_cod}:{" "}
+                    <Text
+                      style={[styles.productDataText, { color: theme.text }]}
+                    >
+                      {item.description}
+                    </Text>{" "}
+                  </Text>
+                </View>
+                <View>
+                  <Text style={[styles.label, { color: theme.title }]}>
+                    Dt. vencimento:{" "}
+                    <Text
+                      style={[styles.productDataText, { color: theme.text }]}
+                    >
+                      {new Date(item.validity_date).toLocaleDateString("pt-BR")}
+                    </Text>
+                  </Text>
+                  <Text style={[styles.label, { color: theme.title }]}>
+                    Quantidade:{" "}
+                    <Text
+                      style={[styles.productDataText, { color: theme.text }]}
+                    >
+                      {item.quantity}
+                    </Text>
+                  </Text>
+                </View>
+              </View>
             </View>
-        </SafeAreaView>
-    );
+          )}
+        />
+      </View>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    cardsContainer: {
-        paddingVertical: 20,
-        paddingHorizontal: 14,
-    },
-    card: {
-        flexDirection: "row",
-        alignItems: "center",
-        gap: 10,
-        borderWidth: 1,
-        borderRadius: 8,
-        borderColor: Colors.gray,
-        marginBottom: 10,
-        paddingHorizontal: 20,
-    },
-    codDescricaoProdutoRow: {
-        flexDirection: "row",
-        paddingRight: 20,
-    },
-    productDataText: {
-        fontFamily: "Lexend-Regular",
-        color: Colors.gray
-    },
-    label: {
-        fontFamily: "Lexend-Bold",
-        color: Colors.blue,
-    },
-    textHeader: {
-        fontFamily: "Lexend-Regular",
-        color: "white",
-    },
-    dadosItem: {
-        paddingVertical: 10
-    },
-    listId: {
-        padding: 10
-    }
-})
+  container: {
+    flex: 1,
+  },
+  cardsContainer: {
+    paddingVertical: 20,
+    paddingHorizontal: 14,
+  },
+  card: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+    borderColor: Colors.gray,
+    marginBottom: 10,
+    paddingHorizontal: 20,
+  },
+  codDescricaoProdutoRow: {
+    flexDirection: "row",
+    paddingRight: 20,
+  },
+  productDataText: {
+    fontFamily: "Lexend-Regular",
+    color: Colors.gray,
+  },
+  label: {
+    fontFamily: "Lexend-Bold",
+    color: Colors.blue,
+  },
+  textHeader: {
+    fontFamily: "Lexend-Regular",
+    color: "white",
+  },
+  dadosItem: {
+    paddingVertical: 10,
+  },
+  listId: {
+    padding: 10,
+  },
+});
