@@ -16,7 +16,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
 import ModalAlert from "../components/modalAlert";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { isLoading } from "expo-font";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -28,8 +27,8 @@ export default function Index() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
 
+  const [isLoading, setIsLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const getLogin = async () => {
@@ -47,22 +46,22 @@ export default function Index() {
       const responseData = await response.json();
 
       if (responseData.token) {
+
         await AsyncStorage.setItem("token", responseData.token);
         console.log("Token salvo:", responseData.token);
-
         router.replace("/main/home");
-
         setUsername("");
         setPassword("");
+
       } else {
         setErrorTitle("Erro!");
-        setErrorText(responseData.error || "Login inválido");
+        setErrorText(responseData.message || "Login inválido");
         setModalVisible(true);
         setPassword("");
       }
     } catch (error) {
       setErrorTitle("Erro de conexão");
-      setErrorText("Não foi possível conectar ao servidor " + error);
+      setErrorText(`Não foi possível conectar ao servidor: ${error}`);
       setUsername("");
       setPassword("");
     } finally {
@@ -88,15 +87,17 @@ export default function Index() {
       });
 
       if (response.ok) {
+
         console.log("Sessão válida, redirecionando para tela inicial...");
-        console.log("token: " + token)
+        console.log(`Token: ${token}`)
         router.replace("/main/home");
+
       } else {
         console.log("Sessão inválida, limpando token");
         await AsyncStorage.removeItem("token");
       }
     } catch (error: any) {
-      console.log("Não foi possível se conectar ao servidor:", error)
+      console.log(`Não foi possível se conectar ao servidor: ${error}`)
     } finally {
       setIsLoading(false);
     }
@@ -106,14 +107,6 @@ export default function Index() {
   useEffect(() => {
     checkSession();
   }, []);
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color={theme.iconColor} />
-      </View>
-    );
-  }
 
   return (
     <SafeAreaView style={styles.container}>

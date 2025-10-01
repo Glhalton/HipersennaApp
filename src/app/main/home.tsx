@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons, Octicons,  } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, Octicons, } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -20,7 +20,15 @@ export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const userId = employeeDataStore((state) => state.userId);
+  
+  const setName = employeeDataStore((state) => state.setName);
+  const setUsername = employeeDataStore((state) => state.setUsername);
+  const setWinthorId = employeeDataStore((state) => state.setWinthorId);
+  const setId = employeeDataStore((state) => state.setUserId);
+  const setBranchId = employeeDataStore((state) => state.setBranchId);
+  const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
+
+
   const name = employeeDataStore((state) => state.name);
 
   const [validities, setValidities] = useState([]);
@@ -30,6 +38,8 @@ export default function Home() {
 
   const getValidities = async () => {
     try {
+
+      setIsLoading(true);
 
       const token = await AsyncStorage.getItem("token");
 
@@ -58,7 +68,38 @@ export default function Home() {
     }
   };
 
+  const getUserData = async () => {
+    try {
+
+      const token = await AsyncStorage.getItem("token");
+
+      const response = await fetch("http://10.101.2.7:3333/me", {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        console.log(responseData);
+        setId(responseData.id);
+        setName(responseData.name);
+        setUsername(responseData.username);
+        setBranchId(responseData.branch_id);
+        setAccessLevel(responseData.access_level);
+        setWinthorId(responseData.winthor_id);
+      } else {
+        Alert.alert("Erro", "Erro ao consultar dados do usuário!")
+      }
+    } catch (error: any) {
+      console.log(`Não foi possível se conectar ao servidor: ${error}`)
+    }
+
+  }
+
   useEffect(() => {
+    getUserData();
     getValidities();
   }, []);
 
