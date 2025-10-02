@@ -1,52 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, useColorScheme, View, Alert } from "react-native";
+import { LargeButton } from "@/components/largeButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import React from "react";
+import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
-import { LargeButton } from "@/components/largeButton";
-import { router } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Settings() {
+export default function settings() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [id, setId] = useState("");
-  const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
-  const [branchId, setBranchId] = useState("");
-  const [accessLevel, setAccessLevel] = useState("");
-  const [winthorId, setWinthorId] = useState("");
-
-  const getUserData = async () => {
-    try {
-
-      const token = await AsyncStorage.getItem("token");
-
-      const response = await fetch("http://10.101.2.7:3333/me", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        console.log(responseData);
-        setId(responseData.id);
-        setName(responseData.name);
-        setUsername(responseData.username);
-        setBranchId(responseData.branch_id);
-        setAccessLevel(responseData.access_level);
-        setWinthorId(responseData.winthor_id);
-      } else {
-        Alert.alert("Erro", "Erro ao consultar dados do usuário!")
-      }
-    } catch (error: any) {
-      console.log(`Não foi possível se conectar ao servidor: ${error}`)
-    }
-
-  }
+  const name = employeeDataStore((state) => state.name);
+  const username = employeeDataStore((state) => state.username);
+  const winthorId = employeeDataStore((state) => state.winthorId);
+  const id = employeeDataStore((state) => state.userId);
+  const branchId = employeeDataStore((state) => state.branchId);
+  const accessLevel = employeeDataStore((state) => state.accessLevel);
 
   const signOut = async () => {
     try {
@@ -78,10 +48,6 @@ export default function Settings() {
     }
 
   }
-
-  useEffect(() => {
-    getUserData();
-  }, [])
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>

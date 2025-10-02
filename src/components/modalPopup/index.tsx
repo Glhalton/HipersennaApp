@@ -24,13 +24,15 @@ export default function ModalPopup({
                 <View
                     style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}
                 >
-                    <Octicons name="alert" size={80} color={Colors.red2} />
-                    <Text style={[styles.titleText, { color: theme.title }]}>
-                        Deseja sair?
-                    </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                        Se sair agora, poderá perder dados que não foram salvos.
-                    </Text>
+                    <Octicons name="alert" size={110} color={Colors.red2} />
+                    <View style={styles.textBox}>
+                        <Text style={[styles.titleText, { color: theme.title }]}>
+                            Deseja sair?
+                        </Text>
+                        <Text style={[styles.text, { color: theme.text }]}>
+                            Se sair agora, poderá perder dados que não foram salvos.
+                        </Text>
+                    </View>
                     <View style={styles.modalButtonsBox}>
                         <SmallButton
                             backgroundColor={Colors.gray}

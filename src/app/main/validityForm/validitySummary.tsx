@@ -1,6 +1,8 @@
-import React from "react";
+import { MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
-  Alert,
   FlatList,
   StyleSheet,
   Text,
@@ -8,16 +10,21 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { LargeButton } from "../../../components/largeButton";
-import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LargeButton } from "../../../components/largeButton";
+import ModalAlert from "../../../components/modalAlert";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertText, setAlertText] = useState("");
+  const [modalAlertVisible, setModalAlertVisible] = useState(false);
+  const [modalIcon, setModalIcon] = useState("");
+  const [alertIconColor, setAlertIconColor] = useState("");
 
   const validityData = postValidityDataStore((state) => state.validity);
   const productsList = postValidityDataStore((state) => state.productsList);
@@ -27,17 +34,17 @@ export default function ValiditySummary() {
   );
 
   const postValidity = async () => {
+
     if (productsList.length === 0) {
-      Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-      router.back();
+      setAlertTitle("Erro!");
+      setAlertText("Nenhum produto para ser adicionado!");
+      setModalIcon("error-outline");
+      setAlertIconColor(Colors.red);
+      setModalAlertVisible(true);
       return;
     }
 
-    console.log(validityData);
-    console.log(productsList);
-
     try {
-
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch("http://10.101.2.7:3333/validities", {
@@ -55,14 +62,24 @@ export default function ValiditySummary() {
       const responseData = await response.json();
 
       if (responseData.createdValidity) {
-        Alert.alert("Sucesso", responseData.message);
-        resetProducts();
-        router.back();
+        setAlertTitle("Sucesso!");
+        setAlertText(responseData.message);
+        setModalIcon("check-circle-outline");
+        setAlertIconColor("#13BE19");
+        setModalAlertVisible(true);
       } else {
-        Alert.alert("Erro no Servidor", responseData.error);
+        setAlertTitle("Erro!");
+        setAlertText(responseData.message);
+        setModalIcon("error-outline");
+        setAlertIconColor(Colors.red);
+        setModalAlertVisible(true);
       }
     } catch (erro) {
-      Alert.alert("Erro", "Não foi possivel conectar ao sevidor: " + erro);
+      setAlertTitle("Erro");
+      setAlertText(`Não foi possível conectar ao servidor: ${erro}`);
+      setModalIcon("error-outline");
+      setAlertIconColor(Colors.red);
+      setModalAlertVisible(true);
     }
   };
 
@@ -132,6 +149,21 @@ export default function ValiditySummary() {
           />
         </View>
       </View>
+
+      <ModalAlert
+        visible={modalAlertVisible}
+        buttonPress={() => {
+          setModalAlertVisible(false);
+          resetProducts();
+          router.back();
+        }}
+        title={alertTitle}
+        text={alertText}
+        iconCenterName={modalIcon}
+        IconCenter={MaterialIcons}
+        iconColor={alertIconColor}
+      />
+
     </SafeAreaView>
   );
 }

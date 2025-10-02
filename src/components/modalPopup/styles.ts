@@ -10,8 +10,9 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.53)",
   },
   modalBox: {
-    padding: 30,
-    height: 300,
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 20,
     borderRadius: 20,
     backgroundColor: "white",
     justifyContent: "center",
@@ -25,13 +26,15 @@ export const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 7,
   },
+  textBox: {
+    paddingBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   modalButtonsBox: {
     flexDirection: "row",
-    flex: 1,
     width: "100%",
-    height: "100%",
     justifyContent: "space-between",
-    alignItems: "flex-end",
   },
   titleText: {
     fontFamily: "Lexend-Bold",

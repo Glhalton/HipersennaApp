@@ -1,5 +1,3 @@
-import { DropdownInput } from "../../../components/dropdownInput";
-import { LargeButton } from "../../../components/largeButton";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
@@ -7,6 +5,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { DropdownInput } from "../../../components/dropdownInput";
+import { LargeButton } from "../../../components/largeButton";
 
 export default function SelectFilialValidity() {
   const colorScheme = useColorScheme() ?? "light";
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     color: Colors.blue,
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
     textAlign: "center",
   },
   buttonBox: {

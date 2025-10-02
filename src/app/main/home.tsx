@@ -1,4 +1,5 @@
 import { FontAwesome6, Ionicons, Octicons, } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,13 +15,11 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  
   const setName = employeeDataStore((state) => state.setName);
   const setUsername = employeeDataStore((state) => state.setUsername);
   const setWinthorId = employeeDataStore((state) => state.setWinthorId);
@@ -28,17 +27,17 @@ export default function Home() {
   const setBranchId = employeeDataStore((state) => state.setBranchId);
   const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
 
-
   const name = employeeDataStore((state) => state.name);
 
   const [validities, setValidities] = useState([]);
+  const [requests, setRequests] = useState([])
   const [isLoading, setIsLoading] = useState(true);
 
   const countValidade = validities.length;
+  const countRequests = requests.length
 
   const getValidities = async () => {
     try {
-
       setIsLoading(true);
 
       const token = await AsyncStorage.getItem("token");
@@ -49,7 +48,6 @@ export default function Home() {
           method: "GET",
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
         },
       );
@@ -59,7 +57,35 @@ export default function Home() {
       if (responseData.validitiesByEmployee) {
         setValidities(responseData.validitiesByEmployee);
       } else {
-        Alert.alert("Erro", responseData.error);
+        Alert.alert("Erro", responseData.message);
+      }
+    } catch (error) {
+      Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getValidityRequests = async () => {
+    const token = await AsyncStorage.getItem("token")
+
+    try {
+      const response = await fetch(
+        `http://10.101.2.7:3333/validityRequests/employee`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        },
+      );
+
+      const responseData = await response.json();
+
+      if (responseData.validityRequestsByEmployee) {
+        setRequests(responseData.validityRequestsByEmployee);
+      } else {
+        Alert.alert("Erro", responseData.message);
       }
     } catch (error) {
       Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error);
@@ -70,14 +96,17 @@ export default function Home() {
 
   const getUserData = async () => {
     try {
-
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch("http://10.101.2.7:3333/me", {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "http://10.101.2.7:3333/me",
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
 
       const responseData = await response.json();
 
@@ -101,6 +130,7 @@ export default function Home() {
   useEffect(() => {
     getUserData();
     getValidities();
+    getValidityRequests();
   }, []);
 
   if (isLoading) {
@@ -170,7 +200,7 @@ export default function Home() {
         </View>
 
         <View style={[styles.dashboardBox]}>
-          <Text style={[styles.title, { color: theme.title }]}>Dashboard</Text>
+          <Text style={[styles.title, { color: theme.title }]}>Estatísticas</Text>
           <View style={[styles.dashboardRowItens]}>
             <View
               style={[
@@ -179,7 +209,7 @@ export default function Home() {
               ]}
             >
               <Text style={[styles.dashboardItemText, { color: theme.text }]}>
-                Total de vistorias:{" "}
+                Nº Vistorias realizadas:{" "}
               </Text>
               <Text style={[styles.dashboardItemValue, { color: theme.text }]}>
                 {countValidade}
@@ -192,25 +222,12 @@ export default function Home() {
               ]}
             >
               <Text style={[styles.dashboardItemText, { color: theme.text }]}>
-                Vencerão em breve:
+                Nº Vistorias pendentes:
               </Text>
               <Text style={[styles.dashboardItemValue, { color: theme.text }]}>
-                0
+                {countRequests}
               </Text>
             </View>
-          </View>
-          <View
-            style={[
-              styles.dashboardLargeItem,
-              { backgroundColor: theme.uiBackground },
-            ]}
-          >
-            <Text style={[styles.dashboardItemText, { color: theme.text }]}>
-              Vencidos:
-            </Text>
-            <Text style={[styles.dashboardItemValue, { color: theme.text }]}>
-              0
-            </Text>
           </View>
         </View>
 
@@ -290,7 +307,7 @@ const styles = StyleSheet.create({
   },
   helloText: {
     fontSize: 22,
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
     color: Colors.blue,
   },
   subTitleText: {
@@ -342,7 +359,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   buttonsText: {
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
     color: Colors.white,
   },
   dashboardBox: {
@@ -351,7 +368,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
     color: Colors.blue,
     marginBottom: 15,
   },
@@ -362,7 +379,7 @@ const styles = StyleSheet.create({
   dashboardItem: {
     backgroundColor: Colors.white,
     padding: 24,
-    width: "48%",
+    width: "47%",
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: {

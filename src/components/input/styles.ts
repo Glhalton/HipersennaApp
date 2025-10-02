@@ -13,7 +13,6 @@ export const styles = StyleSheet.create({
     borderRadius: 20,
   },
   input: {
-    height: "100%",
     width: "100%",
     backgroundColor: Colors.inputColor,
     fontFamily: "Lexend-Regular",

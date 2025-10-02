@@ -1,26 +1,25 @@
-import { DateInput } from "../../../components/dateInput";
-import { Input } from "../../../components/input";
-import { LargeButton } from "../../../components/largeButton";
-import ModalPopup from "../../../components/modalPopup";
 import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   Keyboard,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   useColorScheme,
-  View,
-  Button,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { DateInput } from "../../../components/dateInput";
+import { Input } from "../../../components/input";
+import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
+import ModalPopup from "../../../components/modalPopup";
 
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
@@ -46,33 +45,31 @@ export default function ValidityForm() {
   const [errorText, setErrorText] = useState("");
 
   const productSearch = async () => {
+    const token = await AsyncStorage.getItem("token");
+
     try {
       setLoading(true);
       const response = await fetch(
-        `https://api.hipersenna.com/api/prod?codprod=${codProductInput}`,
+        `http://10.101.2.7:3333/products/${codProductInput}`,
         {
           method: "GET",
           headers: {
-            Authorization: "Bearer fbf722488af02d0a7c596872aec73db9",
+            Authorization: `Bearer ${token}`,
           },
         },
       );
 
       const responseData = await response.json();
 
-      if (
-        Array.isArray(responseData) &&
-        responseData.length > 0 &&
-        responseData[0].descricao
-      ) {
+      if (responseData[0]) {
         setDescription(responseData[0].descricao);
       } else {
-        setDescription(responseData.mensagem);
+        console.log(`Erro na consulta: ${responseData.message}`);
       }
     } catch (erro) {
       setModalVisible(true);
       setErrorTitle("Erro!");
-      setErrorText("Não foi possível buscar o produto" + erro);
+      setErrorText("Não foi possível buscar o produto: " + erro);
     } finally {
       setLoading(false);
     }
@@ -83,7 +80,6 @@ export default function ValidityForm() {
       setModalVisible(true);
       setErrorTitle("Atenção!");
       setErrorText("Preencha todos os campos obrigatórios!");
-
       return;
     }
     if (!description) {
@@ -144,7 +140,7 @@ export default function ValidityForm() {
               <Input
                 IconRight={FontAwesome}
                 iconRightName="search"
-                label="Código do produto *"
+                label="Código do produto:"
                 placeholder="Produto"
                 keyboardType="numeric"
                 value={codProductInput}
@@ -187,7 +183,7 @@ export default function ValidityForm() {
 
         <View>
           <DateInput
-            label="Data de Validade *"
+            label="Data de Validade:"
             placeholder="Data de Vencimento"
             value={validityDate}
             onChange={setValidityDate}
@@ -195,7 +191,7 @@ export default function ValidityForm() {
         </View>
         <View>
           <Input
-            label="Quantidade *"
+            label="Quantidade:"
             placeholder="Insira a quantidade"
             keyboardType="numeric"
             value={quantity}

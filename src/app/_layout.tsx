@@ -1,14 +1,14 @@
-import { ActivityIndicator, useColorScheme, View } from "react-native";
-import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
 import {
+  FontAwesome,
   FontAwesome6,
   Ionicons,
   MaterialIcons,
-  FontAwesome,
 } from "@expo/vector-icons";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import { ActivityIndicator, useColorScheme, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { Colors } from "../../constants/colors";
 
 export default function Layout() {
   const colorScheme = useColorScheme() ?? "light";
@@ -18,6 +18,9 @@ export default function Layout() {
     "Lexend-Regular": require("../../assets/fonts/Lexend/Lexend-Regular.ttf"),
     "Lexend-Bold": require("../../assets/fonts/Lexend/Lexend-Bold.ttf"),
     "Lexend-SemiBold": require("../../assets/fonts/Lexend/Lexend-SemiBold.ttf"),
+    "Lato-Regular": require("../../assets/fonts/Lato/Lato-Regular.ttf"),
+    "Lato-Bold": require("../../assets/fonts/Lato/Lato-Bold.ttf"),
+    "Lato-Italic": require("../../assets/fonts/Lato/Lato-Italic.ttf"),
     ...Ionicons.font,
     ...MaterialIcons.font,
     ...FontAwesome6.font,

@@ -12,6 +12,6 @@ export const styles = StyleSheet.create({
   buttonText: {
     fontSize: 14,
     color: "white",
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
   },
 });

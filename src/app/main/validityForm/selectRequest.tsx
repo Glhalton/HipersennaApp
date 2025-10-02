@@ -1,4 +1,5 @@
 import { Octicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -17,7 +18,6 @@ import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type RequestDataItem = {
   id: number;
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   titleText: {
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Lexend-Bold",
     color: Colors.blue,
     fontSize: 25,
     paddingBottom: 10,

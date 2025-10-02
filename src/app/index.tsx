@@ -1,21 +1,19 @@
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
   Text,
-  TouchableOpacity,
   useColorScheme,
-  View,
-  ActivityIndicator,
+  View
 } from "react-native";
-import { Input } from "../components/input";
-import { LargeButton } from "../components/largeButton";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../constants/colors";
+import { Input } from "../components/input";
+import { LargeButton } from "../components/largeButton";
 import ModalAlert from "../components/modalAlert";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -146,25 +144,15 @@ export default function Index() {
           />
         </View>
 
-        <TouchableOpacity style={styles.forgotPasswordButton}>
-          <Text style={[styles.forgotPasswordText, { color: theme.title }]}>
-            Esqueceu a sua senha?
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.loginButton}>
+          <LargeButton
+            text="Login"
+            onPress={getLogin}
+            loading={isLoading}
+            backgroundColor={theme.red}
+          />
+        </View>
 
-        <LargeButton
-          text="Login"
-          onPress={getLogin}
-          loading={isLoading}
-          backgroundColor={theme.red}
-        />
-
-        <TouchableOpacity style={styles.buttonBox}>
-          <Text style={[styles.signupText, { color: theme.title }]}>
-            Não tem uma conta?{" "}
-            <Text style={{ color: theme.link }}>Crie agora!</Text>
-          </Text>
-        </TouchableOpacity>
       </View>
 
       <ModalAlert
@@ -189,7 +177,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: "center",
-    paddingVertical: 60,
+    paddingVertical: 70,
   },
   title: {
     fontFamily: "Lexend-Regular",
@@ -206,23 +194,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   inputBox: {},
-  forgotPasswordButton: {
-    alignItems: "flex-end",
-    marginBottom: 50,
-  },
-  forgotPasswordText: {
-    color: Colors.blue,
-    fontFamily: "Lexend-Regular",
-  },
-  buttonBox: {
-    padding: 20,
-    alignItems: "center",
-    marginBottom: 80,
-    width: "100%",
-  },
-  signupText: {
-    color: Colors.gray,
-    fontSize: 14,
-    fontFamily: "Lexend-Regular",
-  },
+  loginButton:{
+    paddingVertical: 20,
+  }
+
+
 });
