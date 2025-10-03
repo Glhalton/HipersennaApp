@@ -1,23 +1,22 @@
+import ModalAlert from "@/components/modalAlert";
 import { FontAwesome6, Ionicons, MaterialIcons, Octicons, } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   useColorScheme,
-  View,
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
 import { useAlert } from "../../hooks/useAlert";
-import ModalAlert from "@/components/modalAlert";
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
@@ -25,14 +24,17 @@ export default function Home() {
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
+  const url = process.env.EXPO_PUBLIC_API_URL;
+
   const setName = employeeDataStore((state) => state.setName);
   const setUsername = employeeDataStore((state) => state.setUsername);
   const setWinthorId = employeeDataStore((state) => state.setWinthorId);
   const setId = employeeDataStore((state) => state.setUserId);
   const setBranchId = employeeDataStore((state) => state.setBranchId);
   const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
-
   const name = employeeDataStore((state) => state.name);
+
+  const firstName = name?.split(" ")[0];
 
   const [validities, setValidities] = useState([]);
   const [requests, setRequests] = useState([])
@@ -46,7 +48,7 @@ export default function Home() {
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
-        `http://10.101.2.7:3333/validities/employee`,
+        `${url}/validities/employee`,
         {
           method: "GET",
           headers: {
@@ -84,7 +86,7 @@ export default function Home() {
 
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validityRequests/employee`,
+        `${url}/validityRequests/employee`,
         {
           method: "GET",
           headers: {
@@ -114,8 +116,6 @@ export default function Home() {
         color: Colors.red,
         iconFamily: MaterialIcons
       })
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -124,7 +124,7 @@ export default function Home() {
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
-        "http://10.101.2.7:3333/me",
+        `${url}/me`,
         {
           method: "GET",
           headers: {
@@ -136,7 +136,6 @@ export default function Home() {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData);
         setId(responseData.id);
         setName(responseData.name);
         setUsername(responseData.username);
@@ -188,6 +187,7 @@ export default function Home() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}
     >
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <ScrollView
         style={[styles.scroll, { backgroundColor: theme.background }]}
         contentContainerStyle={styles.contentStyleScroll}
@@ -196,10 +196,10 @@ export default function Home() {
         <View style={styles.header}>
           <View>
             <Text style={[styles.helloText, { color: theme.title }]}>
-              Olá, {name}
+              Olá, {firstName}
             </Text>
             <Text style={[styles.subTitleText, { color: theme.text }]}>
-              SennaApp
+              GHSApp
             </Text>
           </View>
 
@@ -360,6 +360,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   helloText: {
+    maxWidth: 300,
     fontSize: 22,
     fontFamily: "Lexend-Bold",
     color: Colors.blue,
@@ -502,7 +503,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderColor: Colors.gray,
-    
+
     borderRadius: 10,
     width: 40,
     height: 40,

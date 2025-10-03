@@ -1,9 +1,10 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import {
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -22,6 +23,8 @@ export default function ValiditySummary() {
   const theme = Colors[colorScheme];
 
   const { visible, alertData, showAlert, hideAlert } = useAlert();
+
+  const url = process.env.EXPO_PUBLIC_API_URL;
 
   const validityData = postValidityDataStore((state) => state.validity);
   const productsList = postValidityDataStore((state) => state.productsList);
@@ -48,7 +51,7 @@ export default function ValiditySummary() {
 
     try {
       const token = await AsyncStorage.getItem("token");
-      const response = await fetch("http://10.101.2.7:3333/validities", {
+      const response = await fetch(`${url}/validities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,7 +74,7 @@ export default function ValiditySummary() {
           onClose: () => {
             resetProducts();
             router.back();
-          },
+          }, 
           iconFamily: MaterialIcons
         });
       } else {
@@ -99,6 +102,7 @@ export default function ValiditySummary() {
       style={[styles.container, { backgroundColor: theme.background }]}
       edges={["bottom"]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsBox}>
         <View style={styles.filialTitleBox}>
           <Text style={[styles.filialTitleText, { color: theme.title }]}>
@@ -143,7 +147,7 @@ export default function ValiditySummary() {
               </View>
 
               <TouchableOpacity
-                style={[styles.removeButton, { backgroundColor: theme.red }]}
+                style={[styles.removeButton, { backgroundColor: theme.cancel }]}
                 onPress={() => removeProduct(index)}
               >
                 <Text style={styles.removeText}>Remover</Text>

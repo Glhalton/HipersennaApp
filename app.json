@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "SennaApp",
-    "slug": "SennaApp",
+    "name": "GHSApp",
+    "slug": "GHSApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo-hipersenna.svg",
+    "icon": "./assets/images/hipersenna-light-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,28 +13,31 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo-hipersenna2.png"
+        "foregroundImage": "./assets/images/hipersenna-light-icon.png"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.glhalton.SennaApp",
-      "permissions": ["INTERNET"],
+      "package": "com.hipersenna.GHSApp",
+      "permissions": [
+        "INTERNET"
+      ],
       "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/HipersennaBlackLogo.png"
+      "favicon": "./assets/images/hipersenna-light-icon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#232323",
-          "image": "./assets/images/HipersennaBlackLogo.png",
+          "backgroundColor": "#ffffff",
+          "image": "./assets/images/hipersenna-light-splash-icon.png",
           "resizeMode": "contain",
           "dark": {
-            "backgroundColor": "#232323"
+            "backgroundColor": "#232323",
+            "image": "./assets/images/hipersenna-dark-splash-icon.png"
           },
           "imageWidth": 200
         }

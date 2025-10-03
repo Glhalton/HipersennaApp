@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -37,6 +38,8 @@ export default function History() {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const url = process.env.EXPO_PUBLIC_API_URL;
+
   const [ordinationItems, setOrdinationItems] = useState([
     { label: "Recentes", value: "1" },
     { label: "Antigos", value: "2" },
@@ -53,7 +56,7 @@ export default function History() {
 
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validities/employee`,
+        `${url}/validities/employee`,
         {
           method: "GET",
           headers: {
@@ -126,6 +129,7 @@ export default function History() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.contentBox}>
         <View style={styles.filterBox}>
           <DropDownPicker

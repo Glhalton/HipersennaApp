@@ -4,22 +4,21 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   useColorScheme,
-  View,
+  View
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
-import { useAlert } from "../../../hooks/useAlert";
 import ModalAlert from "../../../components/modalAlert";
+import { useAlert } from "../../../hooks/useAlert";
 
 type RequestDataItem = {
   id: number;
@@ -45,6 +44,8 @@ export default function SelectRequest() {
 
   const { visible, showAlert, hideAlert, alertData } = useAlert();
 
+  const url = process.env.EXPO_PUBLIC_API_URL;
+
   const requests = validityRequestDataStore((state) => state.requests);
   const setValidity = postValidityDataStore((state) => state.addValidity);
   const setProductsList = postValidityDataStore(
@@ -68,7 +69,7 @@ export default function SelectRequest() {
 
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validityRequests/employee`,
+        `${url}/validityRequests/employee`,
         {
           method: "GET",
           headers: {
@@ -81,7 +82,6 @@ export default function SelectRequest() {
 
       if (responseData.validityRequestsByEmployee) {
         setRequests(responseData.validityRequestsByEmployee);
-        console.log(`Solicitações de validade: ${responseData.validityRequestsByEmployee}`);
       } else {
         showAlert({
           title: "Erro!",
@@ -168,6 +168,7 @@ export default function SelectRequest() {
       style={{ flex: 1, backgroundColor: theme.background }}
       edges={["bottom"]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={[styles.titleText, { color: theme.title }]}>

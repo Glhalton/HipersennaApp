@@ -23,12 +23,13 @@ export const Colors = {
     uiBackground: "#292c38",
     inputColor: "#474c61ff",
     inputPlaceholder: "#c8c9d6a6",
-    cancel: "#f24643",
+    cancel: "#DA0100",
     confirm: "#39b97c",
     red: "#950101",
     gray: "#333446",
     link: "#3396D3",
-    iconStatusColor: "light-content"
+    hipersennaLogoColor: "../../assets/images/hipersenna-white-logo.png"
+
   },
   light: {
     text: "#4A5A6A",
@@ -43,9 +44,10 @@ export const Colors = {
     inputPlaceholder: "#66677eff",
     cancel: "#f24643",
     confirm: "#39b97c",
-    red: "#F22727",
+    red: "#AD151A",
     gray: "#4A5A6A",
     link: "#3396D3",
-    iconStatusColor: "dark-content"
+    iconStatusColor: "dark-content",
+    hipersennaLogoColor: "../../assets/images/hipersenna-red-logo.png"
   },
 };

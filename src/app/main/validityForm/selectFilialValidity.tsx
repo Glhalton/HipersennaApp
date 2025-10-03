@@ -45,6 +45,7 @@ export default function SelectFilialValidity() {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.formBox}>
         <View style={styles.titleBox}>
           <Text style={[styles.titleText, { color: theme.title }]}>

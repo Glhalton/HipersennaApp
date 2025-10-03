@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,7 +16,6 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 import { useAlert } from "../../../hooks/useAlert";
 
@@ -43,6 +43,8 @@ export default function Requests() {
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
+  const url = process.env.EXPO_PUBLIC_API_URL;
+
   const [filterItems, setFilterItems] = useState([
     { label: "Novos", value: "1" },
     { label: "Antigos", value: "2" },
@@ -63,7 +65,7 @@ export default function Requests() {
 
     try {
       const response = await fetch(
-        `http://10.101.2.7:3333/validityRequests/employee`,
+        `${url}/validityRequests/employee`,
         {
           method: "GET",
           headers: {
@@ -146,6 +148,7 @@ export default function Requests() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.contentBox}>
         <View style={styles.header}>
           <View style={styles.filterBox}>

@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Keyboard,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,28 +30,30 @@ export default function ValidityForm() {
   const productsList = postValidityDataStore((state) => state.productsList);
   const addProduct = postValidityDataStore((state) => state.addProduct);
 
+  const url = process.env.EXPO_PUBLIC_API_URL;
+
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
+
   //codProductInput é o codigo digitado, o productCod é o que é pego após pesquisar o produto
   const [codProductInput, setCodProductInput] = useState("");
   const [productCod, setProductCod] = useState("");
   const [description, setDescription] = useState("");
 
-
   const [validityDate, setValidityDate] = useState<Date | undefined>(undefined);
   const [quantity, setQuantity] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
   const [exitAction, setExitAction] = useState<any>(null);
   const navigation = useNavigation();
 
-  const { alertData, hideAlert, showAlert, visible } = useAlert();
+  const [isLoading, setIsLoading] = useState(false);
 
   const productSearch = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      setLoading(true);
+      setIsLoading(true);
       const response = await fetch(
-        `http://10.101.2.7:3333/products/${codProductInput}`,
+        `${url}/products/${codProductInput}`,
         {
           method: "GET",
           headers: {
@@ -65,7 +68,15 @@ export default function ValidityForm() {
         setDescription(responseData[0].descricao);
         setProductCod(codProductInput);
       } else {
-        console.log(responseData.message);
+        if (response.status == 401) {
+          showAlert({
+            title: "Erro!",
+            text: `${responseData.message}`,
+            icon: "error-outline",
+            color: Colors.red,
+            iconFamily: MaterialIcons
+          })
+        }
         setDescription("");
         setProductCod("");
       }
@@ -78,7 +89,7 @@ export default function ValidityForm() {
         iconFamily: MaterialIcons
       })
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -145,6 +156,7 @@ export default function ValidityForm() {
       style={[styles.container, { backgroundColor: theme.background }]}
       edges={["bottom"]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.formBox}>
         <View style={styles.productInfoBox}>
           <View style={styles.productCodeBox}>
@@ -183,7 +195,7 @@ export default function ValidityForm() {
         >
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <Text style={[styles.productNameText, { color: theme.title }]}>
-              {loading ? (
+              {isLoading ? (
                 <ActivityIndicator color={theme.iconColor} />
               ) : (
                 description || "Produto não encontrado"

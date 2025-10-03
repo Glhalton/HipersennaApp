@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { FlatList, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
@@ -15,6 +15,7 @@ export default function RequestProducts() {
       edges={["bottom"]}
       style={[styles.container, { backgroundColor: theme.background }]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={[styles.cardsContainer]}>
         <FlatList
           data={productsList}

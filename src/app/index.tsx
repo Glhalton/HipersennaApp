@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   Image,
+  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
@@ -15,25 +16,33 @@ import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import ModalAlert from "../components/modalAlert";
 import { useAlert } from "../hooks/useAlert";
+import Constants from "expo-constants";
+
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const { alertData, hideAlert, showAlert, visible } = useAlert();
+  const url = process.env.EXPO_PUBLIC_API_URL;
 
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-
   const [isLoading, setIsLoading] = useState(false);
 
+  const appVersion = Constants.expoConfig?.version 
+
+  const logos = {
+    light: require("../../assets/images/hipersenna-red-logo.png"),
+    dark: require("../../assets/images/hipersenna-white-logo.png"),
+  };
 
   const getLogin = async () => {
     try {
       setIsLoading(true);
 
-      const response = await fetch("http://10.101.2.7:3333/auth/signin", {
+      const response = await fetch(`${url}/auth/signin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,13 +53,11 @@ export default function Index() {
       const responseData = await response.json();
 
       if (responseData.token) {
-
         await AsyncStorage.setItem("token", responseData.token);
         console.log("Token salvo:", responseData.token);
         router.replace("/main/home");
         setUsername("");
         setPassword("");
-
       } else {
         showAlert({
           title: "Erro!",
@@ -87,18 +94,18 @@ export default function Index() {
         return;
       }
 
-      const response = await fetch("http://10.101.2.7:3333/me", {
+      const response = await fetch(`${url}/me`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        console.log("Sessão válida, redirecionando para tela inicial...");
-        console.log(`Token: ${token}`)
+        // console.log("Sessão válida, redirecionando para tela inicial...");
+        // console.log(`Token: ${token}`)
         router.replace("/main/home");
       } else {
-        console.log("Token inválido, limpando token");
+        // console.log("Token inválido, limpando token");
         await AsyncStorage.removeItem("token");
       }
     } catch (error: any) {
@@ -112,7 +119,6 @@ export default function Index() {
     } finally {
       setIsLoading(false);
     }
-
   }
 
   useEffect(() => {
@@ -121,11 +127,14 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={[styles.header]}>
         <Image
-          source={require("../../assets/images/Logo-hipersenna100x71.png")}
+          source={logos[colorScheme]}
+          resizeMode="contain"
+          style={{ height: 80, }}
         />
-        <Text style={[styles.title]}>SennaApp</Text>
+        <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>
       </View>
 
       <View style={[styles.formBox, { backgroundColor: theme.background }]}>
@@ -166,6 +175,11 @@ export default function Index() {
           />
         </View>
       </View>
+      <View style={styles.footerBox}>
+        <Text style={[styles.footerText, {color: theme.text}]}>
+          Versão: {appVersion}
+        </Text>
+      </View>
 
       {alertData && (
         <ModalAlert
@@ -184,16 +198,17 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0c0c0cff",
     alignItems: "center",
   },
   header: {
     alignItems: "center",
-    paddingVertical: 70,
+    paddingTop: 80,
+    paddingBottom: 40,
   },
   title: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Lexend-SemiBold",
     color: "white",
+    paddingTop: 10,
     fontSize: 30,
   },
   formBox: {
@@ -208,5 +223,11 @@ const styles = StyleSheet.create({
   inputBox: {},
   loginButton: {
     paddingVertical: 20,
+  },
+  footerBox:{
+    padding: 20
+  },
+  footerText:{
+    fontFamily: "Lexend-Regular",
   }
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { FlatList, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { getValidityDataStore } from "../../../store/getValidityDataStore";
@@ -12,6 +12,7 @@ export default function historyProducts() {
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsContainer}>
         <FlatList
           data={products}

@@ -4,9 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  Alert,
   FlatList,
   Modal,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
@@ -26,6 +26,8 @@ export default function ValidityRequestProducts() {
   const theme = Colors[colorScheme];
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
+
+  const url = process.env.EXPO_PUBLIC_API_URL;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -156,7 +158,7 @@ export default function ValidityRequestProducts() {
       });
 
       const response = await fetch(
-        "http://10.101.2.7:3333/validityRequests/validityRequestsUpdate",
+        `${url}/validityRequests/validityRequestsUpdate`,
         {
           method: "PATCH",
           headers: {
@@ -199,7 +201,7 @@ export default function ValidityRequestProducts() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch("http://10.101.2.7:3333/validities", {
+      const response = await fetch(`${url}/validities`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -220,7 +222,11 @@ export default function ValidityRequestProducts() {
           text: responseData.message,
           icon: "check-circle-outline",
           color: "#13BE19",
-          iconFamily: MaterialIcons
+          iconFamily: MaterialIcons,
+          onClose: () => {
+            resetProducts();
+            router.replace("/main/home");
+          },
         })
       } else {
         showAlert({
@@ -249,6 +255,7 @@ export default function ValidityRequestProducts() {
       edges={["bottom"]}
       style={[styles.container, { backgroundColor: theme.background }]}
     >
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsContainer}>
         <View style={styles.titleBox}>
           <Text style={[styles.titleText, { color: theme.title }]}>
@@ -357,7 +364,7 @@ export default function ValidityRequestProducts() {
             <LargeButton
               text="Finalizar validade"
               onPress={postValidity}
-              backgroundColor={theme.red}
+              backgroundColor={Colors.green}
               loading={isLoading}
             />
           </View>
@@ -417,7 +424,7 @@ export default function ValidityRequestProducts() {
                   ]}
                   inputMode="numeric"
                   value={quantity}
-                  onChangeText={setQuantity}
+                  onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ''))}
                 />
               </View>
             </View>
@@ -540,8 +547,7 @@ const styles = StyleSheet.create({
     width: 100,
     backgroundColor: Colors.inputColor,
     borderRadius: 10,
-
-    paddingLeft: 20,
+    paddingHorizontal: 20,
     fontSize: 18,
     padding: 0,
     margin: 0,

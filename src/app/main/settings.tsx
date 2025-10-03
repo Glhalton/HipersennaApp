@@ -2,7 +2,7 @@ import { LargeButton } from "@/components/largeButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
-import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Alert, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
@@ -10,6 +10,8 @@ import { employeeDataStore } from "../../../store/employeeDataStore";
 export default function settings() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const url = process.env.EXPO_PUBLIC_API_URL;
 
   const name = employeeDataStore((state) => state.name);
   const username = employeeDataStore((state) => state.username);
@@ -23,7 +25,7 @@ export default function settings() {
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
-        `http://10.101.2.7:3333/auth/signout`,
+        `${url}/auth/signout`,
         {
           method: "POST",
           headers: {
@@ -49,6 +51,7 @@ export default function settings() {
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>
+      <StatusBar barStyle={"light-content"} />
       <View style={styles.contentBox}>
         <Text style={[styles.title, { color: theme.title }]}>
           Dados do Usuário:
