@@ -3,20 +3,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
-import { employeeDataStore } from "../../../store/employeeDataStore";
 import { getValidityDataStore } from "../../../store/getValidityDataStore";
 import ModalAlert from "../../components/modalAlert";
+import { useAlert } from "../../hooks/useAlert";
 
 type validity = {
   id: number;
@@ -33,9 +33,7 @@ export default function History() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorText, setErrorText] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,13 +44,11 @@ export default function History() {
   const [ordination, setOrdination] = useState("");
   const [open, setOpen] = React.useState(false);
 
-  const userId = employeeDataStore((state) => state.userId);
   const setProducts = getValidityDataStore((state) => state.setProducts);
   const [validities, setValidities] = useState<validity[]>([]);
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 
   const selectValidities = async () => {
-
     const token = await AsyncStorage.getItem("token");
 
     try {
@@ -61,7 +57,6 @@ export default function History() {
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         },
@@ -72,16 +67,22 @@ export default function History() {
       if (responseData.validitiesByEmployee) {
         setValidities(responseData.validitiesByEmployee);
       } else {
-        setErrorTitle("Erro!");
-        setErrorText(
-          `Não foi possível conectar ao servidor: ${responseData.error}`,
-        );
-        setModalVisible(true);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
-    } catch (error) {
-      setErrorTitle("Erro!");
-      setErrorText(`Não foi possível conectar ao servidor: ${error}`);
-      setModalVisible(true);
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
@@ -122,6 +123,7 @@ export default function History() {
       </View>
     );
   }
+
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <View style={styles.contentBox}>
@@ -202,16 +204,16 @@ export default function History() {
         </View>
       </View>
 
-      <ModalAlert
-        visible={modalVisible}
-        buttonPress={() => {
-          setModalVisible(false);
-        }}
-        title={errorTitle}
-        text={errorText}
-        iconCenterName="error-outline"
-        IconCenter={MaterialIcons}
-      />
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+        />
+      )}
     </SafeAreaView>
   );
 }

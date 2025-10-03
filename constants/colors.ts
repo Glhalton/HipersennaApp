@@ -9,6 +9,8 @@ export const Colors = {
   white: "#ffffff",
   black: "#202020",
   yellow: "#FCB53B",
+  orange: "#e9ab00ff",
+  green: "#13BE19",
 
   dark: {
     text: "#cfcfcfff",
@@ -21,9 +23,12 @@ export const Colors = {
     uiBackground: "#292c38",
     inputColor: "#474c61ff",
     inputPlaceholder: "#c8c9d6a6",
+    cancel: "#f24643",
+    confirm: "#39b97c",
     red: "#950101",
     gray: "#333446",
     link: "#3396D3",
+    iconStatusColor: "light-content"
   },
   light: {
     text: "#4A5A6A",
@@ -36,8 +41,11 @@ export const Colors = {
     uiBackground: "#ffffffff",
     inputColor: "#eaebf1ff",
     inputPlaceholder: "#66677eff",
+    cancel: "#f24643",
+    confirm: "#39b97c",
     red: "#F22727",
     gray: "#4A5A6A",
     link: "#3396D3",
+    iconStatusColor: "dark-content"
   },
 };

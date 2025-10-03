@@ -1,4 +1,4 @@
-import { Octicons } from "@expo/vector-icons";
+import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -18,6 +18,8 @@ import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import { useAlert } from "../../../hooks/useAlert";
+import ModalAlert from "../../../components/modalAlert";
 
 type RequestDataItem = {
   id: number;
@@ -41,7 +43,8 @@ export default function SelectRequest() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const userId = employeeDataStore((state) => state.userId);
+  const { visible, showAlert, hideAlert, alertData } = useAlert();
+
   const requests = validityRequestDataStore((state) => state.requests);
   const setValidity = postValidityDataStore((state) => state.addValidity);
   const setProductsList = postValidityDataStore(
@@ -61,7 +64,6 @@ export default function SelectRequest() {
   const [isLoading, setIsLoading] = useState(true);
 
   const getValidityRequests = async () => {
-
     const token = await AsyncStorage.getItem("token");
 
     try {
@@ -70,7 +72,6 @@ export default function SelectRequest() {
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         },
@@ -80,25 +81,32 @@ export default function SelectRequest() {
 
       if (responseData.validityRequestsByEmployee) {
         setRequests(responseData.validityRequestsByEmployee);
-        console.log(responseData.validityRequestsByEmployee);
+        console.log(`Solicitações de validade: ${responseData.validityRequestsByEmployee}`);
       } else {
-        Alert.alert("Erro", responseData.message);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
     } catch (error) {
-      Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error);
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
   };
 
-  function addValidity(branchId: string, requestId: number) {
-    if (!branchId) {
-      Alert.alert("Erro!", "Erro na coleta de dados!");
-      return;
-    }
-
+  function addValidity(branchId: number, requestId: number) {
     setValidity({
-      branch_id: Number(branchId),
+      branch_id: branchId,
       request_id: requestId,
     });
   }
@@ -257,6 +265,17 @@ export default function SelectRequest() {
           />
         </View>
       </View>
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+          iconColor={alertData.color}
+        />
+      )}
     </SafeAreaView>
   );
 }

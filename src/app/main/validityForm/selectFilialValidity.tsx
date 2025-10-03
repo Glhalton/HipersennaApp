@@ -1,9 +1,8 @@
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { DropdownInput } from "../../../components/dropdownInput";
 import { LargeButton } from "../../../components/largeButton";
@@ -12,7 +11,6 @@ export default function SelectFilialValidity() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const userId = employeeDataStore((state) => state.userId);
   const setValidity = postValidityDataStore((state) => state.addValidity);
   const resetValidity = postValidityDataStore(
     (state) => state.resetValidityData,
@@ -32,11 +30,6 @@ export default function SelectFilialValidity() {
 
   //Cria a validade com request = null, pois é avulsa
   function addValidity() {
-    if (!branchId) {
-      Alert.alert("Erro!", "Erro na coleta de dados!");
-      return;
-    }
-
     setValidity({
       branch_id: Number(branchId),
       request_id: null,

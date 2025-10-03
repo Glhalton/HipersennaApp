@@ -40,13 +40,11 @@ export default function settings() {
         router.dismissAll();
         router.replace("/")
       } else {
-        Alert.alert("Erro", "Erro ao sair do aplicativo")
+        Alert.alert("Erro", "Erro ao sair do aplicativo:")
       }
-
     } catch (error: any) {
-      Alert.alert("Erro", error.message)
+      Alert.alert("Erro", `Não foi possível conectar ao servidor: ${error.message}`)
     }
-
   }
 
   return (

@@ -4,19 +4,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
 import { employeeDataStore } from "../../../../store/employeeDataStore";
 import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import { useAlert } from "../../../hooks/useAlert";
 
 type Request = {
   id: number;
@@ -40,9 +41,7 @@ export default function Requests() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorText, setErrorText] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const [filterItems, setFilterItems] = useState([
     { label: "Novos", value: "1" },
@@ -54,16 +53,14 @@ export default function Requests() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const userId = employeeDataStore((state) => state.userId);
   const [requests, setRequests] = useState<Request[]>([]);
   const setProductsList = validityRequestDataStore(
     (state) => state.setProductsList,
   );
 
   const getValidityRequests = async () => {
-
     const token = await AsyncStorage.getItem("token")
-    
+
     try {
       const response = await fetch(
         `http://10.101.2.7:3333/validityRequests/employee`,
@@ -81,16 +78,22 @@ export default function Requests() {
       if (responseData.validityRequestsByEmployee) {
         setRequests(responseData.validityRequestsByEmployee);
       } else {
-        setErrorTitle("Erro!");
-        setErrorText(
-          `Não foi possível conectar ao servidor ${responseData.error}`,
-        );
-        setModalVisible(true);
+        showAlert({
+          title: "Erro!",
+          text: responseData.error,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
     } catch (error) {
-      setErrorTitle("Erro!");
-      setErrorText(`Não foi possível conectar ao servidor ${error}`);
-      setModalVisible(true);
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
@@ -246,16 +249,16 @@ export default function Requests() {
         </View>
       </View>
 
-      <ModalAlert
-        visible={modalVisible}
-        buttonPress={() => {
-          setModalVisible(false);
-        }}
-        title={errorTitle}
-        text={errorText}
-        iconCenterName="error-outline"
-        IconCenter={MaterialIcons}
-      />
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData?.iconFamily}
+        />
+      )}
     </SafeAreaView>
   );
 }

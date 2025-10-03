@@ -15,16 +15,13 @@ import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
+import { useAlert } from "../../../hooks/useAlert";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [alertTitle, setAlertTitle] = useState("");
-  const [alertText, setAlertText] = useState("");
-  const [modalAlertVisible, setModalAlertVisible] = useState(false);
-  const [modalIcon, setModalIcon] = useState("");
-  const [alertIconColor, setAlertIconColor] = useState("");
+  const { visible, alertData, showAlert, hideAlert } = useAlert();
 
   const validityData = postValidityDataStore((state) => state.validity);
   const productsList = postValidityDataStore((state) => state.productsList);
@@ -36,17 +33,21 @@ export default function ValiditySummary() {
   const postValidity = async () => {
 
     if (productsList.length === 0) {
-      setAlertTitle("Erro!");
-      setAlertText("Nenhum produto para ser adicionado!");
-      setModalIcon("error-outline");
-      setAlertIconColor(Colors.red);
-      setModalAlertVisible(true);
+      showAlert({
+        title: "Erro!",
+        text: "Nenhum produto para ser adicionado!",
+        icon: "error-outline",
+        color: Colors.red,
+        onClose: () => {
+          router.back();
+        },
+        iconFamily: MaterialIcons
+      });
       return;
     }
 
     try {
       const token = await AsyncStorage.getItem("token");
-
       const response = await fetch("http://10.101.2.7:3333/validities", {
         method: "POST",
         headers: {
@@ -62,26 +63,36 @@ export default function ValiditySummary() {
       const responseData = await response.json();
 
       if (responseData.createdValidity) {
-        setAlertTitle("Sucesso!");
-        setAlertText(responseData.message);
-        setModalIcon("check-circle-outline");
-        setAlertIconColor("#13BE19");
-        setModalAlertVisible(true);
+        showAlert({
+          title: "Sucesso!",
+          text: responseData.message,
+          icon: "check-circle-outline",
+          color: "#13BE19",
+          onClose: () => {
+            resetProducts();
+            router.back();
+          },
+          iconFamily: MaterialIcons
+        });
       } else {
-        setAlertTitle("Erro!");
-        setAlertText(responseData.message);
-        setModalIcon("error-outline");
-        setAlertIconColor(Colors.red);
-        setModalAlertVisible(true);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
-    } catch (erro) {
-      setAlertTitle("Erro");
-      setAlertText(`Não foi possível conectar ao servidor: ${erro}`);
-      setModalIcon("error-outline");
-      setAlertIconColor(Colors.red);
-      setModalAlertVisible(true);
-    }
-  };
+    } catch (error) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
+    };
+  }
 
   return (
     <SafeAreaView
@@ -145,25 +156,22 @@ export default function ValiditySummary() {
           <LargeButton
             text="Salvar dados"
             onPress={postValidity}
-            backgroundColor={theme.red}
+            backgroundColor={Colors.green}
           />
         </View>
       </View>
 
-      <ModalAlert
-        visible={modalAlertVisible}
-        buttonPress={() => {
-          setModalAlertVisible(false);
-          resetProducts();
-          router.back();
-        }}
-        title={alertTitle}
-        text={alertText}
-        iconCenterName={modalIcon}
-        IconCenter={MaterialIcons}
-        iconColor={alertIconColor}
-      />
-
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+          iconColor={alertData.color}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -225,4 +233,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-});
+})

@@ -14,20 +14,20 @@ import { Colors } from "../../constants/colors";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import ModalAlert from "../components/modalAlert";
+import { useAlert } from "../hooks/useAlert";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorText, setErrorText] = useState("");
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+
 
   const getLogin = async () => {
     try {
@@ -52,14 +52,23 @@ export default function Index() {
         setPassword("");
 
       } else {
-        setErrorTitle("Erro!");
-        setErrorText(responseData.message || "Login inválido");
-        setModalVisible(true);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
         setPassword("");
       }
-    } catch (error) {
-      setErrorTitle("Erro de conexão");
-      setErrorText(`Não foi possível conectar ao servidor: ${error}`);
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
       setUsername("");
       setPassword("");
     } finally {
@@ -85,17 +94,21 @@ export default function Index() {
       });
 
       if (response.ok) {
-
         console.log("Sessão válida, redirecionando para tela inicial...");
         console.log(`Token: ${token}`)
         router.replace("/main/home");
-
       } else {
-        console.log("Sessão inválida, limpando token");
+        console.log("Token inválido, limpando token");
         await AsyncStorage.removeItem("token");
       }
     } catch (error: any) {
-      console.log(`Não foi possível se conectar ao servidor: ${error}`)
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor:  ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
@@ -152,19 +165,18 @@ export default function Index() {
             backgroundColor={theme.red}
           />
         </View>
-
       </View>
 
-      <ModalAlert
-        visible={modalVisible}
-        buttonPress={() => {
-          setModalVisible(false);
-        }}
-        title={errorTitle}
-        text={errorText}
-        iconCenterName="error-outline"
-        IconCenter={MaterialIcons}
-      />
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -194,9 +206,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   inputBox: {},
-  loginButton:{
+  loginButton: {
     paddingVertical: 20,
   }
-
-
 });

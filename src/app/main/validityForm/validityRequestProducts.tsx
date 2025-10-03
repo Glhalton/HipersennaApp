@@ -19,16 +19,13 @@ import { Colors } from "../../../../constants/colors";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { LargeButton } from "../../../components/largeButton";
 import ModalPopup from "../../../components/modalPopup";
+import { useAlert } from "../../../hooks/useAlert";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorText, setErrorText] = useState("");
-  const [modalAlertVisible, setModalAlertVisible] = useState(false);
-  const [modalIcon, setModalIcon] = useState("");
-  const [iconColor, setIconColor] = useState("");
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -63,7 +60,6 @@ export default function ValidityRequestProducts() {
     (p) => p.quantity === undefined || p.quantity === null,
   );
 
-  //Função para abrir o modal
   const ProductPress = (item: any, index: number) => {
     setSelectedProduct(item);
     setQuantity(item.quantity);
@@ -145,7 +141,6 @@ export default function ValidityRequestProducts() {
   };
 
   const updateStatusRequest = async () => {
-
     const token = await AsyncStorage.getItem("token");
 
     try {
@@ -179,18 +174,22 @@ export default function ValidityRequestProducts() {
       const responseData = await response.json();
 
       if (!responseData.validityRequestUpdate) {
-        setErrorTitle("Erro ao mudar status da solicitação");
-        setErrorText(responseData.message);
-        setModalIcon("error-outline");
-        setIconColor(Colors.red);
-        setModalAlertVisible(true);
+        showAlert({
+          title: "Erro!",
+          text: `Erro ao mudar status da solicitação: ${responseData.message}`,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
     } catch (erro) {
-      setErrorTitle("Erro");
-      setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
-      setModalIcon("error-outline");
-      setIconColor(Colors.red);
-      setModalAlertVisible(true);
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${erro}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     }
   };
 
@@ -198,11 +197,6 @@ export default function ValidityRequestProducts() {
     setIsLoading(true);
 
     const token = await AsyncStorage.getItem("token");
-
-    if (productsList.length === 0) {
-      Alert.alert("Atenção", "Nenhum produto para ser adicionado.");
-      return;
-    }
 
     try {
       const response = await fetch("http://10.101.2.7:3333/validities", {
@@ -221,24 +215,30 @@ export default function ValidityRequestProducts() {
 
       if (responseData.createdValidity) {
         updateStatusRequest();
-        setErrorTitle("Sucesso!");
-        setErrorText(responseData.message);
-        setModalIcon("check-circle-outline");
-        setIconColor("#13BE19");
-        setModalAlertVisible(true);
+        showAlert({
+          title: "Sucesso!",
+          text: responseData.message,
+          icon: "check-circle-outline",
+          color: "#13BE19",
+          iconFamily: MaterialIcons
+        })
       } else {
-        setErrorTitle("Erro!");
-        setErrorText(responseData.error);
-        setModalIcon("error-outline");
-        setModalAlertVisible(true);
-        setIconColor(Colors.red);
+        showAlert({
+          title: "Erro!",
+          text: responseData.error,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
     } catch (erro) {
-      setErrorTitle("Erro!");
-      setErrorText(`Não foi possível conectar ao servidor: ${erro}`);
-      setModalIcon("error-outline");
-      setIconColor(Colors.red);
-      setModalAlertVisible(true);
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${erro}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
@@ -424,13 +424,13 @@ export default function ValidityRequestProducts() {
             <View style={styles.modalButtonsBox}>
               <LargeButton
                 text={"Não encontrei"}
+                backgroundColor={Colors.red}
                 onPress={() => {
                   notFoundButtonModal();
                 }}
-                backgroundColor={theme.red}
               />
               <LargeButton
-                backgroundColor={"#13BE19"}
+                backgroundColor={Colors.green}
                 text={"Confirmar"}
                 onPress={() => backButtonModal(quantity)}
               />
@@ -439,19 +439,17 @@ export default function ValidityRequestProducts() {
         </View>
       </Modal>
 
-      <ModalAlert
-        visible={modalAlertVisible}
-        buttonPress={() => {
-          setModalAlertVisible(false);
-          resetProducts();
-          goHome();
-        }}
-        title={errorTitle}
-        text={errorText}
-        iconCenterName={modalIcon}
-        IconCenter={MaterialIcons}
-        iconColor={iconColor}
-      />
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+          iconColor={alertData.color}
+        />
+      )}
     </SafeAreaView>
   );
 }

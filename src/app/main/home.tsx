@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons, Octicons, } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons, Octicons, } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -15,10 +16,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 import { employeeDataStore } from "../../../store/employeeDataStore";
+import { useAlert } from "../../hooks/useAlert";
+import ModalAlert from "@/components/modalAlert";
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const setName = employeeDataStore((state) => state.setName);
   const setUsername = employeeDataStore((state) => state.setUsername);
@@ -38,8 +43,6 @@ export default function Home() {
 
   const getValidities = async () => {
     try {
-      setIsLoading(true);
-
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
@@ -57,12 +60,22 @@ export default function Home() {
       if (responseData.validitiesByEmployee) {
         setValidities(responseData.validitiesByEmployee);
       } else {
-        Alert.alert("Erro", responseData.message);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
-    } catch (error) {
-      Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error);
-    } finally {
-      setIsLoading(false);
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor:  ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     }
   };
 
@@ -85,10 +98,22 @@ export default function Home() {
       if (responseData.validityRequestsByEmployee) {
         setRequests(responseData.validityRequestsByEmployee);
       } else {
-        Alert.alert("Erro", responseData.message);
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
-    } catch (error) {
-      Alert.alert("Erro!", "Não foi possível conectar ao servidor: " + error);
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor:  ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setIsLoading(false);
     }
@@ -119,18 +144,36 @@ export default function Home() {
         setAccessLevel(responseData.access_level);
         setWinthorId(responseData.winthor_id);
       } else {
-        Alert.alert("Erro", "Erro ao consultar dados do usuário!")
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons
+        })
       }
     } catch (error: any) {
-      console.log(`Não foi possível se conectar ao servidor: ${error}`)
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor:  ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     }
-
   }
 
   useEffect(() => {
-    getUserData();
-    getValidities();
-    getValidityRequests();
+    setIsLoading(true);
+    const loadData = async () => {
+      await Promise.all([
+        getUserData(),
+        getValidities(),
+        getValidityRequests()
+      ]);
+      setIsLoading(false);
+    }
+    loadData();
   }, []);
 
   if (isLoading) {
@@ -279,6 +322,17 @@ export default function Home() {
           </View>
         </View>
       </ScrollView>
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+          iconColor={alertData.color}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -327,14 +381,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.white,
     borderRadius: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 3,
+    // },
+    // shadowOpacity: 0.29,
+    // shadowRadius: 4.65,
+    // elevation: 7,
   },
   buttonsBox: {
     flexDirection: "row",
@@ -359,7 +413,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   buttonsText: {
-    fontFamily: "Lexend-Bold",
+    paddingTop: 4,
+    fontFamily: "Lexend-Regular",
     color: Colors.white,
   },
   dashboardBox: {
@@ -381,14 +436,14 @@ const styles = StyleSheet.create({
     padding: 24,
     width: "47%",
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 3,
+    // },
+    // shadowOpacity: 0.29,
+    // shadowRadius: 4.65,
+    // elevation: 7,
   },
   dashboardItemText: {
     fontSize: 16,
@@ -419,15 +474,14 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 20,
     padding: 20,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-
-    elevation: 7,
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 3,
+    // },
+    // shadowOpacity: 0.29,
+    // shadowRadius: 4.65,
+    // elevation: 7,
   },
   opcaoMenu: {
     flexDirection: "row",
@@ -436,7 +490,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   optionButton: {
-    borderTopWidth: 1,
+    borderTopWidth: 0.4,
     borderColor: Colors.gray,
   },
   textOptions: {
@@ -448,7 +502,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderColor: Colors.gray,
-    borderWidth: 2,
+    
     borderRadius: 10,
     width: 40,
     height: 40,

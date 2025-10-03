@@ -1,4 +1,4 @@
-import { FontAwesome, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -20,6 +20,7 @@ import { Input } from "../../../components/input";
 import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
 import ModalPopup from "../../../components/modalPopup";
+import { useAlert } from "../../../hooks/useAlert";
 
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
@@ -33,6 +34,7 @@ export default function ValidityForm() {
   const [productCod, setProductCod] = useState("");
   const [description, setDescription] = useState("");
 
+
   const [validityDate, setValidityDate] = useState<Date | undefined>(undefined);
   const [quantity, setQuantity] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,9 +42,7 @@ export default function ValidityForm() {
   const [exitAction, setExitAction] = useState<any>(null);
   const navigation = useNavigation();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [errorTitle, setErrorTitle] = useState("");
-  const [errorText, setErrorText] = useState("");
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const productSearch = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -63,29 +63,44 @@ export default function ValidityForm() {
 
       if (responseData[0]) {
         setDescription(responseData[0].descricao);
+        setProductCod(codProductInput);
       } else {
-        console.log(`Erro na consulta: ${responseData.message}`);
+        console.log(responseData.message);
+        setDescription("");
+        setProductCod("");
       }
-    } catch (erro) {
-      setModalVisible(true);
-      setErrorTitle("Erro!");
-      setErrorText("Não foi possível buscar o produto: " + erro);
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possivel conectar ao servidor: ${error.message}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons
+      })
     } finally {
       setLoading(false);
     }
   };
 
-  function handlerAdicionar() {
+  function addProductList() {
     if (!codProductInput || !validityDate || !quantity) {
-      setModalVisible(true);
-      setErrorTitle("Atenção!");
-      setErrorText("Preencha todos os campos obrigatórios!");
+      showAlert({
+        title: "Atenção!",
+        text: "Preencha todos os campos obrigatórios!",
+        icon: "alert",
+        color: Colors.orange,
+        iconFamily: Octicons
+      })
       return;
     }
     if (!description) {
-      setModalVisible(true);
-      setErrorTitle("Erro!");
-      setErrorText("Produto não encontrado!");
+      showAlert({
+        title: "Atenção!",
+        text: "Produto não encontrado",
+        icon: "alert",
+        color: Colors.orange,
+        iconFamily: Octicons
+      })
       return;
     }
 
@@ -125,9 +140,6 @@ export default function ValidityForm() {
     setExitAction(null);
   };
 
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.background }]}
@@ -154,7 +166,6 @@ export default function ValidityForm() {
                 style={[styles.searchButton, { backgroundColor: theme.red }]}
                 onPress={() => {
                   productSearch();
-                  setProductCod(codProductInput);
                 }}
               >
                 <Text style={[styles.searchText, { color: theme.navText }]}>
@@ -207,7 +218,7 @@ export default function ValidityForm() {
               text="Inserir"
               backgroundColor={Colors.gray}
               onPress={() => {
-                handlerAdicionar();
+                addProductList();
                 Keyboard.dismiss();
               }}
             />
@@ -235,16 +246,17 @@ export default function ValidityForm() {
         buttonRight={handleConfirmExit}
       />
 
-      <ModalAlert
-        visible={modalVisible}
-        buttonPress={() => {
-          setModalVisible(false);
-        }}
-        title={errorTitle}
-        text={errorText}
-        iconCenterName="error-outline"
-        IconCenter={MaterialIcons}
-      />
+      {alertData && (
+        <ModalAlert
+          visible={visible}
+          buttonPress={hideAlert}
+          title={alertData.title}
+          text={alertData.text}
+          iconCenterName={alertData.icon}
+          IconCenter={alertData.iconFamily}
+          iconColor={alertData.color}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -278,8 +290,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   searchText: {
-    fontFamily: "Lexend-Bold",
-    fontSize: 18,
+    fontFamily: "Lexend-Regular",
+    fontSize: 16,
   },
   productNameBox: {
     backgroundColor: "#e4e4e4cc",
