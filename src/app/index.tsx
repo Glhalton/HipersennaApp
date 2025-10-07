@@ -94,7 +94,7 @@ export default function Index() {
         return;
       }
 
-      const response = await fetch(`${url}/me`, {
+      const response = await fetch(`${url}/users/me`, {
         headers: {
           "Authorization": `Bearer ${token}`,
         },

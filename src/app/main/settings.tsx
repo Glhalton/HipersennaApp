@@ -1,4 +1,4 @@
-import { LargeButton } from "@/components/largeButton";
+import { LargeButton } from "../../components/largeButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";

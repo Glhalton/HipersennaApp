@@ -1,7 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   StatusBar,
@@ -33,6 +33,8 @@ export default function ValiditySummary() {
     (state) => state.resetProductsList,
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const postValidity = async () => {
 
     if (productsList.length === 0) {
@@ -48,6 +50,8 @@ export default function ValiditySummary() {
       });
       return;
     }
+
+    setIsLoading(true)
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -94,7 +98,9 @@ export default function ValiditySummary() {
         color: Colors.red,
         iconFamily: MaterialIcons
       })
-    };
+    } finally{
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -161,6 +167,7 @@ export default function ValiditySummary() {
             text="Salvar dados"
             onPress={postValidity}
             backgroundColor={Colors.green}
+            loading={isLoading}
           />
         </View>
       </View>

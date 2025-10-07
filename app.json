@@ -2,6 +2,7 @@
   "expo": {
     "name": "GHSApp",
     "slug": "GHSApp",
+    "owner": "glhalton.hipersenna",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/hipersenna-light-icon.png",
@@ -13,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/hipersenna-light-icon.png"
+        "foregroundImage": "./assets/images/hipersenna-light-icon-v2.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.hipersenna.GHSApp",
@@ -50,7 +51,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "fa27156e-e3fe-404e-8751-9838673ad64a"
+        "projectId": "f23da512-ccfc-4e36-a709-0d57b885bdcf"
       }
     }
   }

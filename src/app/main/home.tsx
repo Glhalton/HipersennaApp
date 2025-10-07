@@ -1,4 +1,4 @@
-import ModalAlert from "@/components/modalAlert";
+import ModalAlert from "../../components/modalAlert";
 import { FontAwesome6, Ionicons, MaterialIcons, Octicons, } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -124,7 +124,7 @@ export default function Home() {
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
-        `${url}/me`,
+        `${url}/users/me`,
         {
           method: "GET",
           headers: {

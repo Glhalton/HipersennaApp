@@ -1,4 +1,4 @@
-import ModalAlert from "@/components/modalAlert";
+import ModalAlert from "../../../components/modalAlert";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
