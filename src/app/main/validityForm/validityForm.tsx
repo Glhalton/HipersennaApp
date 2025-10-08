@@ -381,12 +381,11 @@ export default function ValidityForm() {
                     />
                   ) : (
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                      <Text style={[styles.productNameText, { color: theme.title }]}>
+                      <Text style={[styles.productNameText, { color: theme.title, textAlign: "center" }]}>
                         {description || "Produto não encontrado"}
                       </Text>
                     </ScrollView>
                   )}
-
                 </View>
 
               )}
