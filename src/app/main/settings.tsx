@@ -25,7 +25,7 @@ export default function settings() {
       const token = await AsyncStorage.getItem("token");
 
       const response = await fetch(
-        `${url}/auth/signout`,
+        `${url}/users/signout`,
         {
           method: "POST",
           headers: {
@@ -36,7 +36,7 @@ export default function settings() {
 
       const responseData = await response.json();
 
-      if (responseData.message) {
+      if (response.ok) {
         console.log(responseData.message)
         await AsyncStorage.removeItem("token");
         router.dismissAll();

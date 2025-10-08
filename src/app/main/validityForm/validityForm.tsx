@@ -11,7 +11,9 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
-  View
+  View,
+  Modal,
+  FlatList
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
@@ -23,16 +25,20 @@ import ModalAlert from "../../../components/modalAlert";
 import ModalPopup from "../../../components/modalPopup";
 import { useAlert } from "../../../hooks/useAlert";
 
+type Produto = {
+  descricao: string;
+  [key: string]: any; // caso tenha outros campos desconhecidos
+};
+
+
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+  const url = process.env.EXPO_PUBLIC_API_URL;
+  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const productsList = postValidityDataStore((state) => state.productsList);
   const addProduct = postValidityDataStore((state) => state.addProduct);
-
-  const url = process.env.EXPO_PUBLIC_API_URL;
-
-  const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   //codProductInput é o codigo digitado, o productCod é o que é pego após pesquisar o produto
   const [codProductInput, setCodProductInput] = useState("");
@@ -47,39 +53,76 @@ export default function ValidityForm() {
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const [filterProductModal, setFilterProductModal] = useState(false);
+  const [optionFilter, setOptionFilter] = useState("codprod");
+
+  const [listProductFilter, setListProductsFilter] = useState<Produto[]>([])
+
   const productSearch = async () => {
     const token = await AsyncStorage.getItem("token");
-
     try {
+
       setIsLoading(true);
-      const response = await fetch(
-        `${url}/products/${codProductInput}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
+
+      if (optionFilter != "descricao") {
+        const response = await fetch(
+          `${url}/products/?${optionFilter}=${codProductInput}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           },
-        },
-      );
+        );
 
-      const responseData = await response.json();
+        const responseData = await response.json();
 
-      if (responseData[0]) {
-        setDescription(responseData[0].descricao);
-        setProductCod(codProductInput);
-      } else {
-        if (response.status == 401) {
-          showAlert({
-            title: "Erro!",
-            text: `${responseData.message}`,
-            icon: "error-outline",
-            color: Colors.red,
-            iconFamily: MaterialIcons
-          })
+        if (response.ok) {
+          setDescription(responseData[0].descricao);
+          setProductCod(responseData[0].codProd);
+        } else {
+          if (response.status == 401) {
+            showAlert({
+              title: "Erro!",
+              text: `${responseData.message}`,
+              icon: "error-outline",
+              color: Colors.red,
+              iconFamily: MaterialIcons
+            })
+          }
+          setDescription("");
+          setProductCod("");
         }
-        setDescription("");
-        setProductCod("");
+      } else {
+        const response = await fetch(
+          `${url}/products/?${optionFilter}=${codProductInput}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        const responseData = await response.json();
+
+        if (response.ok) {
+          setListProductsFilter(responseData);
+        } else {
+          if (response.status == 401) {
+            showAlert({
+              title: "Erro!",
+              text: `${responseData.message}`,
+              icon: "error-outline",
+              color: Colors.red,
+              iconFamily: MaterialIcons
+            })
+          }
+          setDescription("");
+          setProductCod("");
+        }
       }
+
     } catch (error: any) {
       showAlert({
         title: "Erro!",
@@ -125,6 +168,7 @@ export default function ValidityForm() {
     setCodProductInput("");
     setQuantity("");
     setDescription("");
+    setListProductsFilter([]);
     setValidityDate(undefined);
   }
 
@@ -158,51 +202,197 @@ export default function ValidityForm() {
     >
       <StatusBar barStyle={"light-content"} />
       <View style={styles.formBox}>
-        <View style={styles.productInfoBox}>
-          <View style={styles.productCodeBox}>
-            <View style={{ width: "65%" }}>
-              <Input
-                IconRight={FontAwesome}
-                iconRightName="search"
-                label="Código do produto:"
-                placeholder="Produto"
-                keyboardType="numeric"
-                value={codProductInput}
-                onChangeText={(codProd) =>
-                  setCodProductInput(codProd.replace(/[^0-9]/g, ""))
-                }
+        <View style={styles.header}>
+          <View style={styles.headerButtons}>
+            <TouchableOpacity style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]} onPress={() => { setOptionFilter("codauxiliar") }}>
+              <FontAwesome
+                name="camera"
+                color={theme.iconColor}
+                size={25}
               />
-            </View>
-            <View style={styles.searchBox}>
-              <TouchableOpacity
-                style={[styles.searchButton, { backgroundColor: theme.red }]}
-                onPress={() => {
-                  productSearch();
-                }}
-              >
-                <Text style={[styles.searchText, { color: theme.navText }]}>
-                  Buscar
-                </Text>
-              </TouchableOpacity>
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]} onPress={() => { setFilterProductModal(true) }}>
+              <FontAwesome
+                name="filter"
+                color={theme.iconColor}
+                size={25}
+              />
+            </TouchableOpacity>
           </View>
         </View>
-        <View
-          style={[
-            styles.productNameBox,
-            { backgroundColor: theme.uiBackground },
-          ]}
-        >
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <Text style={[styles.productNameText, { color: theme.title }]}>
+
+        {optionFilter == "codprod" && (
+          <View>
+            <View style={styles.productInfoBox}>
+              <View style={styles.productCodeBox}>
+                <View style={{ width: "65%" }}>
+                  <Input
+                    IconRight={FontAwesome}
+                    iconRightName="search"
+                    label="Código do produto:"
+                    placeholder="Cod. Produto"
+                    keyboardType="numeric"
+                    value={codProductInput}
+                    onChangeText={(codProd) =>
+                      setCodProductInput(codProd.replace(/[^0-9]/g, ""))
+                    }
+                  />
+                </View>
+                <View style={styles.searchBox}>
+                  <TouchableOpacity
+                    style={[styles.searchButton, { backgroundColor: theme.red }]}
+                    onPress={() => {
+                      productSearch();
+                    }}
+                  >
+                    <Text style={[styles.searchText, { color: theme.navText }]}>
+                      Buscar
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            <View
+              style={[
+                styles.productNameBox,
+                { backgroundColor: theme.uiBackground },
+              ]}
+            >
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Text style={[styles.productNameText, { color: theme.title }]}>
+                  {isLoading ? (
+                    <ActivityIndicator color={theme.iconColor} />
+                  ) : (
+                    description || "Produto não encontrado"
+                  )}
+                </Text>
+              </ScrollView>
+            </View>
+          </View>
+
+
+        )}
+
+        {optionFilter == "codauxiliar" && (
+          <View>
+            <View style={styles.productInfoBox}>
+              <View style={styles.productCodeBox}>
+                <View style={{ width: "65%" }}>
+                  <Input
+                    IconRight={FontAwesome}
+                    iconRightName="search"
+                    label="Código de barras:"
+                    placeholder="Cod. Barras"
+                    keyboardType="numeric"
+                    value={codProductInput}
+                    onChangeText={(codProd) =>
+                      setCodProductInput(codProd.replace(/[^0-9]/g, ""))
+                    }
+                  />
+                </View>
+                <View style={styles.searchBox}>
+                  <TouchableOpacity
+                    style={[styles.searchButton, { backgroundColor: theme.red }]}
+                    onPress={() => {
+                      productSearch();
+                    }}
+                  >
+                    <Text style={[styles.searchText, { color: theme.navText }]}>
+                      Buscar
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+            <View
+              style={[
+                styles.productNameBox,
+                { backgroundColor: theme.uiBackground },
+              ]}
+            >
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Text style={[styles.productNameText, { color: theme.title }]}>
+                  {isLoading ? (
+                    <ActivityIndicator color={theme.iconColor} />
+                  ) : (
+                    description || "Produto não encontrado"
+                  )}
+                </Text>
+              </ScrollView>
+            </View>
+          </View>
+        )}
+
+        {optionFilter == "descricao" && (
+          <View>
+            <View style={styles.productInfoBox}>
+              <View style={styles.productCodeBox}>
+                <View style={{ width: "65%" }}>
+                  <Input
+                    IconRight={FontAwesome}
+                    iconRightName="search"
+                    label="Descriçao do Produto"
+                    placeholder="Descrição"
+                    value={codProductInput}
+                    onChangeText={setCodProductInput}
+                  />
+                </View>
+                <View style={styles.searchBox}>
+                  <TouchableOpacity
+                    style={[styles.searchButton, { backgroundColor: theme.red }]}
+                    onPress={() => {
+                      productSearch();
+                    }}
+                  >
+                    <Text style={[styles.searchText, { color: theme.navText }]}>
+                      Buscar
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+
+
+            <View style={[styles.productList, { backgroundColor: theme.uiBackground }]}>
               {isLoading ? (
                 <ActivityIndicator color={theme.iconColor} />
               ) : (
-                description || "Produto não encontrado"
+                <View>
+                  {listProductFilter.length > 0 ? (
+                    <FlatList
+                      data={listProductFilter}
+                      keyExtractor={(_, index) => index.toString()}
+                      contentContainerStyle={{ paddingBottom: 20 }}
+                      renderItem={({ item, index }) => (
+                        <TouchableOpacity
+                          style={[styles.productItem, { borderColor: theme.iconColor }]}
+                          onPress={() => {
+                            setCodProductInput(item.descricao);
+                            setProductCod(item.codProd);
+                            setListProductsFilter([]);
+                            setDescription(item.descricao);
+                          }}
+                        >
+                          <Text style={[styles.productNameText, { color: theme.title }]}>
+                            {item.descricao}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  ) : (
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                      <Text style={[styles.productNameText, { color: theme.title }]}>
+                        {description || "Produto não encontrado"}
+                      </Text>
+                    </ScrollView>
+                  )}
+
+                </View>
+
               )}
-            </Text>
-          </ScrollView>
-        </View>
+            </View>
+          </View>
+        )}
 
         <View>
           <DateInput
@@ -251,12 +441,80 @@ export default function ValidityForm() {
         </View>
       </View>
 
+      <Modal
+        visible={filterProductModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => { setFilterProductModal(false) }}
+      >
+        <View style={styles.modalContainerCenter}>
+          <View
+            style={[styles.modalBox, { backgroundColor: theme.background }]}
+          >
+            <View style={styles.titleBox}>
+              <Text style={[styles.titleText, { color: theme.title }]}>
+                Selecione o tipo de pesquisa:
+              </Text>
+            </View>
+            <View style={styles.optionsBox}>
+              <TouchableOpacity
+                style={[styles.optionFilter, {
+                  backgroundColor: theme.uiBackground
+                }]}
+                onPress={() => {
+                  setFilterProductModal(false);
+                  setOptionFilter("codprod");
+                  setCodProductInput("");
+                  setDescription("");
+                  setProductCod("");
+                }}
+              >
+                <Text style={[styles.text, { color: theme.title, }]}>
+                  Código do produto
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
+                onPress={() => {
+                  setFilterProductModal(false);
+                  setOptionFilter("codauxiliar");
+                  setCodProductInput("");
+                  setDescription("");
+                  setProductCod("");
+                }}
+              >
+                <Text style={[styles.text, { color: theme.title }]}>
+                  Código de barras
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
+                onPress={() => {
+                  setFilterProductModal(false);
+                  setOptionFilter("descricao");
+                  setListProductsFilter([]);
+                  setCodProductInput("");
+                  setDescription("");
+                  setProductCod("");
+                }}
+              >
+                <Text style={[styles.text, { color: theme.title }]}>
+                  Descrição
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+      </Modal>
+
       <ModalPopup
         visible={showExitModal}
         onRequestClose={handleCancelExit}
         buttonLeft={handleCancelExit}
         buttonRight={handleConfirmExit}
       />
+
 
       {alertData && (
         <ModalAlert
@@ -280,9 +538,23 @@ const styles = StyleSheet.create({
   },
   formBox: {
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 10,
   },
-
+  header: {
+    alignItems: "flex-end",
+    paddingBottom: 5,
+  },
+  headerButtons: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  filterIcon: {
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+  },
   productInfoBox: {},
   productCodeBox: {
     flexDirection: "row",
@@ -318,9 +590,71 @@ const styles = StyleSheet.create({
     fontFamily: "Lexend-Bold",
   },
   buttonsBox: {
-    marginTop: 40,
+    marginTop: 10,
   },
   summaryButton: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
+  modalContainerCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 25,
+    backgroundColor: "rgba(0, 0, 0, 0.53)",
+  },
+  modalBox: {
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    borderRadius: 20,
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  titleBox: {
+    width: "100%",
+    alignItems: "center",
+  },
+  optionsBox: {
+    width: "100%",
+    paddingTop: 30,
+    paddingBottom: 30,
+  },
+  titleText: {
+    fontFamily: "Lexend-Bold",
+    fontSize: 24,
+    textAlign: "center"
+  },
+  text: {
+    fontSize: 18,
+    fontFamily: "Lexend-Regular",
+    color: Colors.gray,
+  },
+  optionFilter: {
+    width: "100%",
+    alignItems: "center",
+    paddingVertical: 20,
+    borderRadius: 15,
+    marginVertical: 10,
+  },
+  productList: {
+    maxHeight: 240,
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 20,
+  },
+  productItem: {
+    justifyContent: "center",
+    borderBottomWidth: 0.4,
+    paddingVertical: 10,
+
+  }
 });
