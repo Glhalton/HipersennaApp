@@ -118,6 +118,7 @@ export default function ValidityForm() {
               iconFamily: MaterialIcons
             })
           }
+          setListProductsFilter([]);
           setDescription("");
           setProductCod("");
         }
@@ -331,7 +332,7 @@ export default function ValidityForm() {
                   <Input
                     IconRight={FontAwesome}
                     iconRightName="search"
-                    label="Descriçao do Produto"
+                    label="Descrição do Produto"
                     placeholder="Descrição"
                     value={codProductInput}
                     onChangeText={setCodProductInput}
