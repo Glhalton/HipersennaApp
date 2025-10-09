@@ -28,18 +28,14 @@ type SelectedRequestsStore = {
   setProductStatus: (product_cod: number, status: number) => void;
 };
 
-export const validityRequestDataStore = create<SelectedRequestsStore>(
-  (set) => ({
-    requests: [],
-    products: [],
-    resetList: () => set({ requests: [] }),
-    setRequestsList: (novaLista) => set({ requests: novaLista }),
-    setProductsList: (lista) => set({ products: lista }),
-    setProductStatus: (product_cod, status) =>
-      set((state) => ({
-        products: state.products.map((p) =>
-          p.product_cod === product_cod ? { ...p, productStatus: status } : p,
-        ),
-      })),
-  }),
-);
+export const validityRequestDataStore = create<SelectedRequestsStore>((set) => ({
+  requests: [],
+  products: [],
+  resetList: () => set({ requests: [] }),
+  setRequestsList: (novaLista) => set({ requests: novaLista }),
+  setProductsList: (lista) => set({ products: lista }),
+  setProductStatus: (product_cod, status) =>
+    set((state) => ({
+      products: state.products.map((p) => (p.product_cod === product_cod ? { ...p, productStatus: status } : p)),
+    })),
+}));

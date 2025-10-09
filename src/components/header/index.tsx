@@ -32,10 +32,7 @@ export function Header({
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.button} onPress={handleNavigation}>
-        <Image
-          style={styles.gearIcon}
-          source={require("../../../assets/images/white-arrow-100.png")}
-        />
+        <Image style={styles.gearIcon} source={require("../../../assets/images/white-arrow-100.png")} />
       </TouchableOpacity>
       <Text style={styles.headerText}>{text}</Text>
     </View>

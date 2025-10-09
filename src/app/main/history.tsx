@@ -10,7 +10,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -55,15 +55,12 @@ export default function History() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(
-        `${url}/validities/employee`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+      const response = await fetch(`${url}/validities/employee`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const responseData = await response.json();
 
@@ -75,8 +72,8 @@ export default function History() {
           text: responseData.message,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
       showAlert({
@@ -84,8 +81,8 @@ export default function History() {
         text: `Não foi possível conectar ao servidor: ${error.message}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -143,14 +140,8 @@ export default function History() {
             }}
             setItems={setOrdinationItems}
             placeholder="Ordenar por"
-            style={[
-              styles.dropdownInput,
-              { backgroundColor: theme.inputColor },
-            ]}
-            dropDownContainerStyle={[
-              styles.optionsBox,
-              { backgroundColor: theme.inputColor },
-            ]}
+            style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
             textStyle={[styles.optionsText, { color: theme.title }]}
             placeholderStyle={[styles.placeholder, { color: theme.text }]}
           />
@@ -168,37 +159,22 @@ export default function History() {
                   setProducts(item.hsvalidity_products);
                 }}
               >
-                <View
-                  style={[styles.card, { backgroundColor: theme.uiBackground }]}
-                >
-                  <Text style={[styles.cardTitle, { color: theme.title }]}>
-                    # {item.id}
-                  </Text>
+                <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                  <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
                   <View style={styles.requestDataBox}>
                     <View>
                       <Text style={[styles.text, { color: theme.text }]}>
-                        <Text style={[styles.label, { color: theme.title }]}>
-                          Filial:
-                        </Text>{" "}
-                        {item.branch_id}
+                        <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
                       </Text>
                       <View style={styles.dates}>
                         <Text style={[styles.text, { color: theme.text }]}>
-                          <Text style={[styles.label, { color: theme.title }]}>
-                            Dt. Criação:
-                          </Text>{" "}
-                          {new Date(item.created_at).toLocaleDateString(
-                            "pt-BR",
-                          )}
+                          <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
+                          {new Date(item.created_at).toLocaleDateString("pt-BR")}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.iconBox}>
-                      <Octicons
-                        name="chevron-right"
-                        size={40}
-                        color={theme.iconColor}
-                      />
+                      <Octicons name="chevron-right" size={40} color={theme.iconColor} />
                     </View>
                   </View>
                 </View>

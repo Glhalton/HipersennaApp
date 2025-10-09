@@ -11,12 +11,7 @@ interface DropDownInputProps {
   label?: string;
 }
 
-export function DropdownInput({
-  label,
-  value,
-  items,
-  onChange,
-}: DropDownInputProps) {
+export function DropdownInput({ label, value, items, onChange }: DropDownInputProps) {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
@@ -25,9 +20,7 @@ export function DropdownInput({
 
   return (
     <Fragment>
-      {label && (
-        <Text style={[styles.label, { color: theme.title }]}>{label}</Text>
-      )}
+      {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
       <View style={[styles.container, { backgroundColor: theme.inputColor }]}>
         <DropDownPicker
           open={open}
@@ -41,10 +34,7 @@ export function DropdownInput({
           setItems={setDropDownItems}
           placeholder="Selecione uma opção"
           style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
-          dropDownContainerStyle={[
-            styles.optionsBox,
-            { backgroundColor: theme.inputColor },
-          ]}
+          dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
           textStyle={[styles.optionsText, { color: theme.title }]}
           placeholderStyle={[styles.placeholder, { color: theme.text }]}
         />

@@ -11,10 +11,7 @@ export default function RequestProducts() {
   const productsList = validityRequestDataStore((state) => state.products);
 
   return (
-    <SafeAreaView
-      edges={["bottom"]}
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={"light-content"} />
       <View style={[styles.cardsContainer]}>
         <FlatList
@@ -22,32 +19,21 @@ export default function RequestProducts() {
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
-            <View
-              style={[styles.card, { backgroundColor: theme.uiBackground }]}
-            >
+            <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
               <View style={styles.listId}>
-                <Text style={[styles.label, { color: theme.title }]}>
-                  {index + 1}°
-                </Text>
+                <Text style={[styles.label, { color: theme.title }]}>{index + 1}°</Text>
               </View>
               <View style={styles.dadosItem}>
                 <View style={styles.codDescricaoProdutoRow}>
                   <Text style={[styles.label, { color: theme.title }]}>
                     {item.product_cod}{" "}
-                    <Text
-                      style={[styles.productDataText, { color: theme.text }]}
-                    >
-                      {" "}
-                      : {item.description}
-                    </Text>{" "}
+                    <Text style={[styles.productDataText, { color: theme.text }]}> : {item.description}</Text>{" "}
                   </Text>
                 </View>
                 <View>
                   <Text style={[styles.label, { color: theme.title }]}>
                     Dt. vencimento:{" "}
-                    <Text
-                      style={[styles.productDataText, { color: theme.text }]}
-                    >
+                    <Text style={[styles.productDataText, { color: theme.text }]}>
                       {new Date(item.validity_date).toLocaleDateString("pt-BR")}
                     </Text>
                   </Text>

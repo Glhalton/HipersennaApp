@@ -6,43 +6,31 @@ import { SmallButton } from "../smallButton";
 import { styles } from "./styles";
 
 type Props = ModalProps & {
-    buttonLeft: () => void;
-    buttonRight: () => void;
+  buttonLeft: () => void;
+  buttonRight: () => void;
 };
 
-export default function ModalPopup({
-    buttonLeft,
-    buttonRight,
-    ...rest
-}: Props) {
-    const colorScheme = useColorScheme() ?? "light";
-    const theme = Colors[colorScheme];
+export default function ModalPopup({ buttonLeft, buttonRight, ...rest }: Props) {
+  const colorScheme = useColorScheme() ?? "light";
+  const theme = Colors[colorScheme];
 
-    return (
-        <Modal animationType="fade" transparent={true} {...rest}>
-            <View style={styles.modalContainerCenter}>
-                <View
-                    style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}
-                >
-                    <Octicons name="alert" size={110} color={Colors.red2} />
-                    <View style={styles.textBox}>
-                        <Text style={[styles.titleText, { color: theme.title }]}>
-                            Deseja sair?
-                        </Text>
-                        <Text style={[styles.text, { color: theme.text }]}>
-                            Se sair agora, poderá perder dados que não foram salvos.
-                        </Text>
-                    </View>
-                    <View style={styles.modalButtonsBox}>
-                        <SmallButton
-                            backgroundColor={Colors.gray}
-                            title={"Cancelar"}
-                            onPress={buttonLeft}
-                        />
-                        <SmallButton title={"Sair"} onPress={buttonRight} />
-                    </View>
-                </View>
-            </View>
-        </Modal>
-    );
+  return (
+    <Modal animationType="fade" transparent={true} {...rest}>
+      <View style={styles.modalContainerCenter}>
+        <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
+          <Octicons name="alert" size={110} color={Colors.red2} />
+          <View style={styles.textBox}>
+            <Text style={[styles.titleText, { color: theme.title }]}>Deseja sair?</Text>
+            <Text style={[styles.text, { color: theme.text }]}>
+              Se sair agora, poderá perder dados que não foram salvos.
+            </Text>
+          </View>
+          <View style={styles.modalButtonsBox}>
+            <SmallButton backgroundColor={Colors.gray} title={"Cancelar"} onPress={buttonLeft} />
+            <SmallButton title={"Sair"} onPress={buttonRight} />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
 }

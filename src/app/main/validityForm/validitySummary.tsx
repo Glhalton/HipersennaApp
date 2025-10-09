@@ -2,15 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import {
-    FlatList,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View,
-} from "react-native";
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
@@ -29,14 +21,11 @@ export default function ValiditySummary() {
   const validityData = postValidityDataStore((state) => state.validity);
   const productsList = postValidityDataStore((state) => state.productsList);
   const removeProduct = postValidityDataStore((state) => state.removeProduct);
-  const resetProducts = postValidityDataStore(
-    (state) => state.resetProductsList,
-  );
+  const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const postValidity = async () => {
-
     if (productsList.length === 0) {
       showAlert({
         title: "Erro!",
@@ -46,12 +35,12 @@ export default function ValiditySummary() {
         onClose: () => {
           router.back();
         },
-        iconFamily: MaterialIcons
+        iconFamily: MaterialIcons,
       });
       return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -59,7 +48,7 @@ export default function ValiditySummary() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           validity: validityData,
@@ -78,8 +67,8 @@ export default function ValiditySummary() {
           onClose: () => {
             resetProducts();
             router.back();
-          }, 
-          iconFamily: MaterialIcons
+          },
+          iconFamily: MaterialIcons,
         });
       } else {
         showAlert({
@@ -87,8 +76,8 @@ export default function ValiditySummary() {
           text: responseData.message,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error) {
       showAlert({
@@ -96,24 +85,19 @@ export default function ValiditySummary() {
         text: `Não foi possível conectar ao servidor: ${error}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
-    } finally{
+        iconFamily: MaterialIcons,
+      });
+    } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-      edges={["bottom"]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsBox}>
         <View style={styles.filialTitleBox}>
-          <Text style={[styles.filialTitleText, { color: theme.title }]}>
-            Filial: {validityData.branch_id}
-          </Text>
+          <Text style={[styles.filialTitleText, { color: theme.title }]}>Filial: {validityData.branch_id}</Text>
         </View>
 
         <FlatList
@@ -121,33 +105,23 @@ export default function ValiditySummary() {
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
-            <View
-              style={[styles.card, { backgroundColor: theme.uiBackground }]}
-            >
+            <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
               <Text style={[styles.cardTitleText, { color: theme.title }]}>
                 #{index + 1} - {item.description}
               </Text>
               <View style={styles.productDataBox}>
                 <View>
                   <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>
-                      Código:
-                    </Text>{" "}
-                    {item.product_cod}
+                    <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod}
                   </Text>
                   <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>
-                      Validade:
-                    </Text>{" "}
+                    <Text style={[styles.label, { color: theme.title }]}>Validade:</Text>{" "}
                     {new Date(item.validity_date).toLocaleDateString("pt-BR")}
                   </Text>
                 </View>
                 <View>
                   <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>
-                      Quantidade:
-                    </Text>{" "}
-                    {item.quantity}
+                    <Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}
                   </Text>
                 </View>
               </View>
@@ -163,12 +137,7 @@ export default function ValiditySummary() {
         />
 
         <View style={styles.insertButton}>
-          <LargeButton
-            text="Salvar dados"
-            onPress={postValidity}
-            backgroundColor={Colors.green}
-            loading={isLoading}
-          />
+          <LargeButton text="Salvar dados" onPress={postValidity} backgroundColor={Colors.green} loading={isLoading} />
         </View>
       </View>
 
@@ -244,4 +213,4 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-})
+});

@@ -13,7 +13,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DateInput } from "../../../components/dateInput";
@@ -29,7 +29,6 @@ type Produto = {
   descricao: string;
   [key: string]: any; // caso tenha outros campos desconhecidos
 };
-
 
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
@@ -56,24 +55,20 @@ export default function ValidityForm() {
   const [filterProductModal, setFilterProductModal] = useState(false);
   const [optionFilter, setOptionFilter] = useState("codprod");
 
-  const [listProductFilter, setListProductsFilter] = useState<Produto[]>([])
+  const [listProductFilter, setListProductsFilter] = useState<Produto[]>([]);
 
   const productSearch = async () => {
     const token = await AsyncStorage.getItem("token");
     try {
-
       setIsLoading(true);
 
       if (optionFilter != "descricao") {
-        const response = await fetch(
-          `${url}/products/?${optionFilter}=${codProductInput}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${url}/products/?${optionFilter}=${codProductInput}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const responseData = await response.json();
 
@@ -87,22 +82,19 @@ export default function ValidityForm() {
               text: `${responseData.message}`,
               icon: "error-outline",
               color: Colors.red,
-              iconFamily: MaterialIcons
-            })
+              iconFamily: MaterialIcons,
+            });
           }
           setDescription("");
           setProductCod("");
         }
       } else {
-        const response = await fetch(
-          `${url}/products/?${optionFilter}=${codProductInput}`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+        const response = await fetch(`${url}/products/?${optionFilter}=${codProductInput}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-        );
+        });
 
         const responseData = await response.json();
 
@@ -115,23 +107,22 @@ export default function ValidityForm() {
               text: `${responseData.message}`,
               icon: "error-outline",
               color: Colors.red,
-              iconFamily: MaterialIcons
-            })
+              iconFamily: MaterialIcons,
+            });
           }
           setListProductsFilter([]);
           setDescription("");
           setProductCod("");
         }
       }
-
     } catch (error: any) {
       showAlert({
         title: "Erro!",
         text: `Não foi possivel conectar ao servidor: ${error.message}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -144,8 +135,8 @@ export default function ValidityForm() {
         text: "Preencha todos os campos obrigatórios!",
         icon: "alert",
         color: Colors.orange,
-        iconFamily: Octicons
-      })
+        iconFamily: Octicons,
+      });
       return;
     }
     if (!description) {
@@ -154,8 +145,8 @@ export default function ValidityForm() {
         text: "Produto não encontrado",
         icon: "alert",
         color: Colors.orange,
-        iconFamily: Octicons
-      })
+        iconFamily: Octicons,
+      });
       return;
     }
 
@@ -197,27 +188,26 @@ export default function ValidityForm() {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-      edges={["bottom"]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.formBox}>
         <View style={styles.header}>
           <View style={styles.headerButtons}>
-            <TouchableOpacity style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]} onPress={() => { setOptionFilter("codauxiliar") }}>
-              <FontAwesome
-                name="camera"
-                color={theme.iconColor}
-                size={25}
-              />
+            <TouchableOpacity
+              style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]}
+              onPress={() => {
+                setOptionFilter("codauxiliar");
+              }}
+            >
+              <FontAwesome name="camera" color={theme.iconColor} size={25} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]} onPress={() => { setFilterProductModal(true) }}>
-              <FontAwesome
-                name="filter"
-                color={theme.iconColor}
-                size={25}
-              />
+            <TouchableOpacity
+              style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]}
+              onPress={() => {
+                setFilterProductModal(true);
+              }}
+            >
+              <FontAwesome name="filter" color={theme.iconColor} size={25} />
             </TouchableOpacity>
           </View>
         </View>
@@ -234,9 +224,7 @@ export default function ValidityForm() {
                     placeholder="Cod. Produto"
                     keyboardType="numeric"
                     value={codProductInput}
-                    onChangeText={(codProd) =>
-                      setCodProductInput(codProd.replace(/[^0-9]/g, ""))
-                    }
+                    onChangeText={(codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, ""))}
                   />
                 </View>
                 <View style={styles.searchBox}>
@@ -246,32 +234,19 @@ export default function ValidityForm() {
                       productSearch();
                     }}
                   >
-                    <Text style={[styles.searchText, { color: theme.navText }]}>
-                      Buscar
-                    </Text>
+                    <Text style={[styles.searchText, { color: theme.navText }]}>Buscar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-            <View
-              style={[
-                styles.productNameBox,
-                { backgroundColor: theme.uiBackground },
-              ]}
-            >
+            <View style={[styles.productNameBox, { backgroundColor: theme.uiBackground }]}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Text style={[styles.productNameText, { color: theme.title }]}>
-                  {isLoading ? (
-                    <ActivityIndicator color={theme.iconColor} />
-                  ) : (
-                    description || "Produto não encontrado"
-                  )}
+                  {isLoading ? <ActivityIndicator color={theme.iconColor} /> : description || "Produto não encontrado"}
                 </Text>
               </ScrollView>
             </View>
           </View>
-
-
         )}
 
         {optionFilter == "codauxiliar" && (
@@ -286,9 +261,7 @@ export default function ValidityForm() {
                     placeholder="Cod. Barras"
                     keyboardType="numeric"
                     value={codProductInput}
-                    onChangeText={(codProd) =>
-                      setCodProductInput(codProd.replace(/[^0-9]/g, ""))
-                    }
+                    onChangeText={(codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, ""))}
                   />
                 </View>
                 <View style={styles.searchBox}>
@@ -298,26 +271,15 @@ export default function ValidityForm() {
                       productSearch();
                     }}
                   >
-                    <Text style={[styles.searchText, { color: theme.navText }]}>
-                      Buscar
-                    </Text>
+                    <Text style={[styles.searchText, { color: theme.navText }]}>Buscar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-            <View
-              style={[
-                styles.productNameBox,
-                { backgroundColor: theme.uiBackground },
-              ]}
-            >
+            <View style={[styles.productNameBox, { backgroundColor: theme.uiBackground }]}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Text style={[styles.productNameText, { color: theme.title }]}>
-                  {isLoading ? (
-                    <ActivityIndicator color={theme.iconColor} />
-                  ) : (
-                    description || "Produto não encontrado"
-                  )}
+                  {isLoading ? <ActivityIndicator color={theme.iconColor} /> : description || "Produto não encontrado"}
                 </Text>
               </ScrollView>
             </View>
@@ -345,14 +307,11 @@ export default function ValidityForm() {
                       productSearch();
                     }}
                   >
-                    <Text style={[styles.searchText, { color: theme.navText }]}>
-                      Buscar
-                    </Text>
+                    <Text style={[styles.searchText, { color: theme.navText }]}>Buscar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
             </View>
-
 
             <View style={[styles.productList, { backgroundColor: theme.uiBackground }]}>
               {isLoading ? (
@@ -374,9 +333,7 @@ export default function ValidityForm() {
                             setDescription(item.descricao);
                           }}
                         >
-                          <Text style={[styles.productNameText, { color: theme.title }]}>
-                            {item.descricao}
-                          </Text>
+                          <Text style={[styles.productNameText, { color: theme.title }]}>{item.descricao}</Text>
                         </TouchableOpacity>
                       )}
                     />
@@ -388,7 +345,6 @@ export default function ValidityForm() {
                     </ScrollView>
                   )}
                 </View>
-
               )}
             </View>
           </View>
@@ -408,9 +364,7 @@ export default function ValidityForm() {
             placeholder="Insira a quantidade"
             keyboardType="numeric"
             value={quantity}
-            onChangeText={(quantity) =>
-              setQuantity(quantity.replace(/[^0-9]/g, ""))
-            }
+            onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
           />
         </View>
 
@@ -445,22 +399,23 @@ export default function ValidityForm() {
         visible={filterProductModal}
         animationType="fade"
         transparent={true}
-        onRequestClose={() => { setFilterProductModal(false) }}
+        onRequestClose={() => {
+          setFilterProductModal(false);
+        }}
       >
         <View style={styles.modalContainerCenter}>
-          <View
-            style={[styles.modalBox, { backgroundColor: theme.background }]}
-          >
+          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
             <View style={styles.titleBox}>
-              <Text style={[styles.titleText, { color: theme.title }]}>
-                Selecione o tipo de pesquisa:
-              </Text>
+              <Text style={[styles.titleText, { color: theme.title }]}>Selecione o tipo de pesquisa:</Text>
             </View>
             <View style={styles.optionsBox}>
               <TouchableOpacity
-                style={[styles.optionFilter, {
-                  backgroundColor: theme.uiBackground
-                }]}
+                style={[
+                  styles.optionFilter,
+                  {
+                    backgroundColor: theme.uiBackground,
+                  },
+                ]}
                 onPress={() => {
                   setFilterProductModal(false);
                   setOptionFilter("codprod");
@@ -469,9 +424,7 @@ export default function ValidityForm() {
                   setProductCod("");
                 }}
               >
-                <Text style={[styles.text, { color: theme.title, }]}>
-                  Código do produto
-                </Text>
+                <Text style={[styles.text, { color: theme.title }]}>Código do produto</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
@@ -483,9 +436,7 @@ export default function ValidityForm() {
                   setProductCod("");
                 }}
               >
-                <Text style={[styles.text, { color: theme.title }]}>
-                  Código de barras
-                </Text>
+                <Text style={[styles.text, { color: theme.title }]}>Código de barras</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
@@ -498,14 +449,11 @@ export default function ValidityForm() {
                   setProductCod("");
                 }}
               >
-                <Text style={[styles.text, { color: theme.title }]}>
-                  Descrição
-                </Text>
+                <Text style={[styles.text, { color: theme.title }]}>Descrição</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-
       </Modal>
 
       <ModalPopup
@@ -514,7 +462,6 @@ export default function ValidityForm() {
         buttonLeft={handleCancelExit}
         buttonRight={handleConfirmExit}
       />
-
 
       {alertData && (
         <ModalAlert
@@ -617,7 +564,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 7,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   titleBox: {
     width: "100%",
@@ -631,7 +578,7 @@ const styles = StyleSheet.create({
   titleText: {
     fontFamily: "Lexend-Bold",
     fontSize: 24,
-    textAlign: "center"
+    textAlign: "center",
   },
   text: {
     fontSize: 18,
@@ -655,6 +602,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderBottomWidth: 0.4,
     paddingVertical: 10,
-
-  }
+  },
 });

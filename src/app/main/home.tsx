@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons, MaterialIcons, Octicons, } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -10,7 +10,7 @@ import {
   Text,
   TouchableOpacity,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ModalAlert from "../../components/modalAlert";
@@ -37,25 +37,22 @@ export default function Home() {
   const firstName = name?.split(" ")[0];
 
   const [validities, setValidities] = useState([]);
-  const [requests, setRequests] = useState([])
+  const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const countValidade = validities.length;
-  const countRequests = requests.length
+  const countRequests = requests.length;
 
   const getValidities = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch(
-        `${url}/validities/employee`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+      const response = await fetch(`${url}/validities/employee`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const responseData = await response.json();
 
@@ -67,8 +64,8 @@ export default function Home() {
           text: responseData.message,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
       showAlert({
@@ -76,24 +73,21 @@ export default function Home() {
         text: `Não foi possível conectar ao servidor:  ${error.message}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     }
   };
 
   const getValidityRequests = async () => {
-    const token = await AsyncStorage.getItem("token")
+    const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(
-        `${url}/validityRequests/employee`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+      const response = await fetch(`${url}/validityRequests/employee`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const responseData = await response.json();
 
@@ -105,8 +99,8 @@ export default function Home() {
           text: responseData.message,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
       showAlert({
@@ -114,8 +108,8 @@ export default function Home() {
         text: `Não foi possível conectar ao servidor:  ${error.message}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     }
   };
 
@@ -123,15 +117,12 @@ export default function Home() {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch(
-        `${url}/users/me`,
-        {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`${url}/users/me`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const responseData = await response.json();
 
@@ -148,8 +139,8 @@ export default function Home() {
           text: responseData.message,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
       showAlert({
@@ -157,21 +148,17 @@ export default function Home() {
         text: `Não foi possível conectar ao servidor:  ${error.message}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     }
-  }
+  };
 
   useEffect(() => {
     setIsLoading(true);
     const loadData = async () => {
-      await Promise.all([
-        getUserData(),
-        getValidities(),
-        getValidityRequests()
-      ]);
+      await Promise.all([getUserData(), getValidities(), getValidityRequests()]);
       setIsLoading(false);
-    }
+    };
     loadData();
   }, []);
 
@@ -184,9 +171,7 @@ export default function Home() {
   }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <ScrollView
         style={[styles.scroll, { backgroundColor: theme.background }]}
@@ -195,12 +180,8 @@ export default function Home() {
       >
         <View style={styles.header}>
           <View>
-            <Text style={[styles.helloText, { color: theme.title }]}>
-              Olá, {firstName}
-            </Text>
-            <Text style={[styles.subTitleText, { color: theme.text }]}>
-              GHSApp
-            </Text>
+            <Text style={[styles.helloText, { color: theme.title }]}>Olá, {firstName}</Text>
+            <Text style={[styles.subTitleText, { color: theme.text }]}>GHSApp</Text>
           </View>
 
           <TouchableOpacity
@@ -211,9 +192,7 @@ export default function Home() {
           </TouchableOpacity>
         </View>
 
-        <View
-          style={[styles.validityBox, { backgroundColor: theme.uiBackground }]}
-        >
+        <View style={[styles.validityBox, { backgroundColor: theme.uiBackground }]}>
           <Text style={[styles.title, { color: theme.title }]}>Vistoria</Text>
           <View style={styles.buttonsBox}>
             <TouchableOpacity
@@ -222,11 +201,7 @@ export default function Home() {
                 router.push("./validityForm/selectRequest");
               }}
             >
-              <FontAwesome6
-                name="envelope-open-text"
-                size={50}
-                color={Colors.white}
-              />
+              <FontAwesome6 name="envelope-open-text" size={50} color={Colors.white} />
               <Text style={styles.buttonsText}>Solicitação</Text>
             </TouchableOpacity>
 
@@ -245,61 +220,27 @@ export default function Home() {
         <View style={[styles.dashboardBox]}>
           <Text style={[styles.title, { color: theme.title }]}>Estatísticas</Text>
           <View style={[styles.dashboardRowItens]}>
-            <View
-              style={[
-                styles.dashboardItem,
-                { backgroundColor: theme.uiBackground },
-              ]}
-            >
-              <Text style={[styles.dashboardItemText, { color: theme.text }]}>
-                Nº Vistorias realizadas:{" "}
-              </Text>
-              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>
-                {countValidade}
-              </Text>
+            <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+              <Text style={[styles.dashboardItemText, { color: theme.text }]}>Nº Vistorias realizadas: </Text>
+              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>{countValidade}</Text>
             </View>
-            <View
-              style={[
-                styles.dashboardItem,
-                { backgroundColor: theme.uiBackground },
-              ]}
-            >
-              <Text style={[styles.dashboardItemText, { color: theme.text }]}>
-                Nº Vistorias pendentes:
-              </Text>
-              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>
-                {countRequests}
-              </Text>
+            <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+              <Text style={[styles.dashboardItemText, { color: theme.text }]}>Nº Vistorias pendentes:</Text>
+              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>{countRequests}</Text>
             </View>
           </View>
         </View>
 
-        <View
-          style={[
-            styles.containerAcessoRapido,
-            { backgroundColor: theme.uiBackground },
-          ]}
-        >
-          <Text style={[styles.title, { color: theme.title }]}>
-            Acesso rápido
-          </Text>
+        <View style={[styles.containerAcessoRapido, { backgroundColor: theme.uiBackground }]}>
+          <Text style={[styles.title, { color: theme.title }]}>Acesso rápido</Text>
           <View>
-            <TouchableOpacity
-              onPress={() => router.push("/main/validityRequest/requests")}
-              style={styles.optionButton}
-            >
+            <TouchableOpacity onPress={() => router.push("/main/validityRequest/requests")} style={styles.optionButton}>
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
-                  <Octicons
-                    name="checklist"
-                    color={theme.iconColor}
-                    size={25}
-                  />
+                  <Octicons name="checklist" color={theme.iconColor} size={25} />
                 </View>
 
-                <Text style={[styles.textOptions, { color: theme.text }]}>
-                  Vistorias à fazer
-                </Text>
+                <Text style={[styles.textOptions, { color: theme.text }]}>Vistorias à fazer</Text>
               </View>
             </TouchableOpacity>
 
@@ -314,9 +255,7 @@ export default function Home() {
                   <Octicons name="history" color={theme.iconColor} size={25} />
                 </View>
 
-                <Text style={[styles.textOptions, { color: theme.text }]}>
-                  Histórico
-                </Text>
+                <Text style={[styles.textOptions, { color: theme.text }]}>Histórico</Text>
               </View>
             </TouchableOpacity>
           </View>
