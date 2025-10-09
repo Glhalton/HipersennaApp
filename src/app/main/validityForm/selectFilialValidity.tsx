@@ -12,9 +12,7 @@ export default function SelectFilialValidity() {
   const theme = Colors[colorScheme];
 
   const setValidity = postValidityDataStore((state) => state.addValidity);
-  const resetValidity = postValidityDataStore(
-    (state) => state.resetValidityData,
-  );
+  const resetValidity = postValidityDataStore((state) => state.resetValidityData);
   const resetList = postValidityDataStore((state) => state.resetProductsList);
 
   const [branchId, setBranchId] = useState("");
@@ -42,24 +40,15 @@ export default function SelectFilialValidity() {
   }, []);
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.formBox}>
         <View style={styles.titleBox}>
-          <Text style={[styles.titleText, { color: theme.title }]}>
-            Selecione a filial desejada:
-          </Text>
+          <Text style={[styles.titleText, { color: theme.title }]}>Selecione a filial desejada:</Text>
         </View>
 
         <View>
-          <DropdownInput
-            label={"Filial:"}
-            value={branchId}
-            items={branches}
-            onChange={(val) => setBranchId(val)}
-          />
+          <DropdownInput label={"Filial:"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
         </View>
         {branchId && (
           <View style={styles.buttonBox}>

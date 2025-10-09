@@ -18,9 +18,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.hipersenna.GHSApp",
-      "permissions": [
-        "INTERNET"
-      ],
+      "permissions": ["INTERNET"],
       "usesCleartextTraffic": true
     },
     "web": {

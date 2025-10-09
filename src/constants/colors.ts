@@ -28,8 +28,7 @@ export const Colors = {
     red: "#950101",
     gray: "#333446",
     link: "#3396D3",
-    hipersennaLogoColor: "../../assets/images/hipersenna-white-logo.png"
-
+    hipersennaLogoColor: "../../assets/images/hipersenna-white-logo.png",
   },
   light: {
     text: "#4A5A6A",
@@ -48,6 +47,6 @@ export const Colors = {
     gray: "#4A5A6A",
     link: "#3396D3",
     iconStatusColor: "dark-content",
-    hipersennaLogoColor: "../../assets/images/hipersenna-red-logo.png"
+    hipersennaLogoColor: "../../assets/images/hipersenna-red-logo.png",
   },
 };

@@ -3,14 +3,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View
+  ActivityIndicator,
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -56,24 +56,19 @@ export default function Requests() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [requests, setRequests] = useState<Request[]>([]);
-  const setProductsList = validityRequestDataStore(
-    (state) => state.setProductsList,
-  );
+  const setProductsList = validityRequestDataStore((state) => state.setProductsList);
 
   const getValidityRequests = async () => {
-    const token = await AsyncStorage.getItem("token")
+    const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(
-        `${url}/validityRequests/employee`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
+      const response = await fetch(`${url}/validityRequests/employee`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const responseData = await response.json();
 
@@ -85,8 +80,8 @@ export default function Requests() {
           text: responseData.error,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error) {
       showAlert({
@@ -94,8 +89,8 @@ export default function Requests() {
         text: `Não foi possível conectar ao servidor ${error}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -164,14 +159,8 @@ export default function Requests() {
                 }}
                 setItems={setFilterItems}
                 placeholder="Ordenar por"
-                style={[
-                  styles.dropdownInput,
-                  { backgroundColor: theme.inputColor },
-                ]}
-                dropDownContainerStyle={[
-                  styles.optionsBox,
-                  { backgroundColor: theme.inputColor },
-                ]}
+                style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
                 textStyle={[styles.optionsText, { color: theme.title }]}
                 placeholderStyle={[styles.placeholder, { color: theme.text }]}
               />
@@ -191,58 +180,29 @@ export default function Requests() {
                   setProductsList(item.hsvalidity_request_products);
                 }}
               >
-                <View
-                  style={[styles.card, { backgroundColor: theme.uiBackground }]}
-                >
-                  <Text style={[styles.cardTitle, { color: theme.title }]}>
-                    # {item.id}
-                  </Text>
+                <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                  <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
                   <View style={styles.requestDataBox}>
                     <View>
                       <Text style={[styles.text, { color: theme.text }]}>
-                        <Text style={[styles.label, { color: theme.title }]}>
-                          Filial:
-                        </Text>{" "}
-                        {item.branch_id}
+                        <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
                       </Text>
                       {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                       <View style={styles.dates}>
                         <Text style={[styles.text, { color: theme.text }]}>
-                          <Text style={[styles.label, { color: theme.title }]}>
-                            Dt. Criação:
-                          </Text>{" "}
-                          {new Date(item.created_at).toLocaleDateString(
-                            "pt-BR",
-                          )}
+                          <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
+                          {new Date(item.created_at).toLocaleDateString("pt-BR")}
                         </Text>
                         {/* <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Limite:</Text> {new Date(item.target_date).toLocaleDateString("pt-BR")}</Text> */}
                       </View>
                       <View style={styles.statusBox}>
-                        <Text style={[styles.label, { color: theme.title }]}>
-                          Status:
-                        </Text>
-                        <View
-                          style={[
-                            styles.dotView,
-                            { backgroundColor: getColor(item.status) },
-                          ]}
-                        ></View>
-                        <Text
-                          style={[
-                            styles.statusText,
-                            { color: getColor(item.status) },
-                          ]}
-                        >
-                          {item.status}
-                        </Text>
+                        <Text style={[styles.label, { color: theme.title }]}>Status:</Text>
+                        <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
+                        <Text style={[styles.statusText, { color: getColor(item.status) }]}>{item.status}</Text>
                       </View>
                     </View>
                     <View style={styles.iconBox}>
-                      <Octicons
-                        name="chevron-right"
-                        size={40}
-                        color={theme.iconColor}
-                      />
+                      <Octicons name="chevron-right" size={40} color={theme.iconColor} />
                     </View>
                   </View>
                 </View>

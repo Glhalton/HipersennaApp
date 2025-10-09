@@ -11,12 +11,7 @@ interface DateInputProps {
   onChange: (date: Date) => void;
 }
 
-export function DateInput({
-  label,
-  placeholder,
-  value,
-  onChange,
-}: DateInputProps) {
+export function DateInput({ label, placeholder, value, onChange }: DateInputProps) {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
@@ -31,33 +26,15 @@ export function DateInput({
 
   return (
     <Fragment>
-      {label && (
-        <Text style={[styles.label, { color: theme.title }]}>{label}</Text>
-      )}
+      {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
       <View style={[styles.container]}>
-        <Pressable
-          style={[styles.dataInputBox, { backgroundColor: theme.inputColor }]}
-          onPress={() => setShow(true)}
-        >
-          <Text
-            style={[
-              styles.dataInputText,
-              { color: theme.title },
-              !value && { color: theme.inputPlaceholder },
-            ]}
-          >
+        <Pressable style={[styles.dataInputBox, { backgroundColor: theme.inputColor }]} onPress={() => setShow(true)}>
+          <Text style={[styles.dataInputText, { color: theme.title }, !value && { color: theme.inputPlaceholder }]}>
             {value ? value.toLocaleDateString("pt-BR") : placeholder}
           </Text>
         </Pressable>
 
-        {show && (
-          <DateTimePicker
-            value={value || new Date()}
-            mode="date"
-            display="spinner"
-            onChange={handleChange}
-          />
-        )}
+        {show && <DateTimePicker value={value || new Date()} mode="date" display="spinner" onChange={handleChange} />}
       </View>
     </Fragment>
   );

@@ -12,10 +12,8 @@ interface UserDadosStore {
   setUsername: (username: string) => void;
   setAccessLevel: (level: number) => void;
   setBranchId: (branch: number) => void;
-  setWinthorId: (winthorId: number) => void
+  setWinthorId: (winthorId: number) => void;
 }
-
-
 
 export const employeeDataStore = create<UserDadosStore>((set) => ({
   winthorId: null,

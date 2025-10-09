@@ -11,7 +11,7 @@ import {
   TextInput,
   TouchableOpacity,
   useColorScheme,
-  View
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LargeButton } from "../../../components/largeButton";
@@ -31,18 +31,11 @@ export default function ValidityRequestProducts() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const productsList =
-    postValidityDataStore((state) => state.productsList) || [];
-  const resetProducts = postValidityDataStore(
-    (state) => state.resetProductsList,
-  );
+  const productsList = postValidityDataStore((state) => state.productsList) || [];
+  const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
-  const updateQuantity = postValidityDataStore(
-    (state) => state.updateProductQuantity,
-  );
-  const updateStatus = postValidityDataStore(
-    (state) => state.updateProductStatus,
-  );
+  const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity);
+  const updateStatus = postValidityDataStore((state) => state.updateProductStatus);
 
   const validityData = postValidityDataStore((state) => state.validity);
 
@@ -58,9 +51,7 @@ export default function ValidityRequestProducts() {
   const [showExitModal, setShowExitModal] = useState(false);
   const [exitAction, setExitAction] = useState<any>(null);
 
-  const hasEmpty = productsList.some(
-    (p) => p.quantity === undefined || p.quantity === null,
-  );
+  const hasEmpty = productsList.some((p) => p.quantity === undefined || p.quantity === null);
 
   const ProductPress = (item: any, index: number) => {
     setSelectedProduct(item);
@@ -157,21 +148,18 @@ export default function ValidityRequestProducts() {
         products: productsPayload,
       });
 
-      const response = await fetch(
-        `${url}/validityRequests/validityRequestsUpdate`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            requestId: Number(validityData.request_id),
-            status: "Concluido",
-            products: productsPayload,
-          }),
+      const response = await fetch(`${url}/validityRequests/validityRequestsUpdate`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: JSON.stringify({
+          requestId: Number(validityData.request_id),
+          status: "Concluido",
+          products: productsPayload,
+        }),
+      });
 
       const responseData = await response.json();
 
@@ -181,8 +169,8 @@ export default function ValidityRequestProducts() {
           text: `Erro ao mudar status da solicitação: ${responseData.message}`,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (erro) {
       showAlert({
@@ -190,8 +178,8 @@ export default function ValidityRequestProducts() {
         text: `Não foi possível conectar ao servidor: ${erro}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     }
   };
 
@@ -205,7 +193,7 @@ export default function ValidityRequestProducts() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           validity: validityData,
@@ -227,15 +215,15 @@ export default function ValidityRequestProducts() {
             resetProducts();
             router.replace("/main/home");
           },
-        })
+        });
       } else {
         showAlert({
           title: "Erro!",
           text: responseData.error,
           icon: "error-outline",
           color: Colors.red,
-          iconFamily: MaterialIcons
-        })
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (erro) {
       showAlert({
@@ -243,24 +231,19 @@ export default function ValidityRequestProducts() {
         text: `Não foi possível conectar ao servidor: ${erro}`,
         icon: "error-outline",
         color: Colors.red,
-        iconFamily: MaterialIcons
-      })
+        iconFamily: MaterialIcons,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <SafeAreaView
-      edges={["bottom"]}
-      style={[styles.container, { backgroundColor: theme.background }]}
-    >
+    <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsContainer}>
         <View style={styles.titleBox}>
-          <Text style={[styles.titleText, { color: theme.title }]}>
-            Digite a quantidade para cada produto:
-          </Text>
+          <Text style={[styles.titleText, { color: theme.title }]}>Digite a quantidade para cada produto:</Text>
         </View>
 
         <FlatList
@@ -274,81 +257,34 @@ export default function ValidityRequestProducts() {
                 console.log(item);
               }}
             >
-              <View
-                style={[
-                  styles.card,
-                  { backgroundColor: getColor(item.productStatus) },
-                ]}
-              >
+              <View style={[styles.card, { backgroundColor: getColor(item.productStatus) }]}>
                 <View style={styles.listId}>
-                  <Text
-                    style={[
-                      styles.label,
-                      { color: getColorText(item.productStatus) },
-                    ]}
-                  >
-                    {index + 1}°
-                  </Text>
+                  <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>{index + 1}°</Text>
                 </View>
                 <View>
                   <View style={styles.codDescricaoProdutoRow}>
-                    <Text
-                      style={[
-                        styles.label,
-                        { color: getColorText(item.productStatus) },
-                      ]}
-                    >
+                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
                       {item.product_cod}:{" "}
-                      <Text
-                        style={[
-                          styles.productDataText,
-                          { color: getColorText(item.productStatus) },
-                        ]}
-                      >
+                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
                         {item.description}
                       </Text>{" "}
                     </Text>
                   </View>
                   <View>
-                    <Text
-                      style={[
-                        styles.label,
-                        { color: getColorText(item.productStatus) },
-                      ]}
-                    >
+                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
                       Dt. vencimento:{" "}
-                      <Text
-                        style={[
-                          styles.productDataText,
-                          { color: getColorText(item.productStatus) },
-                        ]}
-                      >
-                        {new Date(item.validity_date).toLocaleDateString(
-                          "pt-BR",
-                        )}
+                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
+                        {new Date(item.validity_date).toLocaleDateString("pt-BR")}
                       </Text>
                     </Text>
                   </View>
                 </View>
                 <View style={styles.dadosItem}>
                   <View style={styles.codDescricaoProdutoRow}>
-                    <Text
-                      style={[
-                        styles.label,
-                        { color: getColorText(item.productStatus) },
-                      ]}
-                    >
-                      {" "}
-                      Quant:{" "}
-                    </Text>
+                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> Quant: </Text>
                   </View>
                   <View>
-                    <Text
-                      style={[
-                        styles.productDataText,
-                        { color: getColorText(item.productStatus) },
-                      ]}
-                    >
+                    <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
                       {" "}
                       {item.quantity}{" "}
                     </Text>
@@ -385,34 +321,24 @@ export default function ValidityRequestProducts() {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainerCenter}>
-          <View
-            style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}
-          >
+          <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
             <View style={styles.productDataBox}>
               <Text style={[styles.labelModal, { color: theme.title }]}>
                 Cod. Produto:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  {selectedProduct?.product_cod}
-                </Text>
+                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text>
               </Text>
               <Text style={[styles.labelModal, { color: theme.title }]}>
                 Descrição:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  {selectedProduct?.description}
-                </Text>
+                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text>
               </Text>
               <Text style={[styles.labelModal, { color: theme.title }]}>
                 Dt. Validade:{" "}
                 <Text style={[styles.productDataText, { color: theme.text }]}>
-                  {new Date(selectedProduct?.validity_date).toLocaleDateString(
-                    "pt-BR",
-                  )}
+                  {new Date(selectedProduct?.validity_date).toLocaleDateString("pt-BR")}
                 </Text>
               </Text>
               <View style={styles.inputBox}>
-                <Text style={[styles.labelModal, { color: theme.title }]}>
-                  Quant:
-                </Text>
+                <Text style={[styles.labelModal, { color: theme.title }]}>Quant:</Text>
                 <TextInput
                   style={[
                     styles.input,
@@ -424,7 +350,7 @@ export default function ValidityRequestProducts() {
                   ]}
                   inputMode="numeric"
                   value={quantity}
-                  onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ''))}
+                  onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ""))}
                 />
               </View>
             </View>

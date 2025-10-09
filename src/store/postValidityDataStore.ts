@@ -33,8 +33,7 @@ export const postValidityDataStore = create<VistoriaStore>((set) => ({
     request_id: null,
   },
   addValidity: (validity) => set({ validity }),
-  addProduct: (item) =>
-    set((state) => ({ productsList: [...state.productsList, item] })),
+  addProduct: (item) => set((state) => ({ productsList: [...state.productsList, item] })),
   setProductList: (products) => set({ productsList: products }),
   removeProduct: (index) =>
     set((state) => ({

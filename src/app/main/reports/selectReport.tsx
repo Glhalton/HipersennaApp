@@ -19,10 +19,7 @@ export default function SelectReport() {
           <Text style={styles.titulo}>Escolha o tipo de relatório:</Text>
         </View>
         <View style={styles.relatorioVencimentos}>
-          <LargeButton
-            text="Relatório de Vencimentos"
-            onPress={relatorioVencimento}
-          />
+          <LargeButton text="Relatório de Vencimentos" onPress={relatorioVencimento} />
         </View>
         <View style={styles.relatorioBonus}>
           <LargeButton text="Relatório de Bônus" onPress={relatorioBonus} />

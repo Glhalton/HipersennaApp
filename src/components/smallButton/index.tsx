@@ -7,18 +7,9 @@ type Props = TouchableOpacityProps & {
   backgroundColor?: string;
 };
 
-export function SmallButton({
-  title,
-  color = "white",
-  backgroundColor = "#DA0100",
-  ...rest
-}: Props) {
+export function SmallButton({ title, color = "white", backgroundColor = "#DA0100", ...rest }: Props) {
   return (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      style={[styles.button, { backgroundColor }]}
-      {...rest}
-    >
+    <TouchableOpacity activeOpacity={0.5} style={[styles.button, { backgroundColor }]} {...rest}>
       <Text style={[styles.buttonText, { color }]}>{title}</Text>
     </TouchableOpacity>
   );

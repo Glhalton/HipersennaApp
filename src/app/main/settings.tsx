@@ -24,74 +24,52 @@ export default function settings() {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch(
-        `${url}/users/signout`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
+      const response = await fetch(`${url}/users/signout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-      );
+      });
 
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData.message)
+        console.log(responseData.message);
         await AsyncStorage.removeItem("token");
         router.dismissAll();
-        router.replace("/")
+        router.replace("/");
       } else {
-        Alert.alert("Erro", "Erro ao sair do aplicativo:")
+        Alert.alert("Erro", "Erro ao sair do aplicativo:");
       }
     } catch (error: any) {
-      Alert.alert("Erro", `Não foi possível conectar ao servidor: ${error.message}`)
+      Alert.alert("Erro", `Não foi possível conectar ao servidor: ${error.message}`);
     }
-  }
+  };
 
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.contentBox}>
-        <Text style={[styles.title, { color: theme.title }]}>
-          Dados do Usuário:
-        </Text>
-        <View
-          style={[styles.userDataBox, { backgroundColor: theme.uiBackground }]}
-        >
+        <Text style={[styles.title, { color: theme.title }]}>Dados do Usuário:</Text>
+        <View style={[styles.userDataBox, { backgroundColor: theme.uiBackground }]}>
           <Text style={[styles.label, { color: theme.title }]}>
-            Id:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>{id}</Text>
+            Nome: <Text style={[styles.text, { color: theme.text }]}>{name}</Text>
           </Text>
           <Text style={[styles.label, { color: theme.title }]}>
-            Nome:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>{name}</Text>
+            Username: <Text style={[styles.text, { color: theme.text }]}>{username}</Text>
           </Text>
           <Text style={[styles.label, { color: theme.title }]}>
-            Username:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>{username}</Text>
+            Código do winthor: <Text style={[styles.text, { color: theme.text }]}>{winthorId}</Text>
           </Text>
           <Text style={[styles.label, { color: theme.title }]}>
-            Código do winthor:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>{winthorId}</Text>
+            Código do GHSApp: <Text style={[styles.text, { color: theme.text }]}>{id}</Text>
           </Text>
           <Text style={[styles.label, { color: theme.title }]}>
-            Filial:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>{branchId}</Text>
+            Filial: <Text style={[styles.text, { color: theme.text }]}>{branchId}</Text>
           </Text>
           <Text style={[styles.label, { color: theme.title }]}>
-            Nivel de Acesso:{" "}
-            <Text style={[styles.text, { color: theme.text }]}>
-              {accessLevel}
-            </Text>
+            Nivel de Acesso: <Text style={[styles.text, { color: theme.text }]}>{accessLevel}</Text>
           </Text>
-        </View>
-
-        <View style={styles.button}>
-          <LargeButton
-            text="Sair do aplicativo"
-            onPress={() => { signOut() }}
-          />
         </View>
       </View>
     </SafeAreaView>
@@ -121,9 +99,5 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Lexend-Regular",
-  },
-  button: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
   },
 });
