@@ -1,6 +1,6 @@
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, Octicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Image, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Input } from "../components/input";
@@ -23,20 +23,15 @@ export default function Index() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
 
-  const logos = {
-    light: require("../../assets/images/hipersenna-red-logo.png"),
-    dark: require("../../assets/images/hipersenna-white-logo.png"),
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={[styles.header]}>
-        <Image source={logos[colorScheme]} resizeMode="contain" style={{ height: 80 }} />
+        <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
         <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>
       </View>
 
-      <View style={[styles.formBox, { backgroundColor: theme.background }]}>
+      <View style={[styles.content, { backgroundColor: theme.background }]}>
         <View style={styles.inputBox}>
           <Input
             value={username}
@@ -72,7 +67,7 @@ export default function Index() {
           />
         </View>
       </View>
-      <View style={styles.footerBox}>
+      <View style={styles.footer}>
         <Text style={[styles.footerText, { color: theme.text }]}>Versão: {appVersion}</Text>
       </View>
 
@@ -107,7 +102,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     fontSize: 30,
   },
-  formBox: {
+  content: {
     flex: 1,
     paddingHorizontal: 30,
     paddingTop: 30,
@@ -120,7 +115,7 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingVertical: 20,
   },
-  footerBox: {
+  footer: {
     padding: 20,
   },
   footerText: {

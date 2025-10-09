@@ -1,4 +1,9 @@
-import { FontAwesome, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import {
+  FontAwesome,
+  FontAwesome6,
+  Ionicons,
+  MaterialIcons,
+} from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { ActivityIndicator, useColorScheme, View } from "react-native";
@@ -44,22 +49,52 @@ export default function Layout() {
           screenOptions={{
             headerStyle: { backgroundColor: theme.navBackground },
             headerTintColor: theme.navText,
-            headerTitleStyle: { fontFamily: "Lexend-Bold" },
+            headerTitleStyle: { fontFamily: "Lexend-Regular" },
             contentStyle: { backgroundColor: theme.background },
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
-          <Stack.Screen name="main/home" options={{ title: "Cadastro", headerShown: false }} />
-          <Stack.Screen name="main/settings" options={{ title: "Configurações" }} />
+          <Stack.Screen
+            name="main/home"
+            options={{ title: "Cadastro", headerShown: false }}
+          />
+          <Stack.Screen
+            name="main/settings"
+            options={{ title: "Configurações" }}
+          />
           <Stack.Screen name="main/history" options={{ title: "Histórico" }} />
-          <Stack.Screen name="main/historyProducts" options={{ title: "Histórico" }} />
-          <Stack.Screen name="main/validityForm/selectFilialValidity" options={{ title: "Seleção de Filial" }} />
-          <Stack.Screen name="main/validityForm/validityForm" options={{ title: "Vistoria" }} />
-          <Stack.Screen name="main/validityForm/validitySummary" options={{ title: "Resumo" }} />
-          <Stack.Screen name="main/validityForm/selectRequest" options={{ title: "Solicitações" }} />
-          <Stack.Screen name="main/validityForm/validityRequestProducts" options={{ title: "Produtos" }} />
-          <Stack.Screen name="main/validityRequest/requests" options={{ title: "Solicitações" }} />
-          <Stack.Screen name="main/validityRequest/requestProducts" options={{ title: "Produtos" }} />
+          <Stack.Screen
+            name="main/historyProducts"
+            options={{ title: "Histórico" }}
+          />
+          <Stack.Screen
+            name="main/validityForm/selectFilialValidity"
+            options={{ title: "Seleção de Filial" }}
+          />
+          <Stack.Screen
+            name="main/validityForm/validityForm"
+            options={{ title: "Vistoria" }}
+          />
+          <Stack.Screen
+            name="main/validityForm/validitySummary"
+            options={{ title: "Resumo" }}
+          />
+          <Stack.Screen
+            name="main/validityForm/selectRequest"
+            options={{ title: "Solicitações" }}
+          />
+          <Stack.Screen
+            name="main/validityForm/validityRequestProducts"
+            options={{ title: "Produtos" }}
+          />
+          <Stack.Screen
+            name="main/validityRequest/requests"
+            options={{ title: "Solicitações" }}
+          />
+          <Stack.Screen
+            name="main/validityRequest/requestProducts"
+            options={{ title: "Produtos" }}
+          />
         </Stack>
       </View>
     </SafeAreaProvider>

@@ -1,8 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "../constants/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
+import { Colors } from "../constants/colors";
 
 export function useAuth(url: string, showAlert: any) {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ export function useAuth(url: string, showAlert: any) {
 
       const data = await response.json();
 
-      if (data.token) {
+      if (response.ok) {
         await AsyncStorage.setItem("token", data.token);
         router.replace("/main/home");
         return true;

@@ -21,10 +21,9 @@ import { employeeDataStore } from "../../store/employeeDataStore";
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+  const url = process.env.EXPO_PUBLIC_API_URL;
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
-
-  const url = process.env.EXPO_PUBLIC_API_URL;
 
   const setName = employeeDataStore((state) => state.setName);
   const setUsername = employeeDataStore((state) => state.setUsername);
@@ -300,14 +299,14 @@ const styles = StyleSheet.create({
   },
   helloText: {
     maxWidth: 300,
-    fontSize: 22,
-    fontFamily: "Lexend-Bold",
+    fontSize: 20,
+    fontFamily: "Lexend-SemiBold",
     color: Colors.blue,
   },
   subTitleText: {
     fontFamily: "Lexend-Regular",
     color: Colors.gray,
-    fontSize: 18,
+    fontSize: 16,
   },
   settings: {
     width: 45,
