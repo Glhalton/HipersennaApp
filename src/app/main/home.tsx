@@ -1,4 +1,3 @@
-import ModalAlert from "../../components/modalAlert";
 import { FontAwesome6, Ionicons, MaterialIcons, Octicons, } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -14,9 +13,10 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { employeeDataStore } from "../../../store/employeeDataStore";
+import ModalAlert from "../../components/modalAlert";
+import { Colors } from "../../constants/colors";
 import { useAlert } from "../../hooks/useAlert";
+import { employeeDataStore } from "../../store/employeeDataStore";
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";

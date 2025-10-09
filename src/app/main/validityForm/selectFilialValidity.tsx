@@ -2,10 +2,10 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { DropdownInput } from "../../../components/dropdownInput";
 import { LargeButton } from "../../../components/largeButton";
+import { Colors } from "../../../constants/colors";
+import { postValidityDataStore } from "../../../store/postValidityDataStore";
 
 export default function SelectFilialValidity() {
   const colorScheme = useColorScheme() ?? "light";

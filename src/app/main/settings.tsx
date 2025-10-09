@@ -1,11 +1,11 @@
-import { LargeButton } from "../../components/largeButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React from "react";
 import { Alert, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { employeeDataStore } from "../../../store/employeeDataStore";
+import { LargeButton } from "../../components/largeButton";
+import { Colors } from "../../constants/colors";
+import { employeeDataStore } from "../../store/employeeDataStore";
 
 export default function settings() {
   const colorScheme = useColorScheme() ?? "light";

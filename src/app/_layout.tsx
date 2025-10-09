@@ -6,9 +6,9 @@ import {
 } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
-import { ActivityIndicator, StatusBar, useColorScheme, View } from "react-native";
+import { ActivityIndicator, useColorScheme, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
+import { Colors } from "../constants/colors";
 
 export default function Layout() {
   const colorScheme = useColorScheme() ?? "light";

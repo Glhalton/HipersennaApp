@@ -1,8 +1,8 @@
 import React from "react";
 import { FlatList, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { getValidityDataStore } from "../../../store/getValidityDataStore";
+import { Colors } from "../../constants/colors";
+import { getValidityDataStore } from "../../store/getValidityDataStore";
 
 export default function historyProducts() {
   const colorScheme = useColorScheme() ?? "light";

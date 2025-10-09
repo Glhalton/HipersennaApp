@@ -1,15 +1,15 @@
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React from "react";
 import {
-  Modal,
-  ModalProps,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
+    Modal,
+    ModalProps,
+    Text,
+    TouchableOpacity,
+    View,
+    useColorScheme,
 } from "react-native";
-import { Colors } from "../../../constants/colors";
+import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 
 type IconComponent =
   | React.ComponentType<React.ComponentProps<typeof MaterialIcons>>

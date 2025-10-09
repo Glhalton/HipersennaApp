@@ -1,7 +1,7 @@
 import { Octicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
-import { Colors } from "../../../constants/colors";
+import { Colors } from "../../constants/colors";
 import { SmallButton } from "../smallButton";
 import { styles } from "./styles";
 

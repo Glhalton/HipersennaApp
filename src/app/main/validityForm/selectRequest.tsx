@@ -14,11 +14,11 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
-import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 import ModalAlert from "../../../components/modalAlert";
+import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
+import { postValidityDataStore } from "../../../store/postValidityDataStore";
+import { validityRequestDataStore } from "../../../store/validityRequestDataStore";
 
 type RequestDataItem = {
   id: number;

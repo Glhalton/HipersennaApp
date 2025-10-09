@@ -3,20 +3,20 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import {
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
+    FlatList,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
+import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
+import { postValidityDataStore } from "../../../store/postValidityDataStore";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";

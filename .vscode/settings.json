@@ -3,5 +3,10 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
-  }
+  },
+  "files.exclude": {
+    "**/.expo": true,
+    "**/node_modules": true,
+  },
+  "explorer.compactFolders": false
 }

@@ -1,5 +1,6 @@
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -11,119 +12,34 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../constants/colors";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import ModalAlert from "../components/modalAlert";
+import { Colors } from "../constants/colors";
 import { useAlert } from "../hooks/useAlert";
-import Constants from "expo-constants";
-
+import { useAuth } from "../hooks/useAuth";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-
   const url = process.env.EXPO_PUBLIC_API_URL;
+  const appVersion = Constants.expoConfig?.version
 
-  const { alertData, hideAlert, showAlert, visible } = useAlert();
+  const { visible, alertData, hideAlert, showAlert } = useAlert();
+  const { isLoading, checkSession, login } = useAuth(url!, showAlert);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const appVersion = Constants.expoConfig?.version 
 
   const logos = {
     light: require("../../assets/images/hipersenna-red-logo.png"),
     dark: require("../../assets/images/hipersenna-white-logo.png"),
   };
 
-  const getLogin = async () => {
-    try {
-      setIsLoading(true);
-
-      const response = await fetch(`${url}/auth/signin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-
-      const responseData = await response.json();
-
-      if (responseData.token) {
-        await AsyncStorage.setItem("token", responseData.token);
-        console.log("Token salvo:", responseData.token);
-        router.replace("/main/home");
-        setUsername("");
-        setPassword("");
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons
-        })
-        setPassword("");
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error.message}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons
-      })
-      setUsername("");
-      setPassword("");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const checkSession = async () => {
-    try {
-      setIsLoading(true);
-
-      const token = await AsyncStorage.getItem("token");
-
-      if (!token) {
-        console.log("Nenhum token salvo, redirecionando para o login...");
-        return;
-      }
-
-      const response = await fetch(`${url}/users/me`, {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        // console.log("Sessão válida, redirecionando para tela inicial...");
-        // console.log(`Token: ${token}`)
-        router.replace("/main/home");
-      } else {
-        // console.log("Token inválido, limpando token");
-        await AsyncStorage.removeItem("token");
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor:  ${error.message}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons
-      })
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [])
 
   return (
     <SafeAreaView style={styles.container}>
@@ -169,14 +85,14 @@ export default function Index() {
         <View style={styles.loginButton}>
           <LargeButton
             text="Login"
-            onPress={getLogin}
+            onPress={() => (login(username, password))}
             loading={isLoading}
             backgroundColor={theme.red}
           />
         </View>
       </View>
       <View style={styles.footerBox}>
-        <Text style={[styles.footerText, {color: theme.text}]}>
+        <Text style={[styles.footerText, { color: theme.text }]}>
           Versão: {appVersion}
         </Text>
       </View>
@@ -184,6 +100,7 @@ export default function Index() {
       {alertData && (
         <ModalAlert
           visible={visible}
+          onRequestClose={hideAlert}
           buttonPress={hideAlert}
           title={alertData.title}
           text={alertData.text}
@@ -224,10 +141,10 @@ const styles = StyleSheet.create({
   loginButton: {
     paddingVertical: 20,
   },
-  footerBox:{
+  footerBox: {
     padding: 20
   },
-  footerText:{
+  footerText: {
     fontFamily: "Lexend-Regular",
   }
 });

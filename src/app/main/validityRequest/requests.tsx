@@ -1,23 +1,23 @@
-import ModalAlert from "../../../components/modalAlert";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View
+    ActivityIndicator,
+    FlatList,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    useColorScheme,
+    View
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import ModalAlert from "../../../components/modalAlert";
+import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
+import { validityRequestDataStore } from "../../../store/validityRequestDataStore";
 
 type Request = {
   id: number;

@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from "react";
-import { View, Text, useColorScheme } from "react-native";
+import React, { Fragment } from "react";
+import { Text, useColorScheme, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
+import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
-import { Colors } from "../../../constants/colors";
 
 interface DropDownInputProps {
   value: string | null;

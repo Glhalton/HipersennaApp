@@ -1,8 +1,8 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { Fragment, useState } from "react";
 import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
-import { Colors } from "../../../constants/colors";
 
 interface DateInputProps {
   label?: string;

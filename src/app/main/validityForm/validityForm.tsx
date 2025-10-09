@@ -4,26 +4,26 @@ import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  FlatList,
   Keyboard,
+  Modal,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
   useColorScheme,
-  View,
-  Modal,
-  FlatList
+  View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 import { DateInput } from "../../../components/dateInput";
 import { Input } from "../../../components/input";
 import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
 import ModalPopup from "../../../components/modalPopup";
+import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
+import { postValidityDataStore } from "../../../store/postValidityDataStore";
 
 type Produto = {
   descricao: string;

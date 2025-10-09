@@ -14,10 +14,10 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { getValidityDataStore } from "../../../store/getValidityDataStore";
 import ModalAlert from "../../components/modalAlert";
+import { Colors } from "../../constants/colors";
 import { useAlert } from "../../hooks/useAlert";
+import { getValidityDataStore } from "../../store/getValidityDataStore";
 
 type validity = {
   id: number;
