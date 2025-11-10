@@ -1,7 +1,6 @@
-import { FontAwesome6, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -16,7 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ModalAlert from "../../components/modalAlert";
 import { Colors } from "../../constants/colors";
 import { useAlert } from "../../hooks/useAlert";
+import { useUserData } from "../../hooks/useUserData";
 import { employeeDataStore } from "../../store/employeeDataStore";
+
 
 export default function Home() {
   const colorScheme = useColorScheme() ?? "light";
@@ -25,141 +26,13 @@ export default function Home() {
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
-  const setName = employeeDataStore((state) => state.setName);
-  const setUsername = employeeDataStore((state) => state.setUsername);
-  const setWinthorId = employeeDataStore((state) => state.setWinthorId);
-  const setId = employeeDataStore((state) => state.setUserId);
-  const setBranchId = employeeDataStore((state) => state.setBranchId);
-  const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
   const name = employeeDataStore((state) => state.name);
-
   const firstName = name?.split(" ")[0];
 
-  const [validities, setValidities] = useState([]);
-  const [requests, setRequests] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoading, requests, validities } = useUserData(url!, showAlert);
 
   const countValidade = validities.length;
   const countRequests = requests.length;
-
-  const getValidities = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-
-      const response = await fetch(`${url}/validities/employee`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (responseData.validitiesByEmployee) {
-        setValidities(responseData.validitiesByEmployee);
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor:  ${error.message}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
-    }
-  };
-
-  const getValidityRequests = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    try {
-      const response = await fetch(`${url}/validityRequests/employee`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (responseData.validityRequestsByEmployee) {
-        setRequests(responseData.validityRequestsByEmployee);
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor:  ${error.message}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
-    }
-  };
-
-  const getUserData = async () => {
-    try {
-      const token = await AsyncStorage.getItem("token");
-
-      const response = await fetch(`${url}/users/me`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setId(responseData.id);
-        setName(responseData.name);
-        setUsername(responseData.username);
-        setBranchId(responseData.branch_id);
-        setAccessLevel(responseData.access_level);
-        setWinthorId(responseData.winthor_id);
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor:  ${error.message}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
-    }
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    const loadData = async () => {
-      await Promise.all([getUserData(), getValidities(), getValidityRequests()]);
-      setIsLoading(false);
-    };
-    loadData();
-  }, []);
 
   if (isLoading) {
     return (
@@ -180,7 +53,7 @@ export default function Home() {
         <View style={styles.header}>
           <View>
             <Text style={[styles.helloText, { color: theme.title }]}>Olá, {firstName}</Text>
-            <Text style={[styles.subTitleText, { color: theme.text }]}>GHSApp</Text>
+            <Text style={[styles.text, { color: theme.text }]}>GHSApp</Text>
           </View>
 
           <TouchableOpacity
@@ -191,72 +64,103 @@ export default function Home() {
           </TouchableOpacity>
         </View>
 
-        <View style={[styles.validityBox, { backgroundColor: theme.uiBackground }]}>
-          <Text style={[styles.title, { color: theme.title }]}>Vistoria</Text>
-          <View style={styles.buttonsBox}>
-            <TouchableOpacity
-              style={[styles.requestBox, { backgroundColor: theme.gray }]}
-              onPress={() => {
-                router.push("./validityForm/selectRequest");
-              }}
-            >
-              <FontAwesome6 name="envelope-open-text" size={50} color={Colors.white} />
-              <Text style={styles.buttonsText}>Solicitação</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.singleBox, { backgroundColor: theme.red }]}
-              onPress={() => {
-                router.push("./validityForm/selectFilialValidity");
-              }}
-            >
-              <FontAwesome6 name="clipboard" size={50} color={Colors.white} />
-              <Text style={styles.buttonsText}>Avulsa</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <View style={[styles.dashboardBox]}>
-          <Text style={[styles.title, { color: theme.title }]}>Estatísticas</Text>
-          <View style={[styles.dashboardRowItens]}>
-            <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
-              <Text style={[styles.dashboardItemText, { color: theme.text }]}>Nº Vistorias realizadas: </Text>
-              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>{countValidade}</Text>
-            </View>
-            <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
-              <Text style={[styles.dashboardItemText, { color: theme.text }]}>Nº Vistorias pendentes:</Text>
-              <Text style={[styles.dashboardItemValue, { color: theme.text }]}>{countRequests}</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={[styles.containerAcessoRapido, { backgroundColor: theme.uiBackground }]}>
-          <Text style={[styles.title, { color: theme.title }]}>Acesso rápido</Text>
-          <View>
-            <TouchableOpacity onPress={() => router.push("/main/validityRequest/requests")} style={styles.optionButton}>
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Octicons name="checklist" color={theme.iconColor} size={25} />
+        <View style={styles.main}>
+          <View style={[styles.validityBox, { backgroundColor: theme.uiBackground }]}>
+            <Text style={[styles.title, { color: theme.title }]}>Vistoria</Text>
+            <View style={styles.buttonsBox}>
+              <TouchableOpacity
+                style={[styles.requestBox, { backgroundColor: theme.gray }]}
+                onPress={() => {
+                  // router.push("./validityForm/selectRequest");
+                }}
+              >
+                <View
+                  style={{
+                    position: "absolute",
+                    zIndex: 2,
+                    justifyContent: "flex-end",
+                    alignItems: "flex-end",
+                    width: "50%",
+                    height: "30%",
+                  }}
+                >
+                  <FontAwesome6 name="lock" size={25} color={Colors.white} />
                 </View>
+                <FontAwesome6 name="envelope-open-text" size={50} color="#777d83ff" />
+                <Text style={[styles.buttonsText, { color: "#777d83ff" }]}>Solicitação</Text>
+              </TouchableOpacity>
 
-                <Text style={[styles.textOptions, { color: theme.text }]}>Vistorias à fazer</Text>
+              <TouchableOpacity
+                style={[styles.singleBox, { backgroundColor: theme.red }]}
+                onPress={() => {
+                  router.push("./validityForm/selectFilialValidity");
+                }}
+              >
+                <FontAwesome6 name="clipboard" size={50} color={Colors.white} />
+                <Text style={styles.buttonsText}>Avulsa</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={[styles.dashboardBox]}>
+            <Text style={[styles.title, { color: theme.title }]}>Estatísticas</Text>
+            <View style={[styles.dashboardRowItens]}>
+              <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+                <Text style={[styles.text, { color: theme.text }]}>Nº Vistorias realizadas: </Text>
+                <Text style={[styles.title, { color: theme.text }]}>{countValidade}</Text>
               </View>
-            </TouchableOpacity>
+              <View style={[styles.dashboardItem, { backgroundColor: theme.uiBackground }]}>
+                <Text style={[styles.text, { color: theme.text }]}>Nº Vistorias pendentes:</Text>
+                <Text style={[styles.title, { color: theme.text }]}>{countRequests}</Text>
+              </View>
+            </View>
+          </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                router.push("./history");
-              }}
-              style={styles.optionButton}
-            >
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Octicons name="history" color={theme.iconColor} size={25} />
+          <View style={[styles.containerAcessoRapido, { backgroundColor: theme.uiBackground }]}>
+            <Text style={[styles.title, { color: theme.title }]}>Acesso rápido</Text>
+            <View>
+              {/* <TouchableOpacity
+                onPress={() => {
+                  router.push("/main/validityRequest/requests");
+                }}
+                style={styles.optionButton}
+              >
+                <View style={styles.opcaoMenu}>
+                  <View style={styles.optionIcon}>
+                    <Octicons name="checklist" color={theme.iconColor} size={25} />
+                  </View>
+                  <Text style={[styles.text, { color: theme.text }]}>Vistorias à fazer</Text>
                 </View>
+              </TouchableOpacity> */}
 
-                <Text style={[styles.textOptions, { color: theme.text }]}>Histórico</Text>
-              </View>
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("./searchProduct");
+                }}
+                style={styles.optionButton}
+              >
+                <View style={styles.opcaoMenu}>
+                  <View style={styles.optionIcon}>
+                    <Octicons name="search" color={theme.iconColor} size={25} />
+                  </View>
+                  <Text style={[styles.text, { color: theme.text }]}>Consultar Produto</Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("./history");
+                }}
+                style={styles.optionButton}
+              >
+                <View style={styles.opcaoMenu}>
+                  <View style={styles.optionIcon}>
+                    <Octicons name="history" color={theme.iconColor} size={25} />
+                  </View>
+                  <Text style={[styles.text, { color: theme.text }]}>Histórico</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -286,7 +190,6 @@ const styles = StyleSheet.create({
     maxWidth: 600,
   },
   contentStyleScroll: {
-    color: Colors.blue,
     paddingHorizontal: 14,
     paddingVertical: 20,
   },
@@ -301,12 +204,10 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     fontSize: 20,
     fontFamily: "Lexend-SemiBold",
-    color: Colors.blue,
   },
-  subTitleText: {
+  text: {
     fontFamily: "Lexend-Regular",
-    color: Colors.gray,
-    fontSize: 16,
+    fontSize: 15,
   },
   settings: {
     width: 45,
@@ -316,25 +217,20 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 10,
   },
+  main: {
+    
+  },
   validityBox: {
     padding: 20,
-    backgroundColor: Colors.white,
     borderRadius: 20,
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 3,
-    // },
-    // shadowOpacity: 0.29,
-    // shadowRadius: 4.65,
-    // elevation: 7,
+    gap: 15,
   },
   buttonsBox: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   requestBox: {
-    paddingVertical: 20,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.gray,
     borderRadius: 20,
@@ -343,7 +239,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   singleBox: {
-    paddingVertical: 20,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.red2,
     borderRadius: 20,
@@ -352,19 +248,17 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   buttonsText: {
-    paddingTop: 4,
     fontFamily: "Lexend-Regular",
     color: Colors.white,
   },
   dashboardBox: {
     paddingTop: 20,
     paddingBottom: 30,
+    gap: 15,
   },
   title: {
     fontSize: 22,
     fontFamily: "Lexend-Bold",
-    color: Colors.blue,
-    marginBottom: 15,
   },
   dashboardRowItens: {
     flexDirection: "row",
@@ -375,52 +269,12 @@ const styles = StyleSheet.create({
     padding: 24,
     width: "47%",
     borderRadius: 12,
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 3,
-    // },
-    // shadowOpacity: 0.29,
-    // shadowRadius: 4.65,
-    // elevation: 7,
-  },
-  dashboardItemText: {
-    fontSize: 16,
-    color: Colors.blue,
-    fontFamily: "Lexend-Regular",
-  },
-  dashboardItemValue: {
-    fontSize: 22,
-    fontFamily: "Lexend-Bold",
-    color: Colors.blue,
-  },
-  dashboardLargeItem: {
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    marginTop: 15,
-    padding: 24,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-
-    elevation: 7,
   },
   containerAcessoRapido: {
     backgroundColor: Colors.white,
     borderRadius: 20,
     padding: 20,
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 3,
-    // },
-    // shadowOpacity: 0.29,
-    // shadowRadius: 4.65,
-    // elevation: 7,
+    gap: 15
   },
   opcaoMenu: {
     flexDirection: "row",
@@ -432,16 +286,9 @@ const styles = StyleSheet.create({
     borderTopWidth: 0.4,
     borderColor: Colors.gray,
   },
-  textOptions: {
-    color: Colors.gray,
-    fontSize: 16,
-    fontFamily: "Lexend-Regular",
-  },
   optionIcon: {
     justifyContent: "center",
     alignItems: "center",
-    borderColor: Colors.gray,
-
     borderRadius: 10,
     width: 40,
     height: 40,

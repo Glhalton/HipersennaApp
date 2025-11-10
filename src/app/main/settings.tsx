@@ -18,14 +18,13 @@ export default function settings() {
   const winthorId = employeeDataStore((state) => state.winthorId);
   const id = employeeDataStore((state) => state.userId);
   const branchId = employeeDataStore((state) => state.branchId);
-  const accessLevel = employeeDataStore((state) => state.accessLevel);
 
   const signOut = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch(`${url}/users/signout`, {
-        method: "POST",
+      const response = await fetch(`${url}/users/`, {
+        method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,7 +48,7 @@ export default function settings() {
   return (
     <SafeAreaView edges={["bottom"]} style={styles.container}>
       <StatusBar barStyle={"light-content"} />
-      <View style={styles.contentBox}>
+      <View style={styles.main}>
         <Text style={[styles.title, { color: theme.title }]}>Dados do Usuário:</Text>
         <View style={[styles.userDataBox, { backgroundColor: theme.uiBackground }]}>
           <Text style={[styles.label, { color: theme.title }]}>
@@ -67,9 +66,16 @@ export default function settings() {
           <Text style={[styles.label, { color: theme.title }]}>
             Filial: <Text style={[styles.text, { color: theme.text }]}>{branchId}</Text>
           </Text>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Nivel de Acesso: <Text style={[styles.text, { color: theme.text }]}>{accessLevel}</Text>
-          </Text>
+        </View>
+
+        <View style={[styles.button]}>
+          <LargeButton
+            backgroundColor={theme.red}
+            text="Sair do aplicativo"
+            onPress={() => {
+              signOut();
+            }}
+          />
         </View>
       </View>
     </SafeAreaView>
@@ -79,15 +85,15 @@ export default function settings() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  contentBox: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+  },
+  main: {
+    gap: 20,
   },
   title: {
     fontFamily: "Lexend-Bold",
     fontSize: 20,
-    paddingBottom: 10,
   },
   userDataBox: {
     padding: 20,
@@ -99,5 +105,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "Lexend-Regular",
+  },
+  button: {
   },
 });

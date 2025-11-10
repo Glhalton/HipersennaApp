@@ -62,7 +62,7 @@ export default function Requests() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validityRequests/employee`, {
+      const response = await fetch(`${url}/validity-requests/employee`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

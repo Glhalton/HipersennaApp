@@ -18,15 +18,16 @@ export default function ValiditySummary() {
 
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const validityData = postValidityDataStore((state) => state.validity);
-  const productsList = postValidityDataStore((state) => state.productsList);
+  const validity = postValidityDataStore((state) => state.validity);
   const removeProduct = postValidityDataStore((state) => state.removeProduct);
   const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const postValidity = async () => {
-    if (productsList.length === 0) {
+
+
+    if (validity.products.length === 0) {
       showAlert({
         title: "Erro!",
         text: "Nenhum produto para ser adicionado!",
@@ -41,6 +42,7 @@ export default function ValiditySummary() {
     }
 
     setIsLoading(true);
+    console.log(validity);
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -50,10 +52,9 @@ export default function ValiditySummary() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          validity: validityData,
-          products: productsList,
-        }),
+        body: JSON.stringify(
+          validity
+        ),
       });
 
       const responseData = await response.json();
@@ -97,11 +98,11 @@ export default function ValiditySummary() {
       <StatusBar barStyle={"light-content"} />
       <View style={styles.cardsBox}>
         <View style={styles.filialTitleBox}>
-          <Text style={[styles.filialTitleText, { color: theme.title }]}>Filial: {validityData.branch_id}</Text>
+          <Text style={[styles.filialTitleText, { color: theme.title }]}>Filial: {validity.branch_id}</Text>
         </View>
 
         <FlatList
-          data={productsList}
+          data={validity.products}
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
@@ -110,20 +111,19 @@ export default function ValiditySummary() {
                 #{index + 1} - {item.description}
               </Text>
               <View style={styles.productDataBox}>
-                <View>
-                  <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod}
-                  </Text>
-                  <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>Validade:</Text>{" "}
-                    {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                  </Text>
-                </View>
-                <View>
-                  <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}
-                  </Text>
-                </View>
+                <Text style={[styles.productDataText, { color: theme.text }]}>
+                  <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod}
+                </Text>
+                <Text style={[styles.productDataText, { color: theme.text }]}>
+                  <Text style={[styles.label, { color: theme.title }]}>Código Auxiliar:</Text> {item.auxiliary_code}
+                </Text>
+                <Text style={[styles.productDataText, { color: theme.text }]}>
+                  <Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}
+                </Text>
+                <Text style={[styles.productDataText, { color: theme.text }]}>
+                  <Text style={[styles.label, { color: theme.title }]}>Validade:</Text>{" "}
+                  {new Date(item.validity_date).toLocaleDateString("pt-BR")}
+                </Text>
               </View>
 
               <TouchableOpacity
@@ -186,8 +186,6 @@ const styles = StyleSheet.create({
     color: Colors.blue,
   },
   productDataBox: {
-    flexDirection: "row",
-    gap: 60,
     marginBottom: 8,
   },
   label: {

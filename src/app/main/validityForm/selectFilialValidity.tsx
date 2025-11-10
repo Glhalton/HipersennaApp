@@ -31,6 +31,7 @@ export default function SelectFilialValidity() {
     setValidity({
       branch_id: Number(branchId),
       request_id: null,
+      products: []
     });
   }
 
@@ -40,27 +41,26 @@ export default function SelectFilialValidity() {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       <StatusBar barStyle={"light-content"} />
-      <View style={styles.formBox}>
-        <View style={styles.titleBox}>
-          <Text style={[styles.titleText, { color: theme.title }]}>Selecione a filial desejada:</Text>
-        </View>
 
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.title }]}>Selecione a filial desejada:</Text>
+      </View>
+
+      <View style={styles.main}>
         <View>
           <DropdownInput label={"Filial:"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
         </View>
         {branchId && (
-          <View style={styles.buttonBox}>
-            <LargeButton
-              text="Continuar"
-              onPress={() => {
-                addValidity();
-                router.replace("./validityForm");
-              }}
-              backgroundColor={theme.red}
-            />
-          </View>
+          <LargeButton
+            text="Continuar"
+            onPress={() => {
+              addValidity();
+              router.replace("./validityForm");
+            }}
+            backgroundColor={theme.red}
+          />
         )}
       </View>
     </SafeAreaView>
@@ -71,21 +71,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.white,
+    paddingHorizontal: 20,
   },
-  formBox: {
-    flex: 1,
-    marginHorizontal: 20,
+  header: {
+    paddingVertical: 30
   },
-  titleBox: {
-    paddingVertical: 20,
-  },
-  titleText: {
-    fontSize: 30,
+  title: {
+    fontSize: 26,
     color: Colors.blue,
     fontFamily: "Lexend-Bold",
     textAlign: "center",
   },
-  buttonBox: {
-    marginTop: 10,
+  main: {
+    gap: 10,
   },
 });

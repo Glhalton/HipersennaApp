@@ -5,7 +5,6 @@ export const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: 45,
-    marginBottom: 10,
     borderRadius: 20,
   },
   dataInputBox: {

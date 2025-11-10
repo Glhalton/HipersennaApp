@@ -3,10 +3,12 @@ import { create } from "zustand";
 type Validity = {
   branch_id: number;
   request_id: number | null;
+  products: Product[];
 };
 
 type Product = {
   product_cod: number;
+  auxiliary_code: string;
   description?: string;
   productStatus?: string;
   validity_date: Date;
@@ -15,7 +17,6 @@ type Product = {
 
 type VistoriaStore = {
   validity: Validity;
-  productsList: Product[];
   addValidity: (validity: Validity) => void;
   addProduct: (product: Product) => void;
   setProductList: (products: Product[]) => void;
@@ -31,32 +32,67 @@ export const postValidityDataStore = create<VistoriaStore>((set) => ({
   validity: {
     branch_id: 0,
     request_id: null,
+    products: [],
   },
   addValidity: (validity) => set({ validity }),
-  addProduct: (item) => set((state) => ({ productsList: [...state.productsList, item] })),
-  setProductList: (products) => set({ productsList: products }),
+
+  addProduct: (product) =>
+    set((state) => ({ validity: { ...state.validity, products: [...state.validity.products, product] } })),
+
+  setProductList: (products) =>
+    set((state) => ({
+      validity: {
+        ...state.validity,
+        products,
+      },
+    })),
+
   removeProduct: (index) =>
     set((state) => ({
-      productsList: state.productsList.filter((_, i) => i !== index),
+      validity: {
+        ...state.validity,
+        products: state.validity.products.filter((_, i) => i !== index),
+      },
     })),
-  resetProductsList: () => set({ productsList: [] }),
+
+  resetProductsList: () =>
+    set((state) => ({
+      validity: {
+        ...state.validity,
+        products: [],
+      },
+    })),
+
   resetValidityData: () =>
     set({
       validity: {
         branch_id: 0,
         request_id: null,
+        products: [],
       },
     }),
-  updateProductQuantity: (index: number, quantity: number) =>
+
+  updateProductQuantity: (index, quantity) =>
     set((state) => {
-      const updated = [...state.productsList];
+      const updated = [...state.validity.products];
       updated[index] = { ...updated[index], quantity };
-      return { productsList: updated };
+      return {
+        validity: {
+          ...state.validity,
+          products: updated,
+        },
+      };
     }),
-  updateProductStatus: (index: number, productStatus: string) =>
+
+  updateProductStatus: (index, productStatus) =>
     set((state) => {
-      const updated = [...state.productsList];
+      const updated = [...state.validity.products];
       updated[index] = { ...updated[index], productStatus };
-      return { productsList: updated };
+      return {
+        validity: {
+          ...state.validity,
+          products: updated,
+        },
+      };
     }),
 }));

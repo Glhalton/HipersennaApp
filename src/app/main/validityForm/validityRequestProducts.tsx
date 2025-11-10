@@ -31,7 +31,7 @@ export default function ValidityRequestProducts() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const productsList = postValidityDataStore((state) => state.productsList) || [];
+  const productsList = postValidityDataStore((state) => state.validity.products) || [];
   const resetProducts = postValidityDataStore((state) => state.resetProductsList);
 
   const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity);
@@ -212,6 +212,7 @@ export default function ValidityRequestProducts() {
           color: "#13BE19",
           iconFamily: MaterialIcons,
           onClose: () => {
+            setForceExit(true);
             resetProducts();
             router.replace("/main/home");
           },
@@ -272,6 +273,12 @@ export default function ValidityRequestProducts() {
                   </View>
                   <View>
                     <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
+                      Cod.auxiliar:{" "}
+                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
+                        {item.auxiliary_code}
+                      </Text>
+                    </Text>
+                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
                       Dt. vencimento:{" "}
                       <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
                         {new Date(item.validity_date).toLocaleDateString("pt-BR")}
@@ -328,9 +335,14 @@ export default function ValidityRequestProducts() {
                 <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text>
               </Text>
               <Text style={[styles.labelModal, { color: theme.title }]}>
+                Cod. Auxiliar:{" "}
+                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.auxiliary_code}</Text>
+              </Text>
+              <Text style={[styles.labelModal, { color: theme.title }]}>
                 Descrição:{" "}
                 <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text>
               </Text>
+
               <Text style={[styles.labelModal, { color: theme.title }]}>
                 Dt. Validade:{" "}
                 <Text style={[styles.productDataText, { color: theme.text }]}>

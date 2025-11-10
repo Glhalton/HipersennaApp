@@ -32,6 +32,9 @@ export default function historyProducts() {
                 </View>
                 <View>
                   <Text style={[styles.label, { color: theme.title }]}>
+                    Cod. auxiliar: <Text style={[styles.productDataText, { color: theme.text }]}>{item.auxiliary_code}</Text>
+                  </Text>
+                  <Text style={[styles.label, { color: theme.title }]}>
                     Dt. vencimento:{" "}
                     <Text style={[styles.productDataText, { color: theme.text }]}>
                       {new Date(item.validity_date).toLocaleDateString("pt-BR")}

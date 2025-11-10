@@ -64,7 +64,7 @@ export default function SelectRequest() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validityRequests/employee`, {
+      const response = await fetch(`${url}/validity-requests/employee`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -101,6 +101,7 @@ export default function SelectRequest() {
     setValidity({
       branch_id: branchId,
       request_id: requestId,
+      products: []
     });
   }
 

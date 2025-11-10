@@ -3,17 +3,15 @@ import { Colors } from "../../constants/colors";
 
 export const styles = StyleSheet.create({
   boxInput: {
-    width: "100%",
     height: 45,
     backgroundColor: Colors.inputColor,
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
     paddingRight: 30,
     borderRadius: 20,
   },
   input: {
-    width: "100%",
+    flex: 1,
     backgroundColor: Colors.inputColor,
     fontFamily: "Lexend-Regular",
     borderRadius: 20,
@@ -23,6 +21,7 @@ export const styles = StyleSheet.create({
     color: Colors.blue,
     marginBottom: 6,
     fontFamily: "Lexend-Regular",
+    
   },
   iconLeft: {},
   iconRight: {},

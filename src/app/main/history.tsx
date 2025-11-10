@@ -48,6 +48,7 @@ export default function History() {
   const [open, setOpen] = React.useState(false);
 
   const setProducts = getValidityDataStore((state) => state.setProducts);
+  
   const [validities, setValidities] = useState<validity[]>([]);
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 

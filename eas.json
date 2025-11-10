@@ -5,32 +5,17 @@
         "buildType": "apk"
       },
       "env": {
-        "NODE_ENV": "production"
+        "EXPO_PUBLIC_API_URL": "http://10.101.2.7:3333"
       }
     },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      },
+    "development": {
       "env": {
-        "NODE_ENV": "production"
-      }
-    },
-    "preview3": {
-      "developmentClient": true,
-      "env": {
-        "NODE_ENV": "development"
-      }
-    },
-    "preview4": {
-      "distribution": "internal",
-      "env": {
-        "NODE_ENV": "production"
+        "EXPO_PUBLIC_API_URL": "http://10.101.2.7:3333"
       }
     },
     "production": {
       "env": {
-        "NODE_ENV": "production"
+        "EXPO_PUBLIC_API_URL": "https://api.hipersenna.com"
       }
     }
   }

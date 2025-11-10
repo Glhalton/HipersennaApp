@@ -1,8 +1,9 @@
-import { FontAwesome, Octicons } from "@expo/vector-icons";
+import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import React, { useState } from "react";
-import { Image, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, Linking, Modal, Platform, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import VersionCheck from "react-native-version-check";
 import { Input } from "../components/input";
 import { LargeButton } from "../components/largeButton";
 import ModalAlert from "../components/modalAlert";
@@ -15,6 +16,7 @@ export default function Index() {
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
   const appVersion = Constants.expoConfig?.version;
+  const [hasUpdate, setHasUpdate] = useState(false);
 
   const { visible, alertData, hideAlert, showAlert } = useAlert();
   const { isLoading, login } = useAuth(url!, showAlert);
@@ -22,6 +24,38 @@ export default function Index() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
+
+  const openPlayStore = () => {
+    Linking.openURL("https://play.google.com/store/apps/details?id=com.hipersenna.GHSApp");
+  };
+
+  async function checkForUpdate() {
+    try {
+      const androidPackageName = Constants.expoConfig?.android?.package;
+
+      const currentVersion = Constants.expoConfig?.version;
+
+      if (!currentVersion) {
+        return;
+      }
+
+      const latestVersion = await VersionCheck.getLatestVersion({
+        provider: Platform.OS === "android" ? "playStore" : "appStore",
+        packageName: Platform.OS === "android" ? androidPackageName : "",
+      });
+
+      setHasUpdate(latestVersion > currentVersion);
+
+      if (hasUpdate) {
+      }
+    } catch (error: any) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    checkForUpdate();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,8 +65,8 @@ export default function Index() {
         <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>
       </View>
 
-      <View style={[styles.content, { backgroundColor: theme.background }]}>
-        <View style={styles.inputBox}>
+      <View style={[styles.main]}>
+        <View>
           <Input
             value={username}
             onChangeText={(username) => setUsername(username.replace(/\s/g, ""))}
@@ -44,7 +78,7 @@ export default function Index() {
           />
         </View>
 
-        <View style={styles.inputBox}>
+        <View>
           <Input
             value={password}
             onChangeText={setPassword}
@@ -67,9 +101,27 @@ export default function Index() {
           />
         </View>
       </View>
+
       <View style={styles.footer}>
-        <Text style={[styles.footerText, { color: theme.text }]}>Versão: {appVersion}</Text>
+        <Text style={[styles.versionText, { color: theme.text }]}>Versão: {appVersion}</Text>
       </View>
+
+      <Modal animationType="fade" transparent={true} visible={hasUpdate}>
+        <View style={styles.modalContainerCenter}>
+          <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
+            <MaterialIcons name="update" size={110} color={Colors.red2} />
+            <View style={styles.textBox}>
+              <Text style={[styles.titleText, { color: theme.title }]}>App desatualizado</Text>
+              <Text style={[styles.text, { color: theme.text }]}>
+                A versão do app é menor que a versão publicada na play store, atualize para a nova versão.
+              </Text>
+            </View>
+            <View style={styles.updateButtonBox}>
+              <LargeButton backgroundColor={theme.red} text={"Atualizar"} onPress={openPlayStore} />
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {alertData && (
         <ModalAlert
@@ -92,33 +144,75 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   header: {
+    width: "100%",
+    maxWidth: 500,
     alignItems: "center",
-    paddingTop: 80,
-    paddingBottom: 40,
+    paddingTop: 70,
+    paddingBottom: 70,
+    gap: 10,
   },
   title: {
     fontFamily: "Lexend-SemiBold",
     color: "white",
-    paddingTop: 10,
     fontSize: 30,
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 30,
-    paddingTop: 30,
-    borderTopLeftRadius: 45,
-    borderTopRightRadius: 45,
-    maxWidth: 500,
+  main: {
     width: "100%",
+    maxWidth: 500,
+    height: 350,
+    gap: 12,
+    paddingHorizontal: 30,
   },
-  inputBox: {},
   loginButton: {
     paddingVertical: 20,
   },
   footer: {
     padding: 20,
   },
-  footerText: {
+  versionText: {
     fontFamily: "Lexend-Regular",
+  },
+  modalContainerCenter: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 40,
+    backgroundColor: "rgba(0, 0, 0, 0.53)",
+  },
+  modalBox: {
+    width: "100%",
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    borderRadius: 20,
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.29,
+    shadowRadius: 4.65,
+    elevation: 7,
+  },
+  textBox: {
+    paddingBottom: 20,
+    gap: 5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  updateButtonBox: {
+    width: "100%",
+  },
+  titleText: {
+    fontFamily: "Lexend-Bold",
+    fontSize: 24,
+    color: Colors.blue,
+  },
+  text: {
+    fontFamily: "Lexend-Regular",
+    textAlign: "center",
+    color: Colors.gray,
   },
 });
