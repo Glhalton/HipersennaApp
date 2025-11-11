@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     color: "white",
   },
   button: {

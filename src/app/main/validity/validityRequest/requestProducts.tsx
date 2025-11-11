@@ -1,8 +1,8 @@
 import React from "react";
 import { FlatList, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { validityRequestDataStore } from "../../../store/validityRequestDataStore";
+import { Colors } from "../../../../constants/colors";
+import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 
 export default function RequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -70,15 +70,15 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   productDataText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.gray,
   },
   label: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     color: Colors.blue,
   },
   textHeader: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: "white",
   },
   dadosItem: {

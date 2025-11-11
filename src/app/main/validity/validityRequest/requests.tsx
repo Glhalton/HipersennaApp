@@ -14,72 +14,79 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ModalAlert from "../../components/modalAlert";
-import { Colors } from "../../constants/colors";
-import { useAlert } from "../../hooks/useAlert";
-import { getValidityDataStore } from "../../store/getValidityDataStore";
+import ModalAlert from "../../../../components/modalAlert";
+import { Colors } from "../../../../constants/colors";
+import { useAlert } from "../../../../hooks/useAlert";
+import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 
-type validity = {
+type Request = {
   id: number;
   branch_id: number;
-  employee_id: number;
-  status: string | null;
-  request_id: number | null;
+  status: string;
   created_at: string;
-  modified_at: string;
-  hsvalidity_products: [];
+  target_date: string;
+  analyst_id: number;
+  hsvalidity_request_products: Product[];
 };
 
-export default function History() {
+type Product = {
+  product_cod: number;
+  description: string;
+  validity_date: Date;
+  quantity: string;
+  status: string;
+};
+
+export default function Requests() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
-  const [isLoading, setIsLoading] = useState(true);
-
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const [ordinationItems, setOrdinationItems] = useState([
-    { label: "Recentes", value: "1" },
+  const [filterItems, setFilterItems] = useState([
+    { label: "Novos", value: "1" },
     { label: "Antigos", value: "2" },
   ]);
-  const [ordination, setOrdination] = useState("");
   const [open, setOpen] = React.useState(false);
 
-  const setProducts = getValidityDataStore((state) => state.setProducts);
-  
-  const [validities, setValidities] = useState<validity[]>([]);
-  const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
+  const [ordination, setOrdination] = useState("");
 
-  const selectValidities = async () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [requests, setRequests] = useState<Request[]>([]);
+  const setProductsList = validityRequestDataStore((state) => state.setProductsList);
+
+  const getValidityRequests = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validities/employee`, {
+      const response = await fetch(`${url}/validity-requests/employee`, {
         method: "GET",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
       const responseData = await response.json();
 
-      if (responseData.validitiesByEmployee) {
-        setValidities(responseData.validitiesByEmployee);
+      if (responseData.validityRequestsByEmployee) {
+        setRequests(responseData.validityRequestsByEmployee);
       } else {
         showAlert({
           title: "Erro!",
-          text: responseData.message,
+          text: responseData.error,
           icon: "error-outline",
           color: Colors.red,
           iconFamily: MaterialIcons,
         });
       }
-    } catch (error: any) {
+    } catch (error) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error.message}`,
+        text: `Não foi possível conectar ao servidor ${error}`,
         icon: "error-outline",
         color: Colors.red,
         iconFamily: MaterialIcons,
@@ -89,8 +96,10 @@ export default function History() {
     }
   };
 
-  const sortValidities = (option: string | null) => {
-    let sorted = [...validities];
+  const [sortedRequests, setSortedRequests] = useState<Request[]>([]);
+
+  const sortRequests = (option: string | null) => {
+    let sorted: Request[] = [...requests];
 
     switch (option) {
       case "1":
@@ -101,26 +110,33 @@ export default function History() {
         break;
     }
 
-    setSortedValidities(sorted);
+    setSortedRequests(sorted);
   };
 
   const handleOrdinationChange = (newValue: string) => {
     setOrdination(newValue);
-    sortValidities(newValue);
+    sortRequests(newValue);
   };
 
   useEffect(() => {
-    selectValidities();
+    getValidityRequests();
   }, []);
-
   useEffect(() => {
-    sortValidities(ordination || "1");
-  }, [validities]);
+    sortRequests(ordination || "1");
+  }, [requests]);
+
+  function getColor(status: string | null) {
+    if (status === "Pendente") return "#FF6200";
+    if (status === "Em andamento") return "#51ABFF";
+    if (status === "Concluido") return "#13BE19";
+    if (status === "Expirado") return "#E80000";
+    return "black";
+  }
 
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={60} color={theme.iconColor} />
+        <ActivityIndicator color={theme.iconColor} size={60} />
       </View>
     );
   }
@@ -129,35 +145,39 @@ export default function History() {
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <StatusBar barStyle={"light-content"} />
       <View style={styles.contentBox}>
-        <View style={styles.filterBox}>
-          <DropDownPicker
-            open={open}
-            value={ordination}
-            items={ordinationItems}
-            setOpen={setOpen}
-            setValue={(callback) => {
-              const newValue = callback(ordination);
-              handleOrdinationChange(newValue);
-            }}
-            setItems={setOrdinationItems}
-            placeholder="Ordenar por"
-            style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
-            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
-            textStyle={[styles.optionsText, { color: theme.title }]}
-            placeholderStyle={[styles.placeholder, { color: theme.text }]}
-          />
+        <View style={styles.header}>
+          <View style={styles.filterBox}>
+            <View style={styles.filterBox}>
+              <DropDownPicker
+                open={open}
+                value={ordination}
+                items={filterItems}
+                setOpen={setOpen}
+                setValue={(callback) => {
+                  const newValue = callback(ordination);
+                  handleOrdinationChange(newValue);
+                }}
+                setItems={setFilterItems}
+                placeholder="Ordenar por"
+                style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
+                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
+                textStyle={[styles.optionsText, { color: theme.title }]}
+                placeholderStyle={[styles.placeholder, { color: theme.text }]}
+              />
+            </View>
+          </View>
         </View>
         <View style={styles.flatListBox}>
           <FlatList
-            data={sortedValidities}
+            data={sortedRequests}
             keyExtractor={(_, index) => index.toString()}
             contentContainerStyle={{ paddingBottom: 20 }}
             renderItem={({ item, index }) => (
               <TouchableOpacity
                 activeOpacity={0.6}
                 onPress={() => {
-                  router.push("./historyProducts");
-                  setProducts(item.hsvalidity_products);
+                  router.push("./requestProducts");
+                  setProductsList(item.hsvalidity_request_products);
                 }}
               >
                 <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
@@ -167,11 +187,18 @@ export default function History() {
                       <Text style={[styles.text, { color: theme.text }]}>
                         <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
                       </Text>
+                      {/* <Text style={styles.label}>HortiFruti | Frios</Text> */}
                       <View style={styles.dates}>
                         <Text style={[styles.text, { color: theme.text }]}>
                           <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
                           {new Date(item.created_at).toLocaleDateString("pt-BR")}
                         </Text>
+                        {/* <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Limite:</Text> {new Date(item.target_date).toLocaleDateString("pt-BR")}</Text> */}
+                      </View>
+                      <View style={styles.statusBox}>
+                        <Text style={[styles.label, { color: theme.title }]}>Status:</Text>
+                        <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
+                        <Text style={[styles.statusText, { color: getColor(item.status) }]}>{item.status}</Text>
                       </View>
                     </View>
                     <View style={styles.iconBox}>
@@ -192,7 +219,7 @@ export default function History() {
           title={alertData.title}
           text={alertData.text}
           iconCenterName={alertData.icon}
-          IconCenter={alertData.iconFamily}
+          IconCenter={alertData?.iconFamily}
         />
       )}
     </SafeAreaView>
@@ -207,9 +234,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     flex: 1,
   },
-  filterBox: {
+  header: {
     paddingVertical: 15,
   },
+  filterBox: {},
   flatListBox: {
     paddingBottom: 60,
   },
@@ -223,16 +251,16 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 16,
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     color: Colors.blue,
   },
   label: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.blue,
   },
   text: {
     color: Colors.gray,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   requestDataBox: {
     flexDirection: "row",
@@ -246,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   statusText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   dotView: {
     borderRadius: 50,
@@ -283,9 +311,9 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   optionsText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   placeholder: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
 });

@@ -15,12 +15,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dataInputText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     paddingLeft: 15,
   },
   label: {
     color: Colors.blue,
     marginBottom: 6,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
 });

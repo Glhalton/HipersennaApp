@@ -31,8 +31,9 @@ export const Colors = {
     logoIcon: require("../../assets/images/hipersenna-white-logo.png"),
   },
   light: {
-    text: "#4A5A6A",
-    title: "#205072",
+    // text: "#4A5A6A",
+    text: "#25292E",
+    title: "#25292E",
     background: "#F4F6F8",
     navBackground: "#F22727",
     navText: "#F2F3F5",

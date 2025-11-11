@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { LargeButton } from "../../../components/largeButton";
-import { Colors } from "../../../constants/colors";
+import { LargeButton } from "../../../../components/largeButton";
+import { Colors } from "../../../../constants/colors";
 
 const relatorioVencimento = () => {
   router.push("./relatorioVencimento");

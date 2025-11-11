@@ -3,9 +3,9 @@ import { router } from "expo-router";
 import React from "react";
 import { Alert, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LargeButton } from "../../components/largeButton";
-import { Colors } from "../../constants/colors";
-import { employeeDataStore } from "../../store/employeeDataStore";
+import { LargeButton } from "../../../components/largeButton";
+import { Colors } from "../../../constants/colors";
+import { employeeDataStore } from "../../../store/employeeDataStore";
 
 export default function settings() {
   const colorScheme = useColorScheme() ?? "light";
@@ -35,7 +35,6 @@ export default function settings() {
       if (response.ok) {
         console.log(responseData.message);
         await AsyncStorage.removeItem("token");
-        router.dismissAll();
         router.replace("/");
       } else {
         Alert.alert("Erro", "Erro ao sair do aplicativo:");
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   title: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 20,
   },
   userDataBox: {
@@ -100,11 +99,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   label: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   button: {
   },

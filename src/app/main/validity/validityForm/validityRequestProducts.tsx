@@ -14,12 +14,12 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LargeButton } from "../../../components/largeButton";
-import ModalAlert from "../../../components/modalAlert";
-import ModalPopup from "../../../components/modalPopup";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { postValidityDataStore } from "../../../store/postValidityDataStore";
+import { LargeButton } from "../../../../components/largeButton";
+import ModalAlert from "../../../../components/modalAlert";
+import ModalPopup from "../../../../components/modalPopup";
+import { Colors } from "../../../../constants/colors";
+import { useAlert } from "../../../../hooks/useAlert";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -118,7 +118,7 @@ export default function ValidityRequestProducts() {
   // Quando quiser substituir a tela sem abrir modal:
   const goHome = () => {
     setForceExit(true);
-    router.replace("/main/home");
+    router.replace("./main/home");
   };
 
   const handleConfirmExit = () => {
@@ -214,7 +214,7 @@ export default function ValidityRequestProducts() {
           onClose: () => {
             setForceExit(true);
             resetProducts();
-            router.replace("/main/home");
+            router.replace("./main/home");
           },
         });
       } else {
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     color: Colors.blue,
     fontSize: 25,
   },
@@ -432,20 +432,20 @@ const styles = StyleSheet.create({
     maxWidth: 200,
   },
   productDataText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.gray,
   },
   label: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     color: Colors.blue,
   },
   labelModal: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
     color: Colors.blue,
   },
   textHeader: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: "white",
   },
   dadosItem: {
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     borderWidth: 0,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   modalButtonsBox: {
     paddingTop: 30,

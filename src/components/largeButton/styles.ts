@@ -18,6 +18,6 @@ export const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 16,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
 });

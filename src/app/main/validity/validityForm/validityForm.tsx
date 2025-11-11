@@ -15,15 +15,15 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DateInput } from "../../../components/dateInput";
-import { Input } from "../../../components/input";
-import { LargeButton } from "../../../components/largeButton";
-import ModalAlert from "../../../components/modalAlert";
-import ModalPopup from "../../../components/modalPopup";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { useProduct } from "../../../hooks/useProduct";
-import { postValidityDataStore } from "../../../store/postValidityDataStore";
+import { DateInput } from "../../../../components/dateInput";
+import { Input } from "../../../../components/input";
+import { LargeButton } from "../../../../components/largeButton";
+import ModalAlert from "../../../../components/modalAlert";
+import ModalPopup from "../../../../components/modalPopup";
+import { Colors } from "../../../../constants/colors";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useProduct } from "../../../../hooks/useProduct";
+import { postValidityDataStore } from "../../../../store/postValidityDataStore";
 
 type InputOptions = {
   label: string;
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   searchText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
   },
   productDataBox: {
@@ -417,15 +417,15 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   textBold: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
   },
   label: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   productNameText: {
     fontSize: 15,
     color: Colors.gray,
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
   },
   buttonsBox: {
     marginVertical: 10,
@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 24,
     textAlign: "center",
   },
@@ -514,7 +514,7 @@ const styles = StyleSheet.create({
   },
   textModal: {
     fontSize: 18,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.gray,
   },
 });

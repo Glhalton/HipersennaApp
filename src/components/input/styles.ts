@@ -13,14 +13,14 @@ export const styles = StyleSheet.create({
   input: {
     flex: 1,
     backgroundColor: Colors.inputColor,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     borderRadius: 20,
     paddingLeft: 15,
   },
   label: {
     color: Colors.blue,
     marginBottom: 6,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     
   },
   iconLeft: {},

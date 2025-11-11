@@ -43,16 +43,16 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 16,
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 28,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },

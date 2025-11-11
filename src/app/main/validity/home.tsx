@@ -1,4 +1,4 @@
-import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
+import { FontAwesome6, Octicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import {
@@ -12,11 +12,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ModalAlert from "../../components/modalAlert";
-import { Colors } from "../../constants/colors";
-import { useAlert } from "../../hooks/useAlert";
-import { useUserData } from "../../hooks/useUserData";
-import { employeeDataStore } from "../../store/employeeDataStore";
+import ModalAlert from "../../../components/modalAlert";
+import { Colors } from "../../../constants/colors";
+import { useAlert } from "../../../hooks/useAlert";
+import { useUserData } from "../../../hooks/useUserData";
+import { employeeDataStore } from "../../../store/employeeDataStore";
 
 
 export default function Home() {
@@ -55,13 +55,6 @@ export default function Home() {
             <Text style={[styles.helloText, { color: theme.title }]}>Olá, {firstName}</Text>
             <Text style={[styles.text, { color: theme.text }]}>GHSApp</Text>
           </View>
-
-          <TouchableOpacity
-            style={[styles.settings, { backgroundColor: theme.uiBackground }]}
-            onPress={() => router.push("./settings")}
-          >
-            <Ionicons name="settings-sharp" color={theme.iconColor} size={30} />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.main}>
@@ -132,21 +125,7 @@ export default function Home() {
                   <Text style={[styles.text, { color: theme.text }]}>Vistorias à fazer</Text>
                 </View>
               </TouchableOpacity> */}
-
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("./searchProduct");
-                }}
-                style={styles.optionButton}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Octicons name="search" color={theme.iconColor} size={25} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Consultar Produto</Text>
-                </View>
-              </TouchableOpacity>
-
+              
               <TouchableOpacity
                 onPress={() => {
                   router.push("./history");
@@ -203,10 +182,10 @@ const styles = StyleSheet.create({
   helloText: {
     maxWidth: 300,
     fontSize: 20,
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Roboto-SemiBold",
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 15,
   },
   settings: {
@@ -248,7 +227,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   buttonsText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.white,
   },
   dashboardBox: {
@@ -258,7 +237,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
   },
   dashboardRowItens: {
     flexDirection: "row",

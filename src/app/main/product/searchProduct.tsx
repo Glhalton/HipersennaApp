@@ -13,12 +13,12 @@ import {
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Input } from "../../components/input";
-import { LargeButton } from "../../components/largeButton";
-import ModalAlert from "../../components/modalAlert";
-import { Colors } from "../../constants/colors";
-import { useAlert } from "../../hooks/useAlert";
-import { useProduct } from "../../hooks/useProduct";
+import { Input } from "../../../components/input";
+import { LargeButton } from "../../../components/largeButton";
+import ModalAlert from "../../../components/modalAlert";
+import { Colors } from "../../../constants/colors";
+import { useAlert } from "../../../hooks/useAlert";
+import { useProduct } from "../../../hooks/useProduct";
 
 type InputOptions = {
   label: string;
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   label: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   dropdownInput: {
     paddingLeft: 15,
@@ -333,7 +333,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderWidth: 0,
     borderRadius: 20,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   optionsBox: {
     backgroundColor: "#F4F6F8",
@@ -341,10 +341,10 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   placeholder: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     opacity: 0.6,
   },
 
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   textBold: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
   },
   optionFilter: {
     width: "100%",
@@ -396,13 +396,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 24,
     textAlign: "center",
   },
   textModal: {
     fontSize: 18,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     color: Colors.gray,
   },
   titleBox: {
@@ -426,7 +426,7 @@ const styles = StyleSheet.create({
     width: "45%",
   },
   priceText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 25,
     marginTop: 5,
     lineHeight: 25,
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
   productNameText: {
     fontSize: 15,
     color: Colors.gray,
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
   },
   productItem: {
     justifyContent: "center",
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   searchText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
   },
 });

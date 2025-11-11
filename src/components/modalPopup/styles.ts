@@ -37,12 +37,12 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 28,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },

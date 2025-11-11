@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
     zIndex: 1,
     borderWidth: 0,
     borderRadius: 20,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     paddingLeft: 15,
   },
   optionsBox: {
@@ -24,15 +24,15 @@ export const styles = StyleSheet.create({
     paddingLeft: 4,
   },
   optionsText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   placeholder: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     opacity: 0.6,
   },
   label: {
     color: Colors.blue,
     marginBottom: 6,
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
 });

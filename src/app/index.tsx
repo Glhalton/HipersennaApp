@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   title: {
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Roboto-Bold",
     color: "white",
     fontSize: 30,
   },
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   versionText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
   },
   modalContainerCenter: {
     flex: 1,
@@ -206,12 +206,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 24,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },
