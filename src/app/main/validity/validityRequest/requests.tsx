@@ -1,4 +1,4 @@
-import { MaterialIcons, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -143,7 +143,7 @@ export default function Requests() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.contentBox}>
         <View style={styles.header}>
           <View style={styles.filterBox}>
@@ -159,10 +159,13 @@ export default function Requests() {
                 }}
                 setItems={setFilterItems}
                 placeholder="Ordenar por"
-                style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
-                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
-                textStyle={[styles.optionsText, { color: theme.title }]}
-                placeholderStyle={[styles.placeholder, { color: theme.text }]}
+                style={[styles.dropdownInput, { backgroundColor: theme.button }]}
+                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
+                textStyle={[styles.optionsText, { color: theme.buttonText }]}
+                placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
+                ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline" size={20} color={Colors.white} />}
+                ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline" size={20} color={Colors.white} />}
+                TickIconComponent={() => <Ionicons name="checkmark" size={20} color={Colors.white} />}
               />
             </View>
           </View>
@@ -180,7 +183,7 @@ export default function Requests() {
                   setProductsList(item.hsvalidity_request_products);
                 }}
               >
-                <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
                   <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
                   <View style={styles.requestDataBox}>
                     <View>
@@ -215,7 +218,7 @@ export default function Requests() {
       {alertData && (
         <ModalAlert
           visible={visible}
-          buttonPress={hideAlert}
+          ButtonComponentPress={hideAlert}
           title={alertData.title}
           text={alertData.text}
           iconCenterName={alertData.icon}

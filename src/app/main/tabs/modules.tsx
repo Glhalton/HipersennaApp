@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../constants/colors";
 
@@ -9,11 +9,11 @@ export default function Modules() {
   const theme = Colors[colorScheme];
 
   return (
-    <SafeAreaView style={styles.container}  edges={["bottom"]}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
+      <StatusBar barStyle="light-content" />
       <View style={styles.header}></View>
       <View style={styles.main}>
-
-        <Text style={[styles.title, {color: theme.title}]}>Módulos</Text>
+        <Text style={[styles.title, { color: theme.title }]}>Módulos</Text>
 
         <View style={styles.modulesList}>
           <View>
@@ -21,7 +21,7 @@ export default function Modules() {
               onPress={() => {
                 router.push("../validity/home");
               }}
-              style={styles.optionButton}
+              style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
@@ -35,7 +35,7 @@ export default function Modules() {
               onPress={() => {
                 // router.push("/");
               }}
-              style={styles.optionButton}
+              style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
@@ -47,15 +47,15 @@ export default function Modules() {
 
             <TouchableOpacity
               onPress={() => {
-                // router.push("./modules");
+                router.push("../priceQuotation/selectFilialQuotation");
               }}
-              style={styles.optionButton}
+              style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
                   <Ionicons name="pricetag-outline" color={theme.iconColor} size={30} />
                 </View>
-                <Text style={[styles.text, { color: theme.text }]}>Cotação</Text>
+                <Text style={[styles.text, { color: theme.text }]}>Cotação de preços</Text>
               </View>
             </TouchableOpacity>
 
@@ -63,7 +63,7 @@ export default function Modules() {
               onPress={() => {
                 router.push("../product/searchProduct");
               }}
-              style={styles.optionButton}
+              style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 20,
   },
-  optionButton: {
+  optionButtonComponent: {
     borderBottomWidth: 0.4,
     borderColor: Colors.gray,
     paddingVertical: 6,

@@ -46,28 +46,32 @@ export default function Layout() {
       <View style={{ flex: 1, backgroundColor: theme.background }}>
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: theme.navBackground },
-            headerTintColor: theme.navText,
-            headerTitleStyle: { fontFamily: "Roboto-Regular" },
+            headerStyle: { backgroundColor: theme.navTopBackground },
+            headerTintColor: theme.title,
+            headerTitleStyle: { fontFamily: "Roboto-SemiBold" },
             contentStyle: { backgroundColor: theme.background },
+            animation: "fade"
           }}
         >
           <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="main/tabs" options={{ headerShown: false }} />
           <Stack.Screen name="main/product/searchProduct" options={{ title: "Consultar Produto" }} />
-          <Stack.Screen name="main/validity/home" options={{ title: "Cadastro", headerShown: false }} />
+          <Stack.Screen name="main/product/productData" options={{ title: "Produto" }} />
+          <Stack.Screen name="main/validity/home" options={{ title: "Vencimento"}} />
           <Stack.Screen name="main/validity/history" options={{ title: "Histórico" }} />
           <Stack.Screen name="main/validity/historyProducts" options={{ title: "Histórico" }} />
           <Stack.Screen
-            name="main/validity/validityForm/selectFilialValidity"
+            name="main/validity/individualValidity/selectFilialValidity"
             options={{ title: "Seleção de Filial" }}
           />
-          <Stack.Screen name="main/validity/validityForm/validityForm" options={{ title: "Vistoria" }} />
-          <Stack.Screen name="main/validity/validityForm/validitySummary" options={{ title: "Resumo" }} />
-          <Stack.Screen name="main/validity/validityForm/selectRequest" options={{ title: "Solicitações" }} />
-          <Stack.Screen name="main/validity/validityForm/validityRequestProducts" options={{ title: "Produtos" }} />
+          <Stack.Screen name="main/validity/individualValidity/validityForm" options={{ title: "Vistoria" }} />
+          <Stack.Screen name="main/validity/individualValidity/validitySummary" options={{ title: "Resumo" }} />
+          <Stack.Screen name="main/validity/validityRequest/selectRequest" options={{ title: "Solicitações" }} />
+          <Stack.Screen name="main/validity/validityRequest/validityRequestProducts" options={{ title: "Produtos" }} />
           <Stack.Screen name="main/validity/validityRequest/requests" options={{ title: "Solicitações" }} />
           <Stack.Screen name="main/validity/validityRequest/requestProducts" options={{ title: "Produtos" }} />
+          <Stack.Screen name="main/priceQuotation/selectFilialQuotation" options={{ title: "Seleção de Filial" }} />
+          <Stack.Screen name="main/priceQuotation/quotationForm" options={{ title: "Cotação de preços" }} />
           
         </Stack>
       </View>

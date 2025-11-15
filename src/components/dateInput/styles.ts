@@ -1,26 +1,26 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "../../constants/colors";
 
 export const styles = StyleSheet.create({
   container: {
     width: "100%",
     height: 45,
-    borderRadius: 20,
+    borderRadius: 12,
   },
   dataInputBox: {
+    borderWidth: 1.5,
     width: "100%",
     height: "100%",
-    backgroundColor: Colors.inputColor,
-    borderRadius: 20,
+    borderRadius: 12,
     justifyContent: "center",
   },
   dataInputText: {
     fontFamily: "Roboto-Regular",
+    fontSize: 16,
     paddingLeft: 15,
   },
   label: {
-    color: Colors.blue,
-    marginBottom: 6,
-    fontFamily: "Roboto-Regular",
+    marginBottom: 2,
+    fontSize: 16,
+    fontFamily: "Roboto-SemiBold",
   },
 });

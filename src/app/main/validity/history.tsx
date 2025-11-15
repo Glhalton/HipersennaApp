@@ -1,4 +1,4 @@
-import { MaterialIcons, Octicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -48,7 +48,7 @@ export default function History() {
   const [open, setOpen] = React.useState(false);
 
   const setProducts = getValidityDataStore((state) => state.setProducts);
-  
+
   const [validities, setValidities] = useState<validity[]>([]);
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
 
@@ -127,7 +127,7 @@ export default function History() {
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.contentBox}>
         <View style={styles.filterBox}>
           <DropDownPicker
@@ -141,10 +141,14 @@ export default function History() {
             }}
             setItems={setOrdinationItems}
             placeholder="Ordenar por"
-            style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
-            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
-            textStyle={[styles.optionsText, { color: theme.title }]}
-            placeholderStyle={[styles.placeholder, { color: theme.text }]}
+            style={[styles.dropdownInput, { backgroundColor: theme.button }]}
+            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
+            textStyle={[styles.optionsText, { color: theme.buttonText }]}
+            placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
+            ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline"  size={20} color={Colors.white}/>}
+            ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline"  size={20} color={Colors.white}/>}
+            TickIconComponent={() => <Ionicons name="checkmark"  size={20} color={Colors.white}/>}
+            
           />
         </View>
         <View style={styles.flatListBox}>
@@ -160,7 +164,7 @@ export default function History() {
                   setProducts(item.hsvalidity_products);
                 }}
               >
-                <View style={[styles.card, { backgroundColor: theme.uiBackground }]}>
+                <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
                   <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
                   <View style={styles.requestDataBox}>
                     <View>
@@ -169,7 +173,7 @@ export default function History() {
                       </Text>
                       <View style={styles.dates}>
                         <Text style={[styles.text, { color: theme.text }]}>
-                          <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
+                          <Text style={[styles.label, { color: theme.title }]}>Criado em:</Text>{" "}
                           {new Date(item.created_at).toLocaleDateString("pt-BR")}
                         </Text>
                       </View>
@@ -188,7 +192,7 @@ export default function History() {
       {alertData && (
         <ModalAlert
           visible={visible}
-          buttonPress={hideAlert}
+          ButtonComponentPress={hideAlert}
           title={alertData.title}
           text={alertData.text}
           iconCenterName={alertData.icon}
@@ -283,9 +287,9 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   optionsText: {
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-SemiBold",
   },
   placeholder: {
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-SemiBold",
   },
 });

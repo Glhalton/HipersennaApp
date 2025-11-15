@@ -1,5 +1,6 @@
-import { FontAwesome } from "@expo/vector-icons";
-import { useState } from "react";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
   FlatList,
   Modal,
@@ -11,10 +12,11 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
+import { ButtonComponent } from "../../../components/buttonComponent";
+import { DropdownInput } from "../../../components/dropdownInput";
 import { Input } from "../../../components/input";
-import { LargeButton } from "../../../components/largeButton";
 import ModalAlert from "../../../components/modalAlert";
 import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
@@ -47,7 +49,6 @@ export default function SearchProduct() {
     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
   });
 
-  const [open, setOpen] = useState(false);
   const [branchId, setBranchId] = useState("");
   const [branches, setBranches] = useState([
     { label: "1 - Matriz", value: "1" },
@@ -59,37 +60,99 @@ export default function SearchProduct() {
     { label: "7 - Cidade Jardim", value: "7" },
   ]);
 
+  const [cameraModal, setCameraModal] = useState(false);
+  const { hasPermission, requestPermission } = useCameraPermission();
+  const [scanned, setScanned] = useState(false);
+
+  const device = useCameraDevice("back");
+
+  const codeScanner = useCodeScanner({
+    codeTypes: ["ean-13"],
+
+    onCodeScanned: (codes) => {
+      if (scanned) return;
+      setScanned(true);
+
+      const value = codes[0].value;
+      if (value) {
+        setCodProductInput(value);
+      }
+
+      setCameraModal(false);
+    },
+  });
+
+  useEffect(() => {
+    if (!cameraModal && scanned && codProductInput.length > 0) {
+      searchProduct();
+      setScanned(false); // libera para próxima leitura
+    }
+  }, [cameraModal, scanned, codProductInput]);
+
+  const openCamera = async () => {
+    if (!hasPermission) {
+      const permission = await requestPermission();
+      if (!permission) {
+        console.log("Permissão negada!");
+        return;
+      }
+    }
+
+    if (!device) {
+      console.log("Nenhuma câmera encontrada");
+      return;
+    }
+    setCameraModal(true);
+  };
+
   const {
     productsListModal,
     setProductsListModal,
     productSearch,
     isLoading,
     listProductFilter,
-    productData,
     setListProductsFilter,
     setProductData,
   } = useProduct(url!, showAlert);
 
+  const searchProduct = async () => {
+    const product = await productSearch(optionFilter, codProductInput, Number(branchId));
+    if (product) {
+      router.push({ pathname: "./productData", params: product });
+    }
+  };
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <StatusBar barStyle={"light-content"} />
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <ScrollView
         style={[styles.scrollBox, { backgroundColor: theme.background }]}
         contentContainerStyle={styles.contentScroll}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.header}>
-          <View style={styles.headerButtons}>
+          <View style={styles.headerButtonComponents}>
             <TouchableOpacity
-              style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]}
+              style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
               onPress={() => {
                 setOptionFilter("codauxiliar");
+                setCodProductInput("");
+                setProductData(undefined);
+                setInputOptions({
+                  IconRight: FontAwesome,
+                  iconRightName: "search",
+                  label: "Código de barras:",
+                  placeholder: "Cod. Barras:",
+                  keyboardType: "numeric",
+                  onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
+                });
+                openCamera();
               }}
             >
-              <FontAwesome name="camera" color={theme.iconColor} size={25} />
+              <Ionicons name="barcode-outline" color={theme.iconColor} size={30} />
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.filterIcon, { backgroundColor: theme.uiBackground }]}
+              style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
               onPress={() => {
                 setFilterProductModal(true);
               }}
@@ -101,21 +164,13 @@ export default function SearchProduct() {
 
         <View style={styles.main}>
           <View style={styles.formBox}>
-            <View style={styles.dropDownBox}>
-              <Text style={[styles.label, { color: theme.title }]}>Selecione a Filial:</Text>
-              <DropDownPicker
+            <View>
+              <DropdownInput
                 listMode="SCROLLVIEW"
-                placeholder="Selecione uma filial"
-                open={open}
+                label={"Filial:"}
                 value={branchId}
                 items={branches}
-                setOpen={setOpen}
-                setValue={setBranchId}
-                setItems={setBranches}
-                style={[styles.dropdownInput, { backgroundColor: theme.inputColor }]}
-                dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor }]}
-                textStyle={[styles.text, { color: theme.title }]}
-                placeholderStyle={[styles.placeholder, { color: theme.text }]}
+                onChange={(val) => setBranchId(val)}
               />
             </View>
 
@@ -124,39 +179,14 @@ export default function SearchProduct() {
             </View>
 
             <View>
-              <LargeButton
+              <ButtonComponent
                 text={"Pesquisar"}
-                backgroundColor={theme.red}
+                backgroundColor={Colors.gray}
                 onPress={() => {
-                  productSearch(optionFilter, codProductInput, Number(branchId));
+                  searchProduct();
                 }}
                 loading={isLoading}
               />
-            </View>
-          </View>
-
-          <View>
-            <View style={[styles.productDataBox, { backgroundColor: theme.uiBackground }]}>
-              <Text style={[styles.label, { color: theme.title }]}>
-                Descrição: <Text style={[styles.textBold, { color: theme.text }]}>{productData?.descricao}</Text>
-              </Text>
-              <Text style={[styles.label, { color: theme.title }]}>
-                Cód. Auxiliar: <Text style={[styles.textBold, { color: theme.text }]}>{productData?.codAuxiliar}</Text>
-              </Text>
-              <Text style={[styles.label, { color: theme.title }]}>
-                Cód. Produto: <Text style={[styles.textBold, { color: theme.text }]}>{productData?.codProd}</Text>
-              </Text>
-            </View>
-
-            <View style={styles.pricesBox}>
-              <View style={[styles.priceItemBox, { backgroundColor: theme.uiBackground }]}>
-                <Text style={[styles.label, { color: theme.title }]}>Preço loja:</Text>
-                <Text style={[styles.priceText, { color: Colors.lightBlue }]}>{productData?.precovenda}</Text>
-              </View>
-              <View style={[styles.priceItemBox, { backgroundColor: theme.uiBackground }]}>
-                <Text style={[styles.label, { color: theme.title }]}>Preço futuro:</Text>
-                <Text style={[styles.priceText, { color: Colors.lightBlue }]}>{productData?.precotabela}</Text>
-              </View>
             </View>
           </View>
         </View>
@@ -179,8 +209,11 @@ export default function SearchProduct() {
                   <TouchableOpacity
                     style={[styles.productItem, { borderColor: theme.iconColor }]}
                     onPress={() => {
-                      setProductData(item);
                       setProductsListModal(false);
+                      const product = item;
+                      if (product) {
+                        router.push({ pathname: "./productData", params: product });
+                      }
                     }}
                   >
                     <Text style={[styles.productNameText, { color: theme.title }]}>{item.descricao}</Text>
@@ -209,7 +242,7 @@ export default function SearchProduct() {
                   style={[
                     styles.optionFilter,
                     {
-                      backgroundColor: theme.uiBackground,
+                      backgroundColor: theme.itemBackground,
                     },
                   ]}
                   onPress={() => {
@@ -230,7 +263,7 @@ export default function SearchProduct() {
                   <Text style={[styles.textModal, { color: theme.title }]}>Código do produto</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
+                  style={[styles.optionFilter, { backgroundColor: theme.itemBackground }]}
                   onPress={() => {
                     setFilterProductModal(false);
                     setOptionFilter("codauxiliar");
@@ -249,7 +282,7 @@ export default function SearchProduct() {
                   <Text style={[styles.textModal, { color: theme.title }]}>Código de barras</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={[styles.optionFilter, { backgroundColor: theme.uiBackground }]}
+                  style={[styles.optionFilter, { backgroundColor: theme.itemBackground }]}
                   onPress={() => {
                     setFilterProductModal(false);
                     setOptionFilter("descricao");
@@ -272,10 +305,25 @@ export default function SearchProduct() {
           </View>
         </Modal>
 
+        <Modal
+          visible={cameraModal}
+          animationType="fade"
+          transparent={false}
+          onRequestClose={() => {
+            setCameraModal(false);
+          }}
+        >
+          {device ? (
+            <Camera style={styles.camera} device={device} isActive={cameraModal} codeScanner={codeScanner} />
+          ) : (
+            <Text>Carregando câmera...</Text>
+          )}
+        </Modal>
+
         {alertData && (
           <ModalAlert
             visible={visible}
-            buttonPress={hideAlert}
+            ButtonComponentPress={hideAlert}
             title={alertData.title}
             text={alertData.text}
             iconCenterName={alertData.icon}
@@ -304,7 +352,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "flex-end",
   },
-  headerButtons: {
+  headerButtonComponents: {
     flexDirection: "row",
     gap: 10,
   },
@@ -314,55 +362,34 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   main: {},
   formBox: {
     gap: 16,
   },
-  dropDownBox: {
-    width: "100%",
-    gap: 6,
-  },
-  label: {
-    fontFamily: "Roboto-Regular",
-  },
-  dropdownInput: {
-    paddingLeft: 15,
-    minWidth: 100,
-    minHeight: 45,
-    zIndex: 1,
-    borderWidth: 0,
-    borderRadius: 20,
-    fontFamily: "Roboto-Regular",
-  },
-  optionsBox: {
-    backgroundColor: "#F4F6F8",
-    borderColor: "gray",
-    paddingLeft: 4,
-  },
-  text: {
-    fontFamily: "Roboto-Regular",
-  },
-  placeholder: {
-    fontFamily: "Roboto-Regular",
-    opacity: 0.6,
-  },
-
   searchBox: {},
-  productDataBox: {
-    borderRadius: 20,
-    marginVertical: 20,
-    padding: 20,
-  },
-  textBold: {
-    fontFamily: "Roboto-Bold",
-  },
   optionFilter: {
     width: "100%",
     alignItems: "center",
     paddingVertical: 20,
     borderRadius: 15,
     marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   productList: {
     maxHeight: 240,
@@ -414,23 +441,6 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 30,
   },
-  pricesBox: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  priceItemBox: {
-    padding: 20,
-    borderRadius: 20,
-    height: 100,
-    width: "45%",
-  },
-  priceText: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 25,
-    marginTop: 5,
-    lineHeight: 25,
-  },
   productNameText: {
     fontSize: 15,
     color: Colors.gray,
@@ -441,8 +451,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.4,
     paddingVertical: 10,
   },
-  searchText: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
+  camera: {
+    flex: 1,
   },
 });

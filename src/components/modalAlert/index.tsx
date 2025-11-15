@@ -1,7 +1,8 @@
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React from "react";
-import { Modal, ModalProps, Text, TouchableOpacity, View, useColorScheme } from "react-native";
+import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
 import { Colors } from "../../constants/colors";
+import { ButtonComponent } from "../buttonComponent";
 import { styles } from "./styles";
 
 type IconComponent =
@@ -15,7 +16,7 @@ type Props = ModalProps & {
   title: string;
   text: string;
   iconColor?: string;
-  buttonPress: () => void;
+  ButtonComponentPress: () => void;
 };
 
 export default function ModalAlert({
@@ -24,7 +25,7 @@ export default function ModalAlert({
   title,
   iconCenterName,
   text,
-  buttonPress,
+  ButtonComponentPress,
   ...rest
 }: Props) {
   const colorScheme = useColorScheme() ?? "light";
@@ -33,18 +34,17 @@ export default function ModalAlert({
   return (
     <Modal animationType="fade" transparent={true} {...rest}>
       <View style={styles.modalContainerCenter}>
-        <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
+        <View style={[styles.modalBox, { backgroundColor: theme.itemBackground }]}>
           {IconCenter && iconCenterName && <IconCenter name={iconCenterName as any} size={130} color={iconColor} />}
-
           <View style={styles.textBox}>
             <Text style={[styles.titleText, { color: theme.title }]}>{title}</Text>
             <Text style={[styles.text, { color: theme.text }]}>{text}</Text>
           </View>
-
-          <View style={styles.buttonBox}>
-            <TouchableOpacity onPress={buttonPress} style={styles.button}>
-              <Text style={[styles.buttonText, { color: theme.navText }]}>Ok</Text>
-            </TouchableOpacity>
+          <View style={styles.ButtonComponentBox}>
+            <ButtonComponent
+              text={"Ok"}
+              onPress={ButtonComponentPress}
+            />
           </View>
         </View>
       </View>

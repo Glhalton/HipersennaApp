@@ -1,25 +1,16 @@
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import React from "react";
-import { Alert, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LargeButton } from "../../../components/largeButton";
 import { Colors } from "../../../constants/colors";
-import { employeeDataStore } from "../../../store/employeeDataStore";
 
-export default function settings() {
+export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const name = employeeDataStore((state) => state.name);
-  const username = employeeDataStore((state) => state.username);
-  const winthorId = employeeDataStore((state) => state.winthorId);
-  const id = employeeDataStore((state) => state.userId);
-  const branchId = employeeDataStore((state) => state.branchId);
-
-  const signOut = async () => {
+    const signOut = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
@@ -45,36 +36,42 @@ export default function settings() {
   };
 
   return (
-    <SafeAreaView edges={["bottom"]} style={styles.container}>
-      <StatusBar barStyle={"light-content"} />
+    <SafeAreaView style={styles.container}  edges={["bottom"]}>
+      <View style={styles.header}></View>
       <View style={styles.main}>
-        <Text style={[styles.title, { color: theme.title }]}>Dados do Usuário:</Text>
-        <View style={[styles.userDataBox, { backgroundColor: theme.uiBackground }]}>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Nome: <Text style={[styles.text, { color: theme.text }]}>{name}</Text>
-          </Text>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Username: <Text style={[styles.text, { color: theme.text }]}>{username}</Text>
-          </Text>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Código do winthor: <Text style={[styles.text, { color: theme.text }]}>{winthorId}</Text>
-          </Text>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Código do GHSApp: <Text style={[styles.text, { color: theme.text }]}>{id}</Text>
-          </Text>
-          <Text style={[styles.label, { color: theme.title }]}>
-            Filial: <Text style={[styles.text, { color: theme.text }]}>{branchId}</Text>
-          </Text>
-        </View>
 
-        <View style={[styles.button]}>
-          <LargeButton
-            backgroundColor={theme.red}
-            text="Sair do aplicativo"
-            onPress={() => {
-              signOut();
-            }}
-          />
+        <Text style={[styles.title, {color: theme.title}]}>Configurações</Text>
+
+        <View style={styles.modulesList}>
+          <View>
+            <TouchableOpacity
+              onPress={() => {
+                // router.push("../validity/home");
+              }}
+              style={styles.optionButtonComponent}
+            >
+              <View style={styles.opcaoMenu}>
+                <View style={styles.optionIcon}>
+                  <Ionicons name="person-outline" color={theme.iconColor} size={30} />
+                </View>
+                <Text style={[styles.text, { color: theme.text }]}>Conta</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                signOut();
+              }}
+              style={styles.optionButtonComponent}
+            >
+              <View style={styles.opcaoMenu}>
+                <View style={styles.optionIcon}>
+                  <Ionicons name="exit-outline" color={Colors.red2} size={30} />
+                </View>
+                <Text style={[styles.text, { color: Colors.red2 }]}>Sair do aplicativo</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -87,24 +84,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
   },
+  header: {},
   main: {
-    gap: 20,
+    gap: 15,
   },
   title: {
     fontFamily: "Roboto-Bold",
-    fontSize: 20,
+    fontSize: 30,
   },
-  userDataBox: {
-    padding: 20,
-    borderRadius: 20,
-  },
-  label: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 16,
+  footer: {},
+  modulesList: {
+    gap: 15,
   },
   text: {
-    fontFamily: "Roboto-Regular",
+    fontSize: 17,
+    fontFamily: "Roboto-SemiBold",
   },
-  button: {
+  opcaoMenu: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+  },
+  optionButtonComponent: {
+    borderBottomWidth: 0.4,
+    borderColor: Colors.gray,
+    paddingVertical: 6,
+  },
+  optionIcon: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    width: 40,
+    height: 40,
   },
 });

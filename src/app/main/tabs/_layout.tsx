@@ -13,25 +13,25 @@ export default function MainTabsLayout() {
       <Tabs
         screenOptions={{
           tabBarActiveTintColor: "white",
-          tabBarLabelStyle:{
+          tabBarLabelStyle: {
             fontSize: 14,
             marginTop: 4,
-            fontFamily: "Roboto-Regular"
+            fontFamily: "Roboto-Regular",
           },
           tabBarStyle: {
             backgroundColor: "#25292E",
-            height: 110
+            height: 120,
+            paddingTop: 10,
           },
-              headerStyle: { backgroundColor: "#25292E" },
-              headerLeft: () => (
-                <Image
-                  source={require("../../../../assets/images/Hipersenna-yellow-icon.png")}
-                  style={{ width: 35, marginLeft: 20 }}
-                  resizeMode="contain"
-                />
-              ),
+          headerStyle: { backgroundColor: "#25292E", height: 90 },
+          headerLeft: () => (
+            <Image
+              source={require("../../../../assets/images/Hipersenna-yellow-icon.png")}
+              style={{ width: 35, marginLeft: 20 }}
+              resizeMode="contain"
+            />
+          ),
         }}
-        
       >
         <Tabs.Screen
           name="modules"

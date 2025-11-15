@@ -13,6 +13,18 @@ type Product = {
   comprador: string;
   precotabela: number;
   precovenda: number;
+  precotabelaatac: number;
+  precovendaatac: number;
+  fatorconversao: number;
+  unidade: string;
+  embalagem: string;
+  dtinativo: string | null;
+  qtestger: number;
+  qtreserv: number;
+  qtbloqueada: number;
+  qtestgerdp6: number;
+  qtreservdp6: number;
+  qtbloqueadadp6: number;
 };
 
 export function useProduct(url: string, showAlert: any) {
@@ -50,8 +62,11 @@ export function useProduct(url: string, showAlert: any) {
         if (optionFilter == "descricao") {
           setListProductsFilter(data);
           setProductsListModal(true);
+          return null;
         } else {
           setProductData(data[0]);
+          const product: Product = data[0];
+          return product;
         }
       } else {
         if (response.status == 404) {

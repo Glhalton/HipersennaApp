@@ -28,14 +28,14 @@ export function Input(Props: Props) {
   return (
     <Fragment>
       {label && <Text style={[styles.label, { color: theme.text }]}>{label}</Text>}
-      <View style={[styles.boxInput, { backgroundColor: theme.inputColor }]}>
+      <View style={[styles.boxInput, { backgroundColor: theme.inputColor, borderColor: theme.inputBorder }]}>
         {IconLeft && iconLeftName && (
           <TouchableOpacity onPress={onIconLeftPress}>
             <IconLeft name={iconLeftName as any} size={20} color={theme.iconColor} style={styles.iconLeft} />
           </TouchableOpacity>
         )}
         <TextInput
-          style={[styles.input, { backgroundColor: theme.inputColor, color: theme.text }]}
+          style={[styles.input, { color: theme.text }]}
           placeholderTextColor={theme.inputPlaceholder}
           {...rest}
         />
