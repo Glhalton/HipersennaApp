@@ -32,12 +32,11 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalButtonComponentsBox: {
-    
     flexDirection: "row",
     width: "100%",
-    gap: 30
+    gap: 15,
   },
-  ButtonComponent:{
+  ButtonComponent: {
     flex: 1,
   },
   titleText: {

@@ -59,7 +59,7 @@ export default function Layout() {
           <Stack.Screen name="main/product/productData" options={{ title: "Produto" }} />
           <Stack.Screen name="main/validity/home" options={{ title: "Vencimento"}} />
           <Stack.Screen name="main/validity/history" options={{ title: "Histórico" }} />
-          <Stack.Screen name="main/validity/historyProducts" options={{ title: "Histórico" }} />
+          <Stack.Screen name="main/validity/historyProducts" options={{ title: "Produtos" }} />
           <Stack.Screen
             name="main/validity/individualValidity/selectFilialValidity"
             options={{ title: "Seleção de Filial" }}

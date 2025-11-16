@@ -12,29 +12,28 @@ export default function RequestProducts() {
 
   return (
     <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={[styles.cardsContainer]}>
+      <View style={[styles.main]}>
         <FlatList
           data={productsList}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
-            <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
-              <View style={styles.listId}>
-                <Text style={[styles.label, { color: theme.title }]}>{index + 1}°</Text>
+            <View style={[styles.card, {borderColor: theme.border}]}>
+              <Text style={[styles.label, { color: theme.title }]}>{index + 1}°</Text>
+              <View style={styles.rowBox}>
+                <Text style={[styles.label, { color: theme.title }]}>
+                  {item.product_cod}
+                  <Text style={[styles.productDataText, { color: theme.text }]}>: {item.description}</Text>
+                </Text>
               </View>
-              <View style={styles.dadosItem}>
-                <View style={styles.codDescricaoProdutoRow}>
-                  <Text style={[styles.label, { color: theme.title }]}>
-                    {item.product_cod}{" "}
-                    <Text style={[styles.productDataText, { color: theme.text }]}> : {item.description}</Text>{" "}
-                  </Text>
+              <View>
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label, { color: theme.title }]}>Cod. auxiliar: </Text>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>{item.auxiliary_code}</Text>
                 </View>
-                <View>
-                  <Text style={[styles.label, { color: theme.title }]}>
-                    Dt. vencimento:{" "}
-                    <Text style={[styles.productDataText, { color: theme.text }]}>
-                      {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                    </Text>
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label, { color: theme.title }]}>Dt. vencimento: </Text>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>
+                    {new Date(item.validity_date).toLocaleDateString("pt-BR")}
                   </Text>
                 </View>
               </View>
@@ -49,41 +48,29 @@ export default function RequestProducts() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  cardsContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 14,
-  },
-  card: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: Colors.gray,
-    marginBottom: 10,
     paddingHorizontal: 20,
   },
-  codDescricaoProdutoRow: {
-    flexDirection: "row",
-    paddingRight: 10,
+  main: {},
+  card: {
+    borderBottomWidth: 0.5,
+    paddingVertical: 8,
   },
   productDataText: {
     fontFamily: "Roboto-Regular",
     color: Colors.gray,
   },
   label: {
-    fontFamily: "Roboto-Bold",
+    fontFamily: "Roboto-SemiBold",
     color: Colors.blue,
   },
   textHeader: {
     fontFamily: "Roboto-Regular",
     color: "white",
   },
-  dadosItem: {
-    paddingVertical: 10,
-  },
   listId: {
     padding: 10,
+  },
+  rowBox: {
+    flexDirection: "row",
   },
 });

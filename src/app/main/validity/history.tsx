@@ -13,7 +13,7 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ModalAlert from "../../../components/modalAlert";
 import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
@@ -33,6 +33,7 @@ type validity = {
 export default function History() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+  const insets = useSafeAreaInsets();
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
@@ -126,67 +127,65 @@ export default function History() {
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <SafeAreaView style={[styles.container, { paddingBottom: insets.bottom }]} edges={["bottom"]}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View style={styles.contentBox}>
-        <View style={styles.filterBox}>
-          <DropDownPicker
-            open={open}
-            value={ordination}
-            items={ordinationItems}
-            setOpen={setOpen}
-            setValue={(callback) => {
-              const newValue = callback(ordination);
-              handleOrdinationChange(newValue);
-            }}
-            setItems={setOrdinationItems}
-            placeholder="Ordenar por"
-            style={[styles.dropdownInput, { backgroundColor: theme.button }]}
-            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
-            textStyle={[styles.optionsText, { color: theme.buttonText }]}
-            placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
-            ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline"  size={20} color={Colors.white}/>}
-            ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline"  size={20} color={Colors.white}/>}
-            TickIconComponent={() => <Ionicons name="checkmark"  size={20} color={Colors.white}/>}
-            
-          />
-        </View>
-        <View style={styles.flatListBox}>
-          <FlatList
-            data={sortedValidities}
-            keyExtractor={(_, index) => index.toString()}
-            contentContainerStyle={{ paddingBottom: 20 }}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  router.push("./historyProducts");
-                  setProducts(item.hsvalidity_products);
-                }}
-              >
-                <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
+      <View style={styles.header}>
+        <DropDownPicker
+          open={open}
+          value={ordination}
+          items={ordinationItems}
+          setOpen={setOpen}
+          setValue={(callback) => {
+            const newValue = callback(ordination);
+            handleOrdinationChange(newValue);
+          }}
+          setItems={setOrdinationItems}
+          placeholder="Ordenar por"
+          style={[styles.dropdownInput, { backgroundColor: theme.button }]}
+          dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
+          textStyle={[styles.optionsText, { color: theme.buttonText }]}
+          placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
+          ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline" size={20} color={Colors.white} />}
+          ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline" size={20} color={Colors.white} />}
+          TickIconComponent={() => <Ionicons name="checkmark" size={20} color={Colors.white} />}
+        />
+      </View>
+
+      <View style={styles.main}>
+        <FlatList
+          data={sortedValidities}
+          keyExtractor={(_, index) => index.toString()}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          style={[styles.flatList, { borderColor: theme.border }]}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.6}
+              style={styles.card}
+              onPress={() => {
+                router.push("./historyProducts");
+                setProducts(item.hsvalidity_products);
+              }}
+            >
+              <View style={styles.requestDataBox}>
+                <View>
                   <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
-                  <View style={styles.requestDataBox}>
-                    <View>
-                      <Text style={[styles.text, { color: theme.text }]}>
-                        <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
-                      </Text>
-                      <View style={styles.dates}>
-                        <Text style={[styles.text, { color: theme.text }]}>
-                          <Text style={[styles.label, { color: theme.title }]}>Criado em:</Text>{" "}
-                          {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.iconBox}>
-                      <Octicons name="chevron-right" size={40} color={theme.iconColor} />
-                    </View>
+                  <Text style={[styles.text, { color: theme.text }]}>
+                    <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
+                  </Text>
+                  <View style={styles.dates}>
+                    <Text style={[styles.text, { color: theme.text }]}>
+                      <Text style={[styles.label, { color: theme.title }]}>Criado em:</Text>{" "}
+                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                    </Text>
                   </View>
                 </View>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+                <View style={styles.iconBox}>
+                  <Octicons name="chevron-right" size={40} color={theme.iconColor} />
+                </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
       </View>
 
       {alertData && (
@@ -206,37 +205,27 @@ export default function History() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
   },
-  contentBox: {
-    paddingHorizontal: 14,
-    flex: 1,
-  },
-  filterBox: {
+  header: {
     paddingVertical: 15,
   },
-  flatListBox: {
-    paddingBottom: 60,
-  },
+  main: {},
+  flatList: {},
   card: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    marginBottom: 15,
-    borderColor: Colors.gray,
+    borderBottomWidth: 0.5,
+    paddingVertical: 5,
   },
   cardTitle: {
     fontSize: 16,
     fontFamily: "Roboto-Bold",
-    color: Colors.blue,
   },
   label: {
     fontFamily: "Roboto-Regular",
-    color: Colors.blue,
   },
   text: {
     color: Colors.gray,
-    fontFamily: "Roboto-Regular",
+    fontFamily: "Roboto-SemiBold",
   },
   requestDataBox: {
     flexDirection: "row",

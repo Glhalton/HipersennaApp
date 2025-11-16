@@ -2,17 +2,9 @@ import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View
-} from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ModalAlert from "../../../../components/modalAlert";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
@@ -40,6 +32,7 @@ type Product = {
 export default function SelectRequest() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+  const insets = useSafeAreaInsets();
 
   const { visible, showAlert, hideAlert, alertData } = useAlert();
 
@@ -100,15 +93,15 @@ export default function SelectRequest() {
     setValidity({
       branch_id: branchId,
       request_id: requestId,
-      products: []
+      products: [],
     });
   }
 
   function getColor(status: string | null) {
-    if (status === "Pendente") return "#FF6200";
+    if (status === "Pendente") return "#E80000";
     if (status === "Em_andamento") return "#51ABFF";
     if (status === "Concluido") return "#13BE19";
-    if (status === "Expirado") return "#E80000";
+    if (status === "Expirado") return "#383838ff";
     return "black";
   }
 
@@ -157,71 +150,70 @@ export default function SelectRequest() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} edges={["bottom"]}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={[styles.titleText, { color: theme.title }]}>Selecione uma solicitação:</Text>
-
-          <DropDownPicker
-            open={open}
-            value={ordination}
-            items={filterItems}
-            setOpen={setOpen}
-            setValue={(callback) => {
-              const newValue = callback(ordination);
-              handleOrdinationChange(newValue);
-            }}
-            setItems={setFilterItems}
-            placeholder="Ordenar por"
-            style={[styles.dropdownInput, { backgroundColor: theme.button }]}
-            dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
-            textStyle={[styles.optionsText, { color: theme.buttonText }]}
-            placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
-            ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline"  size={20} color={Colors.white}/>}
-            ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline"  size={20} color={Colors.white}/>}
-            TickIconComponent={() => <Ionicons name="checkmark"  size={20} color={Colors.white}/>}
-          />
-        </View>
-
-        <View style={[styles.flatListBox]}>
-          <FlatList
-            data={sortedRequests}
-            keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                activeOpacity={0.6}
-                onPress={() => {
-                  selectedRequest(item);
-                }}
-              >
-                <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
-                  <View style={styles.requestDataBox}>
-                    <View>
-                      <Text style={[styles.cardId, { color: theme.title }]}># {item.id}</Text>
-                      <Text style={[styles.text, { color: theme.text }]}>
-                        <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
-                      </Text>
-                      <Text style={[styles.text, { color: theme.text }]}>
-                        <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
-                        {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                      </Text>
-                      {/* <Text style={[styles.text, { color: theme.text }]}><Text style={[styles.label, { color: theme.title }]}>Dt. Limite:</Text> {new Date(item.target_date).toLocaleDateString("pt-BR")}</Text> */}
-                      <View style={styles.statusBox}>
-                        <Text style={[styles.label, { color: theme.title }]}>Status:</Text>
-                        <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
-                        <Text style={[styles.text, { color: getColor(item.status) }]}>{item.status}</Text>
-                      </View>
-                    </View>
-
-                    <View style={styles.iconBox}>
-                      <Octicons name="chevron-right" size={40} color={theme.iconColor} />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background, paddingBottom: insets.bottom }]}
+      edges={["bottom"]}
+    >
+      <View style={styles.header}>
+        <Text style={[styles.titleText, { color: theme.title }]}>Selecione uma solicitação:</Text>
+        <DropDownPicker
+          open={open}
+          value={ordination}
+          items={filterItems}
+          setOpen={setOpen}
+          setValue={(callback) => {
+            const newValue = callback(ordination);
+            handleOrdinationChange(newValue);
+          }}
+          setItems={setFilterItems}
+          placeholder="Ordenar por"
+          style={[styles.dropdownInput, { backgroundColor: theme.button }]}
+          dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
+          textStyle={[styles.optionsText, { color: theme.buttonText }]}
+          placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
+          ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline" size={20} color={Colors.white} />}
+          ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline" size={20} color={Colors.white} />}
+          TickIconComponent={() => <Ionicons name="checkmark" size={20} color={Colors.white} />}
+        />
+      </View>
+      <View style={[styles.main]}>
+        <FlatList
+          data={sortedRequests}
+          contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              activeOpacity={0.6}
+              onPress={() => {
+                selectedRequest(item);
+              }}
+            >
+              <View style={[styles.card]}>
+                <View style={styles.requestDataBox}>
+                  <View>
+                    <Text style={[styles.cardId, { color: theme.title }]}># {item.id}</Text>
+                    <Text style={[styles.text, { color: theme.text }]}>
+                      <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
+                    </Text>
+                    <Text style={[styles.text, { color: theme.text }]}>
+                      <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
+                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                    </Text>
+                    <View style={styles.statusBox}>
+                      <Text style={[styles.label, { color: theme.title }]}>Status:</Text>
+                      <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
+                      <Text style={[styles.text, { color: getColor(item.status) }]}>{item.status}</Text>
                     </View>
                   </View>
+
+                  <View style={styles.iconBox}>
+                    <Octicons name="chevron-right" size={40} color={theme.iconColor} />
+                  </View>
                 </View>
-              </TouchableOpacity>
-            )}
-          />
-        </View>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
       </View>
       {alertData && (
         <ModalAlert
@@ -241,27 +233,20 @@ export default function SelectRequest() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 14,
+    paddingHorizontal: 20,
   },
   header: {
     paddingVertical: 15,
   },
   titleText: {
     fontFamily: "Roboto-Bold",
-    color: Colors.blue,
-    fontSize: 25,
+    fontSize: 22,
     paddingBottom: 10,
   },
-  flatListBox: {
-    paddingBottom: 110,
-  },
+  main: {},
   card: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 14,
-    marginBottom: 15,
-    borderColor: Colors.gray,
+    borderBottomWidth: 0.5,
+    paddingVertical: 8,
   },
   requestDataBox: {
     flexDirection: "row",
@@ -270,15 +255,12 @@ const styles = StyleSheet.create({
   },
   cardId: {
     fontSize: 16,
-    fontFamily: "Roboto-Bold",
-    color: Colors.blue,
+    fontFamily: "Roboto-SemiBold",
   },
   label: {
-    fontFamily: "Roboto-Bold",
-    color: Colors.blue,
+    fontFamily: "Roboto-SemiBold",
   },
   text: {
-    color: Colors.gray,
     fontFamily: "Roboto-Regular",
   },
   statusBox: {
@@ -297,7 +279,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   dropdownInput: {
     minHeight: 30,
     width: 140,

@@ -19,29 +19,15 @@ export default function Modules() {
           <View>
             <TouchableOpacity
               onPress={() => {
-                router.push("../validity/home");
+                router.push("../product/searchProduct");
               }}
               style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
-                  <Ionicons name="calendar-outline" color={theme.iconColor} size={30} />
+                  <Ionicons name="search" color={theme.iconColor} size={30} />
                 </View>
-                <Text style={[styles.text, { color: theme.text }]}>Vencimento</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                // router.push("/");
-              }}
-              style={styles.optionButtonComponent}
-            >
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Ionicons name="document-text-outline" color={theme.iconColor} size={30} />
-                </View>
-                <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
+                <Text style={[styles.text, { color: theme.text }]}>Consulta de produtos</Text>
               </View>
             </TouchableOpacity>
 
@@ -61,15 +47,29 @@ export default function Modules() {
 
             <TouchableOpacity
               onPress={() => {
-                router.push("../product/searchProduct");
+                // router.push("/");
               }}
               style={styles.optionButtonComponent}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
-                  <Ionicons name="search" color={theme.iconColor} size={30} />
+                  <Ionicons name="document-text-outline" color={theme.iconColor} size={30} />
                 </View>
-                <Text style={[styles.text, { color: theme.text }]}>Consulta de produtos</Text>
+                <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                router.push("../validity/home");
+              }}
+              style={styles.optionButtonComponent}
+            >
+              <View style={styles.opcaoMenu}>
+                <View style={styles.optionIcon}>
+                  <Ionicons name="calendar-outline" color={theme.iconColor} size={30} />
+                </View>
+                <Text style={[styles.text, { color: theme.text }]}>Vencimento</Text>
               </View>
             </TouchableOpacity>
           </View>

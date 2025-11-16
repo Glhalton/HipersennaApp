@@ -12,14 +12,14 @@ export default function MainTabsLayout() {
     <SafeAreaProvider>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: "white",
+          tabBarActiveTintColor: "#3e434dff",
           tabBarLabelStyle: {
             fontSize: 14,
             marginTop: 4,
             fontFamily: "Roboto-Regular",
           },
           tabBarStyle: {
-            backgroundColor: "#25292E",
+            backgroundColor: theme.navBottomBackground,
             height: 120,
             paddingTop: 10,
           },
@@ -29,6 +29,7 @@ export default function MainTabsLayout() {
               source={require("../../../../assets/images/Hipersenna-yellow-icon.png")}
               style={{ width: 35, marginLeft: 20 }}
               resizeMode="contain"
+              tintColor={"white"}
             />
           ),
         }}
