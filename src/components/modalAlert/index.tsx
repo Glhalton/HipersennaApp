@@ -1,4 +1,4 @@
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
 import { Colors } from "../../constants/colors";
@@ -8,7 +8,8 @@ import { styles } from "./styles";
 type IconComponent =
   | React.ComponentType<React.ComponentProps<typeof MaterialIcons>>
   | React.ComponentType<React.ComponentProps<typeof FontAwesome>>
-  | React.ComponentType<React.ComponentProps<typeof Octicons>>;
+  | React.ComponentType<React.ComponentProps<typeof Octicons>>
+  | React.ComponentType<React.ComponentProps<typeof Ionicons>>;
 
 type Props = ModalProps & {
   IconCenter?: IconComponent;
@@ -42,6 +43,7 @@ export default function ModalAlert({
           </View>
           <View style={styles.ButtonComponentBox}>
             <ButtonComponent
+             style={{borderRadius: 12, backgroundColor: theme.cancel}}
               text={"Ok"}
               onPress={ButtonComponentPress}
             />

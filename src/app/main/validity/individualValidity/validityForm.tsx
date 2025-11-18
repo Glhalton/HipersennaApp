@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -197,7 +197,7 @@ export default function ValidityForm() {
               openCamera();
             }}
           >
-            <Ionicons name="barcode-outline" color={theme.iconColor} size={30} />
+            <MaterialCommunityIcons name="barcode-scan" color={theme.iconColor} size={30} />
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -262,8 +262,8 @@ export default function ValidityForm() {
           <View style={styles.ButtonComponentsBox}>
             <View style={styles.summaryButtonComponent}>
               <ButtonComponent
+                style={{ backgroundColor: theme.button }}
                 text="Inserir"
-                backgroundColor={Colors.gray}
                 onPress={() => {
                   addProductList();
                   Keyboard.dismiss();
@@ -274,11 +274,11 @@ export default function ValidityForm() {
             {validity.products.length > 0 && (
               <View style={styles.summaryButtonComponent}>
                 <ButtonComponent
+                  style={{ backgroundColor: theme.button2 }}
                   text="Resumo"
                   onPress={() => {
                     router.push("./validitySummary");
                   }}
-                  backgroundColor={theme.button2}
                 />
               </View>
             )}

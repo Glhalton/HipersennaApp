@@ -9,39 +9,38 @@ import ModalAlert from "../../../../components/modalAlert";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
 import { postValidityDataStore } from "../../../../store/postValidityDataStore";
-import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
 
-type RequestDataItem = {
+type Request = {
   id: number;
   branch_id: number;
   analyst_id: number;
   conferee_id: number;
   status: string;
   created_at: string;
-  products: Product[];
+  hsvalidity_request_products: Product[];
 };
 
 type Product = {
   product_cod: number;
+  auxiliary_code: string;
   description: string;
   validity_date: Date;
-  quantity: string;
+  quantity: number;
   status: string;
 };
 
 export default function SelectRequest() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+  const url = process.env.EXPO_PUBLIC_API_URL;
   const insets = useSafeAreaInsets();
 
   const { visible, showAlert, hideAlert, alertData } = useAlert();
 
-  const url = process.env.EXPO_PUBLIC_API_URL;
+  const setProductsList = postValidityDataStore((state) => state.setProductsList);
 
-  const requests = validityRequestDataStore((state) => state.requests);
   const setValidity = postValidityDataStore((state) => state.addValidity);
-  const setProductsList = postValidityDataStore((state) => state.setProductList);
-  const setRequests = validityRequestDataStore((state) => state.setRequestsList);
+  const [validityRequests, setValidityRequests] = useState<Request[]>([]);
 
   const [filterItems, setFilterItems] = useState([
     { label: "Novos", value: "1" },
@@ -65,8 +64,8 @@ export default function SelectRequest() {
 
       const responseData = await response.json();
 
-      if (responseData.validityRequestsByEmployee) {
-        setRequests(responseData.validityRequestsByEmployee);
+      if (response.ok) {
+        setValidityRequests(responseData.validityRequestsByEmployee);
       } else {
         showAlert({
           title: "Erro!",
@@ -107,15 +106,15 @@ export default function SelectRequest() {
 
   //Cria a validade e copia os produtos para uma lista
   const selectedRequest = (item: any) => {
-    router.replace("./validityRequestProducts");
-    setProductsList(item.hsvalidity_request_products);
     addValidity(item.branch_id, item.id);
+    setProductsList(item.hsvalidity_request_products);
+    router.replace("./validityRequestProducts");
   };
 
-  const [sortedRequests, setSortedRequests] = useState<RequestDataItem[]>([]);
+  const [sortedRequests, setSortedRequests] = useState<Request[]>([]);
 
   const sortRequests = (option: string | null) => {
-    let sorted: RequestDataItem[] = [...requests];
+    let sorted: Request[] = [...validityRequests];
 
     switch (option) {
       case "1":
@@ -139,7 +138,7 @@ export default function SelectRequest() {
   }, []);
   useEffect(() => {
     sortRequests(ordination || "1");
-  }, [requests]);
+  }, [validityRequests]);
 
   if (isLoading) {
     return (

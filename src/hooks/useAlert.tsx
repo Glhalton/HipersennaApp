@@ -1,10 +1,12 @@
-import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
-import { useState, useCallback } from "react";
+import { FontAwesome, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { useCallback, useState } from "react";
 
 type IconComponent =
   | React.ComponentType<React.ComponentProps<typeof MaterialIcons>>
   | React.ComponentType<React.ComponentProps<typeof FontAwesome>>
-  | React.ComponentType<React.ComponentProps<typeof Octicons>>;
+  | React.ComponentType<React.ComponentProps<typeof Octicons>>
+  | React.ComponentType<React.ComponentProps<typeof Ionicons>>;
+  
 
 type AlertOptions = {
   title: string;

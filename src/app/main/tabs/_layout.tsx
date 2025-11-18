@@ -20,7 +20,7 @@ export default function MainTabsLayout() {
           },
           tabBarStyle: {
             backgroundColor: theme.navBottomBackground,
-            height: 120,
+            height: 130,
             paddingTop: 10,
           },
           headerStyle: { backgroundColor: "#25292E", height: 90 },

@@ -64,9 +64,15 @@ export function useProduct(url: string, showAlert: any) {
           setProductsListModal(true);
           return null;
         } else {
-          setProductData(data[0]);
-          const product: Product = data[0];
-          return product;
+          if (data.length > 1) {
+            setListProductsFilter(data);
+            setProductsListModal(true);
+            return null;
+          } else {
+            setProductData(data[0]);
+            const product: Product = data[0];
+            return product;
+          }
         }
       } else {
         if (response.status == 404) {

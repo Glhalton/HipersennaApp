@@ -22,10 +22,10 @@ import { validityRequestDataStore } from "../../../../store/validityRequestDataS
 type Request = {
   id: number;
   branch_id: number;
+  analyst_id: number;
+  conferee_id: string;
   status: string;
   created_at: string;
-  target_date: string;
-  analyst_id: number;
   hsvalidity_request_products: Product[];
 };
 
@@ -34,7 +34,7 @@ type Product = {
   auxiliary_code: string;
   description: string;
   validity_date: Date;
-  quantity: string;
+  quantity: number;
   status: string;
 };
 
@@ -66,14 +66,13 @@ export default function Requests() {
       const response = await fetch(`${url}/validity-requests/employee`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
       });
 
       const responseData = await response.json();
 
-      if (responseData.validityRequestsByEmployee) {
+      if (response.ok) {
         setRequests(responseData.validityRequestsByEmployee);
       } else {
         showAlert({

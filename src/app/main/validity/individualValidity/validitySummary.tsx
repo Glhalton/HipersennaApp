@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
@@ -40,7 +40,6 @@ export default function ValiditySummary() {
     }
 
     setIsLoading(true);
-    console.log(validity);
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -98,44 +97,53 @@ export default function ValiditySummary() {
       <View style={styles.main}>
         <FlatList
           data={validity.products}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ gap: 15, paddingVertical: 20 }}
+          contentContainerStyle={{ paddingVertical: 20 }}
           renderItem={({ item, index }) => (
-            <View style={[styles.card, { backgroundColor: theme.itemBackground }]}>
+            <View style={[styles.card]}>
               <Text style={[styles.cardTitleText, { color: theme.title }]}>
                 #{index + 1} - {item.description}
               </Text>
               <View style={styles.productDataBox}>
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  <Text style={[styles.label, { color: theme.title }]}>Código Auxiliar:</Text> {item.auxiliary_code}
-                </Text>
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod} {"   |   "}
-                  <Text style={[styles.productDataText, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>Quantidade:</Text> {item.quantity}
-                  </Text>
-                </Text>
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  <Text style={[styles.label, { color: theme.title }]}>Validade:</Text>{" "}
-                  {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                </Text>
+                <View>
+                  <View style={styles.rowBox}>
+                    <Text style={[styles.label, { color: theme.title }]}>Código: </Text>
+                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.product_cod}</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text style={[styles.label, { color: theme.title }]}>Código Auxiliar: </Text>
+                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.auxiliary_code}</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text style={[styles.label, { color: theme.title }]}>Quantidade: </Text>
+                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.quantity}</Text>
+                  </View>
+                  <View style={styles.rowBox}>
+                    <Text style={[styles.label, { color: theme.title }]}>Validade: </Text>
+                    <Text style={[styles.productDataText, { color: theme.text }]}>
+                      {new Date(item.validity_date).toLocaleDateString("pt-BR")}
+                    </Text>
+                  </View>
+                </View>
+                <View>
+                  <TouchableOpacity
+                    style={[styles.removeButtonComponent, { borderColor: theme.cancel }]}
+                    onPress={() => removeProduct(index)}
+                  >
+                    <Ionicons name="trash-outline" size={30} color={theme.cancel} />
+                  </TouchableOpacity>
+                </View>
               </View>
-
-              <TouchableOpacity
-                style={[styles.removeButtonComponent, { backgroundColor: theme.cancel }]}
-                onPress={() => removeProduct(index)}
-              >
-                <Text style={[styles.removeText, { color: theme.buttonText }]}>Remover</Text>
-              </TouchableOpacity>
             </View>
           )}
         />
 
         <View style={styles.insertButtonComponent}>
           <ButtonComponent
+            style={{ backgroundColor: Colors.green }}
             text="Salvar dados"
             onPress={postValidity}
-            backgroundColor={Colors.green}
             loading={isLoading}
           />
         </View>
@@ -168,30 +176,23 @@ const styles = StyleSheet.create({
   filialTitleText: {
     fontFamily: "Roboto-Bold",
     fontSize: 30,
-    color: Colors.blue,
   },
   main: {
     flex: 1,
   },
   card: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 12,
-    gap: 6,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 2,
+    borderBottomWidth: 0.5,
+    paddingVertical: 8,
   },
   cardTitleText: {
     fontSize: 16,
     fontFamily: "Roboto-Bold",
   },
-  productDataBox: {},
+  productDataBox: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   label: {
     fontFamily: "Roboto-Regular",
   },
@@ -199,17 +200,16 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-SemiBold",
   },
   removeButtonComponent: {
-    backgroundColor: "#f72929ff",
     padding: 5,
-    borderRadius: 7,
-    alignItems: "center",
-  },
-  removeText: {
-    fontFamily: "Roboto-Bold",
+    borderRadius: 12,
+    borderWidth: 2,
   },
   insertButtonComponent: {
     justifyContent: "flex-end",
     marginTop: 20,
     marginBottom: 20,
+  },
+  rowBox: {
+    flexDirection: "row",
   },
 });

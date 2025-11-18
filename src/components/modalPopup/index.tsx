@@ -27,10 +27,10 @@ export default function ModalPopup({ ButtonComponentLeft, ButtonComponentRight, 
           </View>
           <View style={styles.modalButtonComponentsBox}>
             <View style={styles.ButtonComponent}>
-              <ButtonComponent text={"Cancelar"} backgroundColor={Colors.gray} onPress={ButtonComponentLeft} />
+              <ButtonComponent text={"Cancelar"} onPress={ButtonComponentLeft} style = {[styles.button, {backgroundColor : theme.button}]} />
             </View>
             <View style={styles.ButtonComponent}>
-              <ButtonComponent text={"Sair"} onPress={ButtonComponentRight} />
+              <ButtonComponent text={"Sair"} onPress={ButtonComponentRight} style = {[styles.button, {backgroundColor : theme.cancel}]} />
             </View>
           </View>
         </View>

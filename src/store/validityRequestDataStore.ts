@@ -14,9 +14,9 @@ type Request = {
 type Product = {
   product_cod: number;
   auxiliary_code: string;
-  validity_date: Date;
   description: string;
-  quantity: string;
+  validity_date: Date;
+  quantity: number;
   status: string;
 };
 

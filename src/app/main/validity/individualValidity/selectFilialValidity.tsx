@@ -53,12 +53,12 @@ export default function SelectFilialValidity() {
         </View>
         {branchId && (
           <ButtonComponent
+          style={{backgroundColor: theme.button}}
             text="Continuar"
             onPress={() => {
               addValidity();
               router.replace("./validityForm");
             }}
-            backgroundColor={theme.button}
           />
         )}
       </View>

@@ -51,7 +51,6 @@ export function useUserData(url: string, showAlert: any) {
 
       if (validitiesData.validitiesByEmployee) {
         setValidities(validitiesData.validitiesByEmployee);
-        console.log(validities)
       } else {
         showAlert({
           title: "Erro!",

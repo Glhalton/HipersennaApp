@@ -51,7 +51,6 @@ export default function ProductData() {
       Number(product.qtreservdp6),
       Number(product.qtbloqueadadp6),
     )
-    console.log(product.dtinativo);
   }, []);
 
   return (
@@ -126,11 +125,11 @@ export default function ProductData() {
         </View>
         <View style={styles.rowBox}>
           <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Est. Disponível:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Qtd. Disponível:</Text>
             <Text style={[styles.text, { color: theme.text }]}>{availableStock}</Text>
           </View>
           <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Est. Disponível DP6:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Qtd. Disponível DP6:</Text>
             <Text style={[styles.text, { color: theme.text }]}>{availableStockDp6}</Text>
           </View>
         </View>

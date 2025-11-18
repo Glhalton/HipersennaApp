@@ -42,7 +42,6 @@ export default function ValiditySummary() {
     }
 
     setIsLoading(true);
-    console.log(validity);
 
     try {
       const token = await AsyncStorage.getItem("token");
@@ -136,7 +135,7 @@ export default function ValiditySummary() {
         />
 
         <View style={styles.insertButtonComponent}>
-          <ButtonComponent text="Salvar dados" onPress={postValidity} backgroundColor={Colors.green} loading={isLoading} />
+          <ButtonComponent text="Salvar dados" onPress={postValidity} style={{backgroundColor: Colors.green}} loading={isLoading} />
         </View>
       </View>
 

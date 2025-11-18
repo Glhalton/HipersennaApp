@@ -4,18 +4,21 @@ import { styles } from "./styles";
 
 type Props = TouchableOpacityProps & {
   text: string;
-  color?: string;
-  backgroundColor?: string;
   loading?: boolean;
+  color?: string;
 };
 
-export function ButtonComponent({ text, color = "white", backgroundColor = Colors.red2, loading, ...rest }: Props) {
+export function ButtonComponent({ text, color = "white", style, loading, ...rest }: Props) {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
   return (
     <View>
-      <TouchableOpacity style={[styles.ButtonComponent, { backgroundColor }]} activeOpacity={0.6} {...rest}>
+      <TouchableOpacity
+        style={[styles.ButtonComponent, { backgroundColor: theme.button2 }, style]}
+        activeOpacity={0.6}
+        {...rest}
+      >
         {loading ? (
           <ActivityIndicator color={Colors.white} />
         ) : (

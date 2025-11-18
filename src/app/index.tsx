@@ -1,7 +1,7 @@
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
-import { Image, Linking, Modal, Platform, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Image, Linking, Modal, Platform, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VersionCheck from "react-native-version-check";
 import { ButtonComponent } from "../components/buttonComponent";
@@ -59,7 +59,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} /> */}
+      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={[styles.header]}>
         <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
         <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>
@@ -97,13 +97,13 @@ export default function Index() {
             text="Login"
             onPress={() => login(username, password)}
             loading={isLoading}
-            backgroundColor={theme.button2}
+            style={{backgroundColor: theme.button2}}
           />
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={[styles.versionText, { color: theme.text }]}>Versão: {appVersion}</Text>
+        <Text style={[styles.versionText, { color: theme.text }]}>{appVersion}</Text>
       </View>
 
       <Modal animationType="fade" transparent={true} visible={hasUpdate}>
@@ -117,7 +117,7 @@ export default function Index() {
               </Text>
             </View>
             <View style={styles.updateButtonComponentBox}>
-              <ButtonComponent backgroundColor={theme.button2} text={"Atualizar"} onPress={openPlayStore} />
+              <ButtonComponent style={{backgroundColor: theme.button2, borderRadius: 12}} text={"Atualizar"} onPress={openPlayStore} />
             </View>
           </View>
         </View>

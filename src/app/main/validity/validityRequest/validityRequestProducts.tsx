@@ -2,17 +2,8 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  FlatList,
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  useColorScheme,
-  View
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { ButtonComponent } from "../../../../components/buttonComponent";
 import ModalAlert from "../../../../components/modalAlert";
 import ModalPopup from "../../../../components/modalPopup";
@@ -25,10 +16,9 @@ export default function ValidityRequestProducts() {
   const theme = Colors[colorScheme];
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
-
   const url = process.env.EXPO_PUBLIC_API_URL;
-
   const [isLoading, setIsLoading] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const productsList = postValidityDataStore((state) => state.validity.products) || [];
   const resetProducts = postValidityDataStore((state) => state.resetProductsList);
@@ -67,7 +57,6 @@ export default function ValidityRequestProducts() {
 
     if (quantNumber > 0) {
       updateStatus(index, "Vistoriado");
-      console.log("Produto Vistoriado: ", productsList[index]);
     } else {
       updateStatus(index, "Nao_encontrado");
       updateQuantity(index, 0);
@@ -85,9 +74,10 @@ export default function ValidityRequestProducts() {
   };
 
   function getColor(status: string | undefined) {
+    if (status === "Nao_vistoriado") return "#ff9100ff";
     if (status === "Vistoriado") return "#5FE664";
     if (status === "Nao_encontrado") return Colors.red2;
-    return theme.itemBackground;
+    return;
   }
 
   function getColorText(status: string | undefined) {
@@ -95,11 +85,6 @@ export default function ValidityRequestProducts() {
     if (status === "Vistoriado") return Colors.blue;
     return theme.text;
   }
-
-  useEffect(() => {
-    console.log(validityData);
-    console.log(productsList);
-  }, []);
 
   //Função para capturar o botão de voltar
   useEffect(() => {
@@ -117,7 +102,7 @@ export default function ValidityRequestProducts() {
   // Quando quiser substituir a tela sem abrir modal:
   const goHome = () => {
     setForceExit(true);
-    router.replace("./main/home");
+    router.replace("../home");
   };
 
   const handleConfirmExit = () => {
@@ -132,22 +117,22 @@ export default function ValidityRequestProducts() {
     setExitAction(null);
   };
 
+  function statusName(status: string | undefined) {
+    if (status === "Nao_encontrado") return "Não encontrado";
+    if (status === "Nao_vistoriado") return "Não vistoriado";
+    if (status === "Vistoriado") return "Vistoriado";
+  }
+
   const updateStatusRequest = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
       const productsPayload = productsList.map((p) => ({
         product_cod: Number(p.product_cod),
-        status: p.productStatus,
+        status: p.status,
       }));
 
-      console.log("Payload enviado:", {
-        requestId: Number(validityData.request_id),
-        status: "Concluido",
-        products: productsPayload,
-      });
-
-      const response = await fetch(`${url}/validityRequests/validityRequestsUpdate`, {
+      const response = await fetch(`${url}/validity-requests/`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -194,10 +179,7 @@ export default function ValidityRequestProducts() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          validity: validityData,
-          products: productsList,
-        }),
+        body: JSON.stringify(validityData),
       });
 
       const responseData = await response.json();
@@ -213,7 +195,7 @@ export default function ValidityRequestProducts() {
           onClose: () => {
             setForceExit(true);
             resetProducts();
-            router.replace("./main/home");
+            router.replace("../home");
           },
         });
       } else {
@@ -225,10 +207,10 @@ export default function ValidityRequestProducts() {
           iconFamily: MaterialIcons,
         });
       }
-    } catch (erro) {
+    } catch (error) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${erro}`,
+        text: `Não foi possível conectar ao servidor: ${error}`,
         icon: "error-outline",
         color: Colors.red,
         iconFamily: MaterialIcons,
@@ -239,61 +221,54 @@ export default function ValidityRequestProducts() {
   };
 
   return (
-    <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
-      <View style={styles.cardsContainer}>
-        <View style={styles.titleBox}>
-          <Text style={[styles.titleText, { color: theme.title }]}>Digite a quantidade para cada produto:</Text>
-        </View>
-
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
+      <View style={styles.header}>
+        <Text style={[styles.titleText, { color: theme.title }]}>Digite a quantidade para cada produto:</Text>
+      </View>
+      <View style={styles.main}>
         <FlatList
           data={productsList}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingVertical: 20 }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() => {
                 ProductPress(item, index);
-                console.log(item);
               }}
             >
-              <View style={[styles.card, { backgroundColor: getColor(item.productStatus) }]}>
+              <View style={[styles.card]}>
                 <View style={styles.listId}>
-                  <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>{index + 1}°</Text>
+                  <Text style={[styles.label]}># {index + 1}</Text>
                 </View>
-                <View>
-                  <View style={styles.codDescricaoProdutoRow}>
-                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
-                      {item.product_cod}:{" "}
-                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
-                        {item.description}
-                      </Text>{" "}
-                    </Text>
-                  </View>
-                  <View>
-                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
-                      Cod.auxiliar:{" "}
-                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
-                        {item.auxiliary_code}
-                      </Text>
-                    </Text>
-                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}>
-                      Dt. vencimento:{" "}
-                      <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
-                        {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                      </Text>
-                    </Text>
-                  </View>
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label]}>{item.product_cod}: </Text>
+                  <Text style={[styles.productDataText]}>{item.description}</Text>
                 </View>
-                <View style={styles.dadosItem}>
-                  <View style={styles.codDescricaoProdutoRow}>
-                    <Text style={[styles.label, { color: getColorText(item.productStatus) }]}> Quant: </Text>
-                  </View>
-                  <View>
-                    <Text style={[styles.productDataText, { color: getColorText(item.productStatus) }]}>
-                      {" "}
-                      {item.quantity}{" "}
-                    </Text>
-                  </View>
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label]}>Cod. auxiliar: </Text>
+                  <Text style={[styles.productDataText]}>{item.auxiliary_code}</Text>
+                </View>
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label]}>Dt. vencimento: </Text>
+                  <Text style={[styles.productDataText]}>
+                    {new Date(item.validity_date).toLocaleDateString("pt-BR")}
+                  </Text>
+                </View>
+
+                <View style={styles.rowBox}>
+                  <Text style={[styles.label]}>Quantidade: </Text>
+                  <Text style={[styles.productDataText]}> {item.quantity} </Text>
+                </View>
+                <View style={styles.statusBox}>
+                  <Text style={[styles.label]}>Status: </Text>
+                  <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
+                  <Text
+                    style={[styles.productDataText, { color: getColor(item.status), fontFamily: "Roboto-SemiBold" }]}
+                  >
+                    {" "}
+                    {statusName(item.status)}{" "}
+                  </Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -301,11 +276,11 @@ export default function ValidityRequestProducts() {
         />
 
         {!hasEmpty && (
-          <View>
+          <View style={styles.insertButtonComponent}>
             <ButtonComponent
+              style={{ backgroundColor: Colors.green }}
               text="Finalizar validade"
               onPress={postValidity}
-              backgroundColor={Colors.green}
               loading={isLoading}
             />
           </View>
@@ -326,56 +301,74 @@ export default function ValidityRequestProducts() {
         onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainerCenter}>
-          <View style={[styles.modalBox, { backgroundColor: theme.itemBackground }]}>
+          <View style={[styles.modalBox]}>
             <View style={styles.productDataBox}>
-              <Text style={[styles.labelModal, { color: theme.title }]}>
-                Cod. Produto:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text>
+              <Text style={[styles.productDataText, { color: theme.text, fontSize: 16 }]}>
+                {selectedProduct?.description}
               </Text>
-              <Text style={[styles.labelModal, { color: theme.title }]}>
-                Cod. Auxiliar:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.auxiliary_code}</Text>
-              </Text>
-              <Text style={[styles.labelModal, { color: theme.title }]}>
-                Descrição:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.description}</Text>
-              </Text>
-
-              <Text style={[styles.labelModal, { color: theme.title }]}>
-                Dt. Validade:{" "}
-                <Text style={[styles.productDataText, { color: theme.text }]}>
-                  {new Date(selectedProduct?.validity_date).toLocaleDateString("pt-BR")}
-                </Text>
-              </Text>
-              <View style={styles.inputBox}>
-                <Text style={[styles.labelModal, { color: theme.title }]}>Quant:</Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.inputColor,
-                      borderColor: theme.iconColor,
-                      color: theme.title,
-                    },
-                  ]}
-                  inputMode="numeric"
-                  value={quantity}
-                  onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ""))}
-                />
+              <View style={styles.rowBox}>
+                <View style={styles.flexEndBox}>
+                  <Text style={[styles.labelModal, { color: theme.title }]}>Cod. produto: </Text>
+                </View>
+                <View style={styles.flexStartBox}>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text>
+                </View>
+              </View>
+              <View style={styles.rowBox}>
+                <View style={styles.flexEndBox}>
+                  <Text style={[styles.labelModal, { color: theme.title }]}>Cod. auxiliar: </Text>
+                </View>
+                <View style={styles.flexStartBox}>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.auxiliary_code}</Text>
+                </View>
+              </View>
+              <View style={styles.rowBox}>
+                <View style={styles.flexEndBox}>
+                  <Text style={[styles.labelModal, { color: theme.title }]}>Dt. Validade: </Text>
+                </View>
+                <View style={styles.flexStartBox}>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>
+                    {new Date(selectedProduct?.validity_date).toLocaleDateString("pt-BR")}
+                  </Text>
+                </View>
+              </View>
+              <View>
+                <View style={styles.rowBox}>
+                  <View style={[styles.flexEndBox, { justifyContent: "center" }]}>
+                    <Text style={[styles.labelModal, { color: theme.title }]}>Quantidade:</Text>
+                  </View>
+                  <View style={styles.flexStartBox}>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: theme.inputColor,
+                          borderColor: theme.iconColor,
+                          color: theme.title,
+                        },
+                      ]}
+                      inputMode="numeric"
+                      value={quantity}
+                      onChangeText={(text) => setQuantity(text.replace(/[^0-9]/g, ""))}
+                    />
+                  </View>
+                </View>
               </View>
             </View>
             <View style={styles.modalButtonComponentsBox}>
               <ButtonComponent
                 text={"Não encontrei"}
-                backgroundColor={Colors.red}
+                style={{ backgroundColor: theme.cancel, borderRadius: 12 }}
                 onPress={() => {
                   notFoundButtonComponentModal();
                 }}
               />
               <ButtonComponent
-                backgroundColor={Colors.green}
+                style={{ backgroundColor: theme.button, borderRadius: 12 }}
                 text={"Confirmar"}
-                onPress={() => backButtonComponentModal(quantity)}
+                onPress={() => {
+                  (backButtonComponentModal(quantity));
+                }}
               />
             </View>
           </View>
@@ -400,58 +393,35 @@ export default function ValidityRequestProducts() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    paddingHorizontal: 20,
   },
-  titleBox: {
-    alignItems: "center",
-    paddingBottom: 20,
+  header: {
+    paddingVertical: 10,
   },
   titleText: {
-    fontFamily: "Roboto-Bold",
-    color: Colors.blue,
-    fontSize: 25,
+    fontFamily: "Roboto-SemiBold",
+    fontSize: 20,
   },
-  cardsContainer: {
-    paddingVertical: 20,
-    paddingHorizontal: 14,
+  main: { flex: 1 },
+  rowBox: {
+    flexDirection: "row",
   },
   card: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderWidth: 1,
-    borderRadius: 8,
-    borderColor: Colors.gray,
-    marginBottom: 10,
-    padding: 10,
-  },
-  codDescricaoProdutoRow: {
-    flexDirection: "row",
-    maxWidth: 200,
+    borderBottomWidth: 0.5,
+    paddingVertical: 8,
   },
   productDataText: {
     fontFamily: "Roboto-Regular",
-    color: Colors.gray,
+    textAlign: "center",
   },
   label: {
-    fontFamily: "Roboto-Bold",
-    color: Colors.blue,
+    fontFamily: "Roboto-SemiBold",
   },
   labelModal: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 16,
-    color: Colors.blue,
+    fontFamily: "Roboto-SemiBold",
   },
-  textHeader: {
-    fontFamily: "Roboto-Regular",
-    color: "white",
-  },
-  dadosItem: {
-    alignItems: "center",
-  },
-  listId: {
-    padding: 10,
-  },
+
+  listId: {},
   modalContainerCenter: {
     flex: 1,
     justifyContent: "center",
@@ -468,6 +438,7 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   productDataBox: {
+    alignItems: "center",
     width: "100%",
     gap: 4,
   },
@@ -482,9 +453,9 @@ const styles = StyleSheet.create({
     minHeight: 10,
     width: 100,
     backgroundColor: Colors.inputColor,
-    borderRadius: 10,
+    borderRadius: 12,
     paddingHorizontal: 20,
-    fontSize: 18,
+    fontSize: 16,
     padding: 0,
     margin: 0,
     borderWidth: 0,
@@ -494,5 +465,30 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     width: "100%",
     gap: 8,
+  },
+  dotView: {
+    borderRadius: 50,
+    width: 13,
+    height: 13,
+  },
+  statusBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  flexEndBox: {
+    alignItems: "flex-end",
+    paddingRight: 5,
+    width: "50%",
+  },
+  flexStartBox: {
+    alignItems: "flex-start",
+    width: "50%",
+    paddingLeft: 5,
+  },
+  insertButtonComponent: {
+    justifyContent: "flex-end",
+    marginTop: 20,
+    marginBottom: 20,
   },
 });
