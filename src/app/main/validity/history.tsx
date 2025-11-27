@@ -15,9 +15,10 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ModalAlert from "../../../components/modalAlert";
+import NoData from "../../../components/noData";
 import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
-import { getValidityDataStore } from "../../../store/getValidityDataStore";
+import { validityDataStore } from "../../../store/validityDataStore";
 
 type validity = {
   id: number;
@@ -48,16 +49,18 @@ export default function History() {
   const [ordination, setOrdination] = useState("");
   const [open, setOpen] = React.useState(false);
 
-  const setProducts = getValidityDataStore((state) => state.setProducts);
+  // const setProducts = getValidityDataStore((state) => state.setProducts);
+  const setProducts = validityDataStore((state) => state.setProductsList);
 
   const [validities, setValidities] = useState<validity[]>([]);
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
+  const [noData, setNoData] = useState(false);
 
   const selectValidities = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validities/employee`, {
+      const response = await fetch(`${url}/validities/me`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -66,8 +69,10 @@ export default function History() {
 
       const responseData = await response.json();
 
-      if (responseData.validitiesByEmployee) {
-        setValidities(responseData.validitiesByEmployee);
+      if (response.ok) {
+        setValidities(responseData);
+      } else if (response.status == 404) {
+        setNoData(true);
       } else {
         showAlert({
           title: "Erro!",
@@ -126,8 +131,16 @@ export default function History() {
     );
   }
 
+  if (noData) {
+    return (
+      <SafeAreaView style={[styles.container, { paddingBottom: insets.bottom }]} edges={["bottom"]}>
+        <NoData/>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView style={[styles.container, { paddingBottom: insets.bottom }]} edges={["bottom"]}>
+    <SafeAreaView style={[styles.container]} edges={["bottom"]}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.header}>
         <DropDownPicker
@@ -154,8 +167,9 @@ export default function History() {
       <View style={styles.main}>
         <FlatList
           data={sortedValidities}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{}}
           style={[styles.flatList, { borderColor: theme.border }]}
           renderItem={({ item, index }) => (
             <TouchableOpacity
@@ -210,11 +224,12 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 15,
   },
-  main: {},
+  main: {flex: 1},
   flatList: {},
   card: {
     borderBottomWidth: 0.5,
     paddingVertical: 5,
+    borderColor: Colors.gray,
   },
   cardTitle: {
     fontSize: 16,
@@ -253,14 +268,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dropdownInput: {
-    minHeight: 30,
+    minHeight: 20,
     width: 140,
     zIndex: 1,
     borderWidth: 0,
     borderRadius: 20,
   },
   optionsBox: {
-    minHeight: 40,
+    minHeight: 20,
     width: 140,
     borderColor: "gray",
     paddingLeft: 4,

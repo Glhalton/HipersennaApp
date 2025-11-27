@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -23,7 +23,7 @@ export default function Modules() {
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
-                  <Ionicons name="pencil" color={theme.iconColor} size={30} />
+                  <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={35} />
                 </View>
                 <Text style={[styles.text, { color: theme.text }]}>Vistoria avulsa</Text>
               </View>
@@ -61,7 +61,7 @@ export default function Modules() {
               onPress={() => {
                 router.push("./history");
               }}
-              style={styles.optionButtonComponent}
+              style={[styles.optionButtonComponent, {borderBottomWidth: 0}]}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 15,
   },
   header: {},
   main: {

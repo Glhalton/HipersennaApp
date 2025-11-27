@@ -6,7 +6,7 @@ export async function initDatabase() {
   await db.execAsync(`
         CREATE TABLE IF NOT EXISTS quotation_products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_code INTEGER,
+            product_codee INTEGER,
             barcode TEXT,
             price REAL,
 

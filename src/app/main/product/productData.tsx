@@ -44,12 +44,12 @@ export default function ProductData() {
   useEffect(() => {
     verifyInativity(product.dtinativo);
     calculateAvailableStock(
-      Number(product.qtestger),
-      Number(product.qtreserv),
-      Number(product.qtbloqueada),
-      Number(product.qtestgerdp6),
-      Number(product.qtreservdp6),
-      Number(product.qtbloqueadadp6),
+      Number(product.qtEstGer),
+      Number(product.qtReserv),
+      Number(product.qtBloqueada),
+      Number(product.qtEstGerDp6),
+      Number(product.qtReservDp6),
+      Number(product.qtBloqueadaDp6),
     )
   }, []);
 
@@ -96,21 +96,21 @@ export default function ProductData() {
         <View style={styles.rowBox}>
           <View style={styles.itemProductData}>
             <Text style={[styles.label, { color: theme.text }]}>Varejo:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precovenda}</Text>
+            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoVenda}</Text>
           </View>
           <View style={styles.itemProductData}>
             <Text style={[styles.label, { color: theme.text }]}>Atacado:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precovendaatac}</Text>
+            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoVendaAtac}</Text>
           </View>
         </View>
         <View style={styles.rowBox}>
           <View style={styles.itemProductData}>
             <Text style={[styles.label, { color: theme.text }]}>Varejo Futuro:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precotabela}</Text>
+            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoTabela}</Text>
           </View>
           <View style={styles.itemProductData}>
             <Text style={[styles.label, { color: theme.text }]}>Atacado Futuro:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precotabelaatac}</Text>
+            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoTabelaAtac}</Text>
           </View>
         </View>
         <View style={styles.rowBox}>
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     justifyContent: "center",
-    // backgroundColor: "white",
+    
     borderRadius: 12,
     gap: 5,
   },

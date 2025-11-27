@@ -1,4 +1,4 @@
-import { FontAwesome, FontAwesome6, Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { ActivityIndicator, useColorScheme, View } from "react-native";
@@ -24,6 +24,7 @@ export default function Layout() {
     ...MaterialIcons.font,
     ...FontAwesome6.font,
     ...FontAwesome.font,
+    ...MaterialCommunityIcons.font
   });
 
   if (!fontsLoaded) {
@@ -46,9 +47,9 @@ export default function Layout() {
       <View style={{ flex: 1, backgroundColor: theme.background }}>
         <Stack
           screenOptions={{
-            headerStyle: { backgroundColor: theme.navTopBackground },
-            headerTintColor: theme.title,
-            headerTitleStyle: { fontFamily: "Roboto-SemiBold" },
+            headerStyle: { backgroundColor: theme.navTopBackground, },
+            headerTintColor: theme.navTitle,
+            headerTitleStyle: { fontFamily: "Roboto-SemiBold", color: theme.navTitle },
             contentStyle: { backgroundColor: theme.background },
             animation: "fade"
           }}
@@ -72,6 +73,7 @@ export default function Layout() {
           <Stack.Screen name="main/validity/validityRequest/requestProducts" options={{ title: "Produtos" }} />
           <Stack.Screen name="main/priceQuotation/selectFilialQuotation" options={{ title: "Seleção de Filial" }} />
           <Stack.Screen name="main/priceQuotation/quotationForm" options={{ title: "Cotação de preços" }} />
+          <Stack.Screen name="main/account/profile" options={{ title: "Conta" }} />
           
         </Stack>
       </View>

@@ -6,9 +6,10 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, useCol
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import ModalAlert from "../../../../components/modalAlert";
+import NoData from "../../../../components/noData";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 type Request = {
   id: number;
@@ -17,16 +18,18 @@ type Request = {
   conferee_id: number;
   status: string;
   created_at: string;
+  modified_at: string;
   hsvalidity_request_products: Product[];
 };
 
 type Product = {
-  product_cod: number;
+  id: number;
+  request_id: number;
+  status: string;
+  product_code: number;
+  validity_date: Date;
   auxiliary_code: string;
   description: string;
-  validity_date: Date;
-  quantity: number;
-  status: string;
 };
 
 export default function SelectRequest() {
@@ -34,12 +37,13 @@ export default function SelectRequest() {
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
   const insets = useSafeAreaInsets();
-
   const { visible, showAlert, hideAlert, alertData } = useAlert();
 
-  const setProductsList = postValidityDataStore((state) => state.setProductsList);
+  const setProductsValidity = validityDataStore((state) => state.setProductsList);
+  const setValidity = validityDataStore((state) => state.addValidity);
 
-  const setValidity = postValidityDataStore((state) => state.addValidity);
+  const [noData, setNoData] = useState(false);
+
   const [validityRequests, setValidityRequests] = useState<Request[]>([]);
 
   const [filterItems, setFilterItems] = useState([
@@ -48,14 +52,13 @@ export default function SelectRequest() {
   ]);
   const [ordination, setOrdination] = useState("");
   const [open, setOpen] = React.useState(false);
-
   const [isLoading, setIsLoading] = useState(true);
 
   const getValidityRequests = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validity-requests/employee`, {
+      const response = await fetch(`${url}/validity-requests/me`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -65,7 +68,9 @@ export default function SelectRequest() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setValidityRequests(responseData.validityRequestsByEmployee);
+        setValidityRequests(responseData);
+      } else if (response.status === 404) {
+        setNoData(true);
       } else {
         showAlert({
           title: "Erro!",
@@ -88,11 +93,11 @@ export default function SelectRequest() {
     }
   };
 
-  function addValidity(branchId: number, requestId: number) {
+  function addValidity(branchId: number, requestId: number, productsList: any[]) {
     setValidity({
       branch_id: branchId,
       request_id: requestId,
-      products: [],
+      products: productsList,
     });
   }
 
@@ -106,8 +111,7 @@ export default function SelectRequest() {
 
   //Cria a validade e copia os produtos para uma lista
   const selectedRequest = (item: any) => {
-    addValidity(item.branch_id, item.id);
-    setProductsList(item.hsvalidity_request_products);
+    addValidity(item.branch_id, item.id, item.hsvalidity_request_products);
     router.replace("./validityRequestProducts");
   };
 
@@ -148,11 +152,16 @@ export default function SelectRequest() {
     );
   }
 
+  if (noData) {
+    return (
+      <SafeAreaView style={styles.container} edges={["bottom"]}>
+        <NoData />
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.background, paddingBottom: insets.bottom }]}
-      edges={["bottom"]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       <View style={styles.header}>
         <Text style={[styles.titleText, { color: theme.title }]}>Selecione uma solicitação:</Text>
         <DropDownPicker
@@ -178,7 +187,8 @@ export default function SelectRequest() {
       <View style={[styles.main]}>
         <FlatList
           data={sortedRequests}
-          contentContainerStyle={{ paddingBottom: insets.bottom + 20 }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{}}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item, index }) => (
             <TouchableOpacity
@@ -242,10 +252,11 @@ const styles = StyleSheet.create({
     fontSize: 22,
     paddingBottom: 10,
   },
-  main: {},
+  main: { flex: 1 },
   card: {
     borderBottomWidth: 0.5,
     paddingVertical: 8,
+    borderColor: Colors.gray,
   },
   requestDataBox: {
     flexDirection: "row",
@@ -279,14 +290,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dropdownInput: {
-    minHeight: 30,
+    minHeight: 20,
     width: 140,
     zIndex: 1,
     borderWidth: 0,
     borderRadius: 20,
   },
   optionsBox: {
-    minHeight: 40,
+    minHeight: 20,
     width: 140,
     borderColor: "gray",
     paddingLeft: 4,

@@ -63,7 +63,7 @@ export default function Modules() {
               onPress={() => {
                 router.push("../validity/home");
               }}
-              style={styles.optionButtonComponent}
+              style={[styles.optionButtonComponent, {borderBottomWidth: 0}]}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>

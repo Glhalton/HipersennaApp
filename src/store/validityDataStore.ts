@@ -7,8 +7,9 @@ type Validity = {
 };
 
 type Product = {
-  product_cod: number;
+  id?: number;
   auxiliary_code: string;
+  product_code: number;
   description?: string;
   validity_date: Date;
   quantity: number;
@@ -23,11 +24,11 @@ type VistoriaStore = {
   removeProduct: (index: number) => void;
   resetProductsList: () => void;
   resetValidityData: () => void;
-  updateProductQuantity: (index: number, quantity: number) => void;
-  updateProductStatus: (index: number, status: string) => void;
+  setProductQuantity: (id: number, quantity: number) => void;
+  setProductStatus: (id: number, status: string) => void;
 };
 
-export const postValidityDataStore = create<VistoriaStore>((set) => ({
+export const validityDataStore = create<VistoriaStore>((set) => ({
   validity: {
     branch_id: 0,
     request_id: null,
@@ -71,27 +72,19 @@ export const postValidityDataStore = create<VistoriaStore>((set) => ({
       },
     }),
 
-  updateProductQuantity: (index, quantity) =>
-    set((state) => {
-      const updated = [...state.validity.products];
-      updated[index] = { ...updated[index], quantity };
-      return {
-        validity: {
-          ...state.validity,
-          products: updated,
-        },
-      };
-    }),
+  setProductQuantity: (id, quantity) =>
+    set((state) => ({
+      validity: {
+        ...state.validity,
+        products: state.validity.products.map((p) => (p.id === id ? { ...p, quantity } : p)),
+      },
+    })),
 
-  updateProductStatus: (index, status) =>
-    set((state) => {
-      const updated = [...state.validity.products];
-      updated[index] = { ...updated[index], status };
-      return {
-        validity: {
-          ...state.validity,
-          products: updated,
-        },
-      };
-    }),
+  setProductStatus: (id, status) =>
+    set((state) => ({
+      validity: {
+        ...state.validity,
+        products: state.validity.products.map((p) => (p.id === id ? { ...p, status } : p)),
+      },
+    })),
 }));

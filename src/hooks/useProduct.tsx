@@ -11,20 +11,20 @@ type Product = {
   codDepto: number;
   descricao: string;
   comprador: string;
-  precotabela: number;
-  precovenda: number;
-  precotabelaatac: number;
-  precovendaatac: number;
-  fatorconversao: number;
+  precoTabela: number;
+  precoVenda: number;
+  precoTabelaAtac: number;
+  precoVendaAtac: number;
+  fatorConversao: number;
   unidade: string;
   embalagem: string;
-  dtinativo: string | null;
-  qtestger: number;
-  qtreserv: number;
-  qtbloqueada: number;
-  qtestgerdp6: number;
-  qtreservdp6: number;
-  qtbloqueadadp6: number;
+  dtInativo: string | null;
+  qtEstGer: number;
+  qtReserv: number;
+  qtBloqueada: number;
+  qtEstGerDp6: number;
+  qtReservDp6: number;
+  qtBloqueadaDp6: number;
 };
 
 export function useProduct(url: string, showAlert: any) {

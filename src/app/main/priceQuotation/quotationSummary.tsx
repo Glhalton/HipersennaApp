@@ -8,7 +8,7 @@ import { ButtonComponent } from "../../../components/buttonComponent";
 import ModalAlert from "../../../components/modalAlert";
 import { Colors } from "../../../constants/colors";
 import { useAlert } from "../../../hooks/useAlert";
-import { postValidityDataStore } from "../../../store/postValidityDataStore";
+import { validityDataStore } from "../../../store/validityDataStore";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
@@ -18,9 +18,9 @@ export default function ValiditySummary() {
 
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const validity = postValidityDataStore((state) => state.validity);
-  const removeProduct = postValidityDataStore((state) => state.removeProduct);
-  const resetProducts = postValidityDataStore((state) => state.resetProductsList);
+  const validity = validityDataStore((state) => state.validity);
+  const removeProduct = validityDataStore((state) => state.removeProduct);
+  const resetProducts = validityDataStore((state) => state.resetProductsList);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -110,7 +110,7 @@ export default function ValiditySummary() {
               </Text>
               <View style={styles.productDataBox}>
                 <Text style={[styles.productDataText, { color: theme.text }]}>
-                  <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_cod}
+                  <Text style={[styles.label, { color: theme.title }]}>Código:</Text> {item.product_code}
                 </Text>
                 <Text style={[styles.productDataText, { color: theme.text }]}>
                   <Text style={[styles.label, { color: theme.title }]}>Código Auxiliar:</Text> {item.auxiliary_code}

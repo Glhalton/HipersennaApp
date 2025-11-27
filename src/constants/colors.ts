@@ -40,9 +40,10 @@ export const Colors = {
   dark: {
     text: "#25292E",
     title: "#25292E",
+    navTitle: "#eeeeeeff",
     background: "#F4F6F8",
     itemBackground: "#ffffff",
-    navTopBackground: "#ffffff",
+    navTopBackground: "#25292E",
     navBottomBackground: "#ffffff",
     iconColor: "#4A5A6A",
     inputColor: "#eaebf1ff",
@@ -60,6 +61,7 @@ export const Colors = {
   light: {
     text: "#25292E",
     title: "#25292E",
+    navTitle: "#25292E",
     background: "#F4F6F8",
     itemBackground: "#ffffff",
     navTopBackground: "#ffffff",

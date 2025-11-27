@@ -14,7 +14,7 @@ export default function Modules() {
     try {
       const token = await AsyncStorage.getItem("token");
 
-      const response = await fetch(`${url}/users/`, {
+      const response = await fetch(`${url}/sessions/me`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -24,7 +24,6 @@ export default function Modules() {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData.message);
         await AsyncStorage.removeItem("token");
         router.replace("/");
       } else {
@@ -46,7 +45,7 @@ export default function Modules() {
           <View>
             <TouchableOpacity
               onPress={() => {
-                // router.push("../validity/home");
+                router.push("../account/profile");
               }}
               style={styles.optionButtonComponent}
             >
@@ -62,7 +61,7 @@ export default function Modules() {
               onPress={() => {
                 signOut();
               }}
-              style={styles.optionButtonComponent}
+              style={[styles.optionButtonComponent, {borderBottomWidth: 0}]}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>

@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -126,6 +126,8 @@ export default function SearchProduct() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
+      {/* <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} /> */}
+       <StatusBar barStyle={"dark-content"} />
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.header}>
         <View style={styles.headerButtonComponents}>
@@ -154,7 +156,7 @@ export default function SearchProduct() {
               setFilterProductModal(true);
             }}
           >
-            <FontAwesome name="filter" color={theme.iconColor} size={25} />
+            <FontAwesome6 name="sliders" color={theme.iconColor} size={25} />
           </TouchableOpacity>
         </View>
       </View>
@@ -195,7 +197,6 @@ export default function SearchProduct() {
             <FlatList
               data={listProductFilter}
               keyExtractor={(_, index) => index.toString()}
-              contentContainerStyle={{ paddingBottom: 20 }}
               renderItem={({ item, index }) => (
                 <TouchableOpacity
                   style={[styles.productItem, { borderColor: theme.iconColor }]}
@@ -207,7 +208,9 @@ export default function SearchProduct() {
                     }
                   }}
                 >
-                  <Text style={[styles.productNameText, { color: theme.title }]}>{item.codProd} - {item.descricao}</Text>
+                  <Text style={[styles.productNameText, { color: theme.title }]}>
+                    {item.codProd} - {item.descricao}
+                  </Text>
                   <View style={{ flexDirection: "row" }}>
                     <Text style={[styles.productDataTextModal, { color: theme.title }]}>Cod.Auxiliar: </Text>
                     <Text style={[styles.productDataTextModal, { color: theme.title }]}>{item.codAuxiliar}</Text>
@@ -425,8 +428,7 @@ const styles = StyleSheet.create({
   },
   optionsBoxModal: {
     width: "100%",
-    paddingTop: 30,
-    paddingBottom: 30,
+    paddingVertical: 30,
   },
   productNameText: {
     fontSize: 15,

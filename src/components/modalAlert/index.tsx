@@ -39,11 +39,11 @@ export default function ModalAlert({
           {IconCenter && iconCenterName && <IconCenter name={iconCenterName as any} size={130} color={iconColor} />}
           <View style={styles.textBox}>
             <Text style={[styles.titleText, { color: theme.title }]}>{title}</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{text}</Text>
+            {text && <Text style={[styles.text, { color: theme.text }]}>{text}</Text>}
           </View>
           <View style={styles.ButtonComponentBox}>
             <ButtonComponent
-             style={{borderRadius: 12, backgroundColor: theme.cancel}}
+              style={{ borderRadius: 12, backgroundColor: theme.cancel }}
               text={"Ok"}
               onPress={ButtonComponentPress}
             />

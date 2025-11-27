@@ -2,26 +2,27 @@ import React from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "../../../../constants/colors";
-import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function RequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const productsList = validityRequestDataStore((state) => state.products);
+  const productsList = validityDataStore((state) => state.validity.products);
 
   return (
     <SafeAreaView edges={["bottom"]} style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={[styles.main]}>
         <FlatList
           data={productsList}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item, index }) => (
             <View style={[styles.card, {borderColor: theme.border}]}>
               <Text style={[styles.label, { color: theme.title }]}>{index + 1}°</Text>
               <View style={styles.rowBox}>
                 <Text style={[styles.label, { color: theme.title }]}>
-                  {item.product_cod}
+                  {item.product_code}
                   <Text style={[styles.productDataText, { color: theme.text }]}>: {item.description}</Text>
                 </Text>
               </View>
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  main: {},
+  main: {flex: 1},
   card: {
     borderBottomWidth: 0.5,
     paddingVertical: 8,
@@ -61,14 +62,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Roboto-SemiBold",
-    color: Colors.blue,
-  },
-  textHeader: {
-    fontFamily: "Roboto-Regular",
-    color: "white",
-  },
-  listId: {
-    padding: 10,
   },
   rowBox: {
     flexDirection: "row",

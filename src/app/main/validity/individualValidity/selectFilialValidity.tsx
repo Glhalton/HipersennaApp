@@ -5,15 +5,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ButtonComponent } from "../../../../components/buttonComponent";
 import { DropdownInput } from "../../../../components/dropdownInput";
 import { Colors } from "../../../../constants/colors";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function SelectFilialValidity() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
-  const setValidity = postValidityDataStore((state) => state.addValidity);
-  const resetValidity = postValidityDataStore((state) => state.resetValidityData);
-  const resetList = postValidityDataStore((state) => state.resetProductsList);
+  const setValidity = validityDataStore((state) => state.addValidity);
+  const resetValidity = validityDataStore((state) => state.resetValidityData);
+  const resetList = validityDataStore((state) => state.resetProductsList);
 
   const [branchId, setBranchId] = useState("");
   const branches = [
@@ -82,6 +82,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   main: {
-    gap: 10,
+    gap: 20,
   },
 });

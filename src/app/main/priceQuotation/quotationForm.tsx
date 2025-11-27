@@ -2,16 +2,16 @@ import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    Keyboard,
-    Modal,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View,
+  ActivityIndicator,
+  Keyboard,
+  Modal,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
@@ -226,7 +226,7 @@ export default function ValidityForm() {
             <View style={styles.summaryButtonComponent}>
               <ButtonComponent
                 text="Inserir"
-                backgroundColor={Colors.gray}
+                style={{backgroundColor: theme.button}}
                 onPress={() => {
                   addProductList();
                   Keyboard.dismiss();
@@ -241,7 +241,7 @@ export default function ValidityForm() {
                   onPress={() => {
                     router.push("./validitySummary");
                   }}
-                  backgroundColor={theme.button2}
+                  style={{backgroundColor: theme.button2}}
                 />
               </View>
             )}

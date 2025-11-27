@@ -3,13 +3,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { ButtonComponent } from "../../../../components/buttonComponent";
 import ModalAlert from "../../../../components/modalAlert";
 import ModalPopup from "../../../../components/modalPopup";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -18,21 +18,19 @@ export default function ValidityRequestProducts() {
   const { alertData, hideAlert, showAlert, visible } = useAlert();
   const url = process.env.EXPO_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
-  const insets = useSafeAreaInsets();
 
-  const productsList = postValidityDataStore((state) => state.validity.products) || [];
-  const resetProducts = postValidityDataStore((state) => state.resetProductsList);
+  const productsList = validityDataStore((state) => state.validity.products) || [];
+  const resetProducts = validityDataStore((state) => state.resetProductsList);
 
-  const updateQuantity = postValidityDataStore((state) => state.updateProductQuantity);
-  const updateStatus = postValidityDataStore((state) => state.updateProductStatus);
-
-  const validityData = postValidityDataStore((state) => state.validity);
+  const updateQuantity = validityDataStore((state) => state.setProductQuantity);
+  const updateStatus = validityDataStore((state) => state.setProductStatus);
+  
+  const validityData = validityDataStore((state) => state.validity);
 
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   const [quantity, setQuantity] = useState("");
-  const [index, setIndex] = useState<any>("");
 
   const navigation = useNavigation();
 
@@ -42,34 +40,32 @@ export default function ValidityRequestProducts() {
 
   const hasEmpty = productsList.some((p) => p.quantity === undefined || p.quantity === null);
 
-  const ProductPress = (item: any, index: number) => {
+  const ProductPress = (item: any) => {
     setSelectedProduct(item);
     setQuantity(item.quantity);
-    setIndex(index);
     setModalVisible(true);
   };
 
   //Botão de voltar o modal
   const backButtonComponentModal = (quant: string) => {
     const quantNumber = Number(quant);
-
-    updateQuantity(index, quantNumber);
+    updateQuantity(selectedProduct.id, quantNumber);
 
     if (quantNumber > 0) {
-      updateStatus(index, "Vistoriado");
+      updateStatus(selectedProduct.id, "Vistoriado");
     } else {
-      updateStatus(index, "Nao_encontrado");
-      updateQuantity(index, 0);
+      updateStatus(selectedProduct.id, "Nao_encontrado");
+      updateQuantity(selectedProduct.id, 0);
     }
 
     setModalVisible(false);
     setQuantity("");
   };
 
-  const notFoundButtonComponentModal = () => {
-    updateStatus(index, "Nao_encontrado");
+  const notFoundButtonComponentModal = (id: number) => {
+    updateStatus(id, "Nao_encontrado");
     setModalVisible(false);
-    updateQuantity(index, 0);
+    updateQuantity(id, 0);
     setQuantity("");
   };
 
@@ -127,8 +123,8 @@ export default function ValidityRequestProducts() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const productsPayload = productsList.map((p) => ({
-        product_cod: Number(p.product_cod),
+      const productsPayload = validityData.products.map((p) => ({
+        id: Number(p.id),
         status: p.status,
       }));
 
@@ -147,7 +143,7 @@ export default function ValidityRequestProducts() {
 
       const responseData = await response.json();
 
-      if (!responseData.validityRequestUpdate) {
+      if (!response.ok) {
         showAlert({
           title: "Erro!",
           text: `Erro ao mudar status da solicitação: ${responseData.message}`,
@@ -169,7 +165,6 @@ export default function ValidityRequestProducts() {
 
   const postValidity = async () => {
     setIsLoading(true);
-
     const token = await AsyncStorage.getItem("token");
 
     try {
@@ -184,7 +179,7 @@ export default function ValidityRequestProducts() {
 
       const responseData = await response.json();
 
-      if (responseData.createdValidity) {
+      if (response.ok) {
         updateStatusRequest();
         showAlert({
           title: "Sucesso!",
@@ -230,11 +225,11 @@ export default function ValidityRequestProducts() {
           data={productsList}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingVertical: 20 }}
+          contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() => {
-                ProductPress(item, index);
+                ProductPress(item);
               }}
             >
               <View style={[styles.card]}>
@@ -242,7 +237,7 @@ export default function ValidityRequestProducts() {
                   <Text style={[styles.label]}># {index + 1}</Text>
                 </View>
                 <View style={styles.rowBox}>
-                  <Text style={[styles.label]}>{item.product_cod}: </Text>
+                  <Text style={[styles.label]}>{item.product_code}: </Text>
                   <Text style={[styles.productDataText]}>{item.description}</Text>
                 </View>
                 <View style={styles.rowBox}>
@@ -255,10 +250,9 @@ export default function ValidityRequestProducts() {
                     {new Date(item.validity_date).toLocaleDateString("pt-BR")}
                   </Text>
                 </View>
-
                 <View style={styles.rowBox}>
                   <Text style={[styles.label]}>Quantidade: </Text>
-                  <Text style={[styles.productDataText]}> {item.quantity} </Text>
+                  <Text style={[styles.productDataText]}>{item.quantity}</Text>
                 </View>
                 <View style={styles.statusBox}>
                   <Text style={[styles.label]}>Status: </Text>
@@ -303,7 +297,9 @@ export default function ValidityRequestProducts() {
         <View style={styles.modalContainerCenter}>
           <View style={[styles.modalBox]}>
             <View style={styles.productDataBox}>
-              <Text style={[styles.productDataText, { color: theme.text, fontSize: 16 }]}>
+              <Text
+                style={[styles.productDataText, { color: theme.text, fontSize: 16, fontFamily: "Roboto-SemiBold" }]}
+              >
                 {selectedProduct?.description}
               </Text>
               <View style={styles.rowBox}>
@@ -311,7 +307,7 @@ export default function ValidityRequestProducts() {
                   <Text style={[styles.labelModal, { color: theme.title }]}>Cod. produto: </Text>
                 </View>
                 <View style={styles.flexStartBox}>
-                  <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_cod}</Text>
+                  <Text style={[styles.productDataText, { color: theme.text }]}>{selectedProduct?.product_code}</Text>
                 </View>
               </View>
               <View style={styles.rowBox}>
@@ -335,7 +331,7 @@ export default function ValidityRequestProducts() {
               <View>
                 <View style={styles.rowBox}>
                   <View style={[styles.flexEndBox, { justifyContent: "center" }]}>
-                    <Text style={[styles.labelModal, { color: theme.title }]}>Quantidade:</Text>
+                    <Text style={[styles.labelModal, { color: theme.title }]}>Quantidade: </Text>
                   </View>
                   <View style={styles.flexStartBox}>
                     <TextInput
@@ -360,14 +356,14 @@ export default function ValidityRequestProducts() {
                 text={"Não encontrei"}
                 style={{ backgroundColor: theme.cancel, borderRadius: 12 }}
                 onPress={() => {
-                  notFoundButtonComponentModal();
+                  notFoundButtonComponentModal(selectedProduct.id);
                 }}
               />
               <ButtonComponent
                 style={{ backgroundColor: theme.button, borderRadius: 12 }}
                 text={"Confirmar"}
                 onPress={() => {
-                  (backButtonComponentModal(quantity));
+                  backButtonComponentModal(quantity);
                 }}
               />
             </View>
@@ -409,6 +405,7 @@ const styles = StyleSheet.create({
   card: {
     borderBottomWidth: 0.5,
     paddingVertical: 8,
+    borderColor: Colors.gray,
   },
   productDataText: {
     fontFamily: "Roboto-Regular",

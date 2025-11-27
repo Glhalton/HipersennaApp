@@ -15,27 +15,31 @@ import {
 import DropDownPicker from "react-native-dropdown-picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ModalAlert from "../../../../components/modalAlert";
+import NoData from "../../../../components/noData";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
-import { validityRequestDataStore } from "../../../../store/validityRequestDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 type Request = {
   id: number;
   branch_id: number;
   analyst_id: number;
-  conferee_id: string;
+  conferee_id: number;
   status: string;
   created_at: string;
+  modified_at: string;
   hsvalidity_request_products: Product[];
 };
 
 type Product = {
-  product_cod: number;
+  id: number;
+  request_id: number;
+  status: string;
+  product_code: number;
+  validity_date: Date;
   auxiliary_code: string;
   description: string;
-  validity_date: Date;
   quantity: number;
-  status: string;
 };
 
 export default function Requests() {
@@ -56,14 +60,17 @@ export default function Requests() {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [noData, setNoData] = useState(false);
+
   const [requests, setRequests] = useState<Request[]>([]);
-  const setProductsList = validityRequestDataStore((state) => state.setProductsList);
+
+  const setProductsList = validityDataStore((state) => state.setProductsList);
 
   const getValidityRequests = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/validity-requests/employee`, {
+      const response = await fetch(`${url}/validity-requests/me`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,7 +80,9 @@ export default function Requests() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setRequests(responseData.validityRequestsByEmployee);
+        setRequests(responseData);
+      } else if (response.status == 404) {
+        setNoData(true);
       } else {
         showAlert({
           title: "Erro!",
@@ -141,6 +150,14 @@ export default function Requests() {
     );
   }
 
+  if (noData) {
+    return (
+      <SafeAreaView style={styles.container} edges={["bottom"]}>
+        <NoData />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
@@ -168,8 +185,9 @@ export default function Requests() {
       <View style={styles.main}>
         <FlatList
           data={sortedRequests}
+          showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{}}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.6}
@@ -231,12 +249,12 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
   },
   main: {
-    paddingBottom: 60,
+    flex: 1,
   },
   card: {
+    paddingVertical: 8,
     borderColor: Colors.gray,
     borderBottomWidth: 0.5,
-    paddingVertical: 8,
   },
   cardTitle: {
     fontSize: 16,
@@ -277,14 +295,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   dropdownInput: {
-    minHeight: 30,
+    minHeight: 20,
     width: 140,
     zIndex: 1,
     borderWidth: 0,
     borderRadius: 20,
   },
   optionsBox: {
-    minHeight: 40,
+    minHeight: 20,
     width: 140,
     borderColor: "gray",
     paddingLeft: 4,

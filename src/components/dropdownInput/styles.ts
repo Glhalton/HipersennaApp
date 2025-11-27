@@ -6,8 +6,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     height: 45,
     backgroundColor: Colors.inputColor,
-    borderRadius: 12,
-    marginBottom: 10,
+    borderRadius: 12, 
   },
   dropdownInput: {
     height: "100%",

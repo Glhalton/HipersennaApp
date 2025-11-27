@@ -1,4 +1,4 @@
-import { FontAwesome, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -6,7 +6,6 @@ import {
   FlatList,
   Keyboard,
   Modal,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,7 +22,7 @@ import ModalPopup from "../../../../components/modalPopup";
 import { Colors } from "../../../../constants/colors";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useProduct } from "../../../../hooks/useProduct";
-import { postValidityDataStore } from "../../../../store/postValidityDataStore";
+import { validityDataStore } from "../../../../store/validityDataStore";
 
 type InputOptions = {
   label: string;
@@ -40,11 +39,10 @@ export default function ValidityForm() {
   const url = process.env.EXPO_PUBLIC_API_URL;
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
-  // const productsList = postValidityDataStore((state) => state.productsList);
-  const addProduct = postValidityDataStore((state) => state.addProduct);
+  const addProduct = validityDataStore((state) => state.addProduct);
+  const validity = validityDataStore((state) => state.validity);
 
   const [codProductInput, setCodProductInput] = useState("");
-  const validity = postValidityDataStore((state) => state.validity);
   const [inputOptions, setInputOptions] = useState<InputOptions>({
     label: "Código do produto:",
     placeholder: "Cod. Produto",
@@ -74,8 +72,8 @@ export default function ValidityForm() {
 
   const [cameraModal, setCameraModal] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
-  const device = useCameraDevice("back");
   const [scanned, setScanned] = useState(false);
+  const device = useCameraDevice("back");
 
   const codeScanner = useCodeScanner({
     codeTypes: ["ean-13"],
@@ -104,13 +102,25 @@ export default function ValidityForm() {
     if (!hasPermission) {
       const permission = await requestPermission();
       if (!permission) {
-        console.log("Permissão negada!");
+        showAlert({
+          title: "Acesso negado!",
+          text: "O acesso à câmera do dispositivo foi negado. Por favor, habilite o acesso nas configurações do dispositivo.",
+          icon: "close-circle-outline",
+          color: theme.cancel,
+          iconFamily: Ionicons,
+        });
         return;
       }
     }
 
     if (!device) {
-      console.log("Nenhuma câmera encontrada");
+      showAlert({
+        title: "Erro!",
+        text: "Nenhuma câmera encontrada no dispositivo.",
+        icon: "close-circle-outline",
+        color: theme.cancel,
+        iconFamily: Ionicons,
+      });
       return;
     }
     setCameraModal(true);
@@ -139,7 +149,7 @@ export default function ValidityForm() {
     }
 
     addProduct({
-      product_cod: Number(productData?.codProd),
+      product_code: Number(productData?.codProd),
       auxiliary_code: productData?.codAuxiliar,
       description: productData.descricao,
       validity_date: validityDate,
@@ -199,14 +209,13 @@ export default function ValidityForm() {
           >
             <MaterialCommunityIcons name="barcode-scan" color={theme.iconColor} size={30} />
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
             onPress={() => {
               setFilterProductModal(true);
             }}
           >
-            <FontAwesome name="filter" color={theme.iconColor} size={25} />
+            <FontAwesome6 name="sliders" color={theme.iconColor} size={25} />
           </TouchableOpacity>
         </View>
       </View>
@@ -234,10 +243,11 @@ export default function ValidityForm() {
 
           {productData?.descricao && (
             <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
-              <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-                <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
-              </ScrollView>
-              <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.codAuxiliar}</Text>
+              <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
+              <View style={{flexDirection: "row"}}>
+                <Text style={{fontSize: 14}}>Cod.Auxiliar: </Text>
+                <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
+              </View>
             </View>
           )}
 
@@ -277,7 +287,7 @@ export default function ValidityForm() {
                   style={{ backgroundColor: theme.button2 }}
                   text="Resumo"
                   onPress={() => {
-                    router.push("./validitySummary");
+                    router.push({ pathname: "./validitySummary" });
                   }}
                 />
               </View>
@@ -370,11 +380,11 @@ export default function ValidityForm() {
         }}
       >
         <View style={styles.modalContainerCenter}>
-          <View style={[styles.productsModalBox, { backgroundColor: theme.background }]}>
+          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
             <FlatList
               data={listProductFilter}
               keyExtractor={(_, index) => index.toString()}
-              contentContainerStyle={{ paddingBottom: 20 }}
+              contentContainerStyle={{}}
               renderItem={({ item, index }) => (
                 <TouchableOpacity
                   style={[styles.productItem, { borderColor: theme.iconColor }]}
@@ -383,7 +393,13 @@ export default function ValidityForm() {
                     setProductsListModal(false);
                   }}
                 >
-                  <Text style={[styles.productNameText, { color: theme.title }]}>{item.descricao}</Text>
+                  <Text style={[styles.productNameText, { color: theme.title }]}>
+                    {item.codProd} - {item.descricao}
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>Cod.Auxiliar: </Text>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>{item.codAuxiliar}</Text>
+                  </View>
                 </TouchableOpacity>
               )}
             />
@@ -482,7 +498,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   productDataBox: {
-    alignItems: "center",
     borderRadius: 8,
     padding: 15,
     shadowColor: "#000",
@@ -520,28 +535,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.53)",
   },
   modalBox: {
-    width: "100%",
-    paddingHorizontal: 15,
-    paddingVertical: 20,
-    borderRadius: 20,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  productsModalBox: {
     maxHeight: 600,
     width: "100%",
     paddingHorizontal: 15,
     paddingVertical: 20,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: "white",
     shadowColor: "#000",
     shadowOffset: {
@@ -551,8 +549,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.29,
     shadowRadius: 4.65,
     elevation: 7,
-    alignItems: "center",
-    justifyContent: "center",
   },
   titleBox: {
     width: "100%",
@@ -583,12 +579,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
     elevation: 4,
   },
-  productList: {
-    maxHeight: 240,
-    marginBottom: 16,
-    padding: 16,
-    borderRadius: 20,
-  },
   productItem: {
     justifyContent: "center",
     borderBottomWidth: 0.4,
@@ -607,4 +597,5 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
   },
+  productDataTextModal: {},
 });

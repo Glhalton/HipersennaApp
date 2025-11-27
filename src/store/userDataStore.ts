@@ -15,7 +15,7 @@ interface UserDadosStore {
   setWinthorId: (winthorId: number) => void;
 }
 
-export const employeeDataStore = create<UserDadosStore>((set) => ({
+export const userDataStore = create<UserDadosStore>((set) => ({
   winthorId: null,
   userId: null,
   name: null,

@@ -47,7 +47,7 @@ export default function MainTabsLayout() {
           options={{
             tabBarLabel: "Configurações",
             title: "",
-            tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" color={color} size={size} />,
+            tabBarIcon: ({ color, size }) => <Ionicons name="settings-sharp" color={color} size={size} />,
           }}
         />
       </Tabs>

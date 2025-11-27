@@ -2,7 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Colors } from "../constants/colors";
-import { employeeDataStore } from "../store/employeeDataStore";
+import { userDataStore } from "../store/userDataStore";
 
 export function useUserData(url: string, showAlert: any) {
 
@@ -10,12 +10,12 @@ export function useUserData(url: string, showAlert: any) {
   const [requests, setRequests] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const setName = employeeDataStore((state) => state.setName);
-  const setUsername = employeeDataStore((state) => state.setUsername);
-  const setWinthorId = employeeDataStore((state) => state.setWinthorId);
-  const setId = employeeDataStore((state) => state.setUserId);
-  const setBranchId = employeeDataStore((state) => state.setBranchId);
-  const setAccessLevel = employeeDataStore((state) => state.setAccessLevel);
+  const setName = userDataStore((state) => state.setName);
+  const setUsername = userDataStore((state) => state.setUsername);
+  const setWinthorId = userDataStore((state) => state.setWinthorId);
+  const setId = userDataStore((state) => state.setUserId);
+  const setBranchId = userDataStore((state) => state.setBranchId);
+  const setAccessLevel = userDataStore((state) => state.setAccessLevel);
 
   const fetchData = async () => {
     setIsLoading(true);
