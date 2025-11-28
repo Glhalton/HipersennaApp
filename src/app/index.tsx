@@ -58,7 +58,7 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: theme.background}]}>
       <StatusBar barStyle={"dark-content"} />
       <View style={[styles.header]}>
         <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
