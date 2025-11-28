@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
+import { validityDataStore } from "@/store/validityDataStore";
 import React from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
-import { validityDataStore } from "../../../store/validityDataStore";
 
 export default function historyProducts() {
   const colorScheme = useColorScheme() ?? "light";

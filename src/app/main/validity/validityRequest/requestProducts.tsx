@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
+import { validityDataStore } from "@/store/validityDataStore";
 import React from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../../constants/colors";
-import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function RequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -18,7 +18,7 @@ export default function RequestProducts() {
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item, index }) => (
-            <View style={[styles.card, {borderColor: theme.border}]}>
+            <View style={[styles.card, { borderColor: theme.border }]}>
               <Text style={[styles.label, { color: theme.title }]}>{index + 1}°</Text>
               <View style={styles.rowBox}>
                 <Text style={[styles.label, { color: theme.title }]}>
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  main: {flex: 1},
+  main: { flex: 1 },
   card: {
     borderBottomWidth: 0.5,
     paddingVertical: 8,

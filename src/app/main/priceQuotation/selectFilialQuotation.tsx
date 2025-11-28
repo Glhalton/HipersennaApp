@@ -1,15 +1,24 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { DropdownInput } from "@/components/dropdownInput";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
-import { ActivityIndicator, Keyboard, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import {
+  ActivityIndicator,
+  Keyboard,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ButtonComponent } from "../../../components/buttonComponent";
-import { DropdownInput } from "../../../components/dropdownInput";
-import { Input } from "../../../components/input";
-import ModalAlert from "../../../components/modalAlert";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
 
 type Concurrent = {
   codConc: string;
@@ -56,11 +65,11 @@ export default function SelectFilialQuotation() {
         Keyboard.dismiss();
       } else if (response.status == 404) {
         showAlert({
-            title: "Erro!",
-            text: "Concorrente não encontrado",
-            icon: "error-outline",
-            color: Colors.red,
-            iconFamily: MaterialIcons,
+          title: "Erro!",
+          text: "Concorrente não encontrado",
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
         });
       }
     } catch (error: any) {
@@ -107,7 +116,7 @@ export default function SelectFilialQuotation() {
           </TouchableOpacity>
         </View>
         {concurrentData && (
-          <View style={[styles.concurrentDataBox, ]}>
+          <View style={[styles.concurrentDataBox]}>
             <View>
               <Text>Nome:</Text>
               <Text style={[styles.text, { fontSize: 18 }]}>{concurrentData?.concorrente}</Text>

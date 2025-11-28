@@ -1,6 +1,6 @@
+import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import { styles } from "./style";
 
 type IconComponent = React.ComponentType<React.ComponentProps<typeof Ionicons>>;

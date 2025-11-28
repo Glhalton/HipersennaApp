@@ -1,14 +1,14 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { validityDataStore } from "@/store/validityDataStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ButtonComponent } from "../../../components/buttonComponent";
-import ModalAlert from "../../../components/modalAlert";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { validityDataStore } from "../../../store/validityDataStore";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
@@ -25,8 +25,6 @@ export default function ValiditySummary() {
   const [isLoading, setIsLoading] = useState(false);
 
   const postValidity = async () => {
-
-
     if (validity.products.length === 0) {
       showAlert({
         title: "Erro!",
@@ -51,9 +49,7 @@ export default function ValiditySummary() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(
-          validity
-        ),
+        body: JSON.stringify(validity),
       });
 
       const responseData = await response.json();
@@ -135,7 +131,12 @@ export default function ValiditySummary() {
         />
 
         <View style={styles.insertButtonComponent}>
-          <ButtonComponent text="Salvar dados" onPress={postValidity} style={{backgroundColor: Colors.green}} loading={isLoading} />
+          <ButtonComponent
+            text="Salvar dados"
+            onPress={postValidity}
+            style={{ backgroundColor: Colors.green }}
+            loading={isLoading}
+          />
         </View>
       </View>
 

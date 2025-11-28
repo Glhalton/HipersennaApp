@@ -1,16 +1,16 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { DropdownInput } from "@/components/dropdownInput";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { useProduct } from "@/hooks/useProduct";
 import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
-import { ButtonComponent } from "../../../components/buttonComponent";
-import { DropdownInput } from "../../../components/dropdownInput";
-import { Input } from "../../../components/input";
-import ModalAlert from "../../../components/modalAlert";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { useProduct } from "../../../hooks/useProduct";
 
 type InputOptions = {
   label: string;
@@ -127,7 +127,7 @@ export default function SearchProduct() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       {/* <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} /> */}
-       <StatusBar barStyle={"dark-content"} />
+      <StatusBar barStyle={"dark-content"} />
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.header}>
         <View style={styles.headerButtonComponents}>

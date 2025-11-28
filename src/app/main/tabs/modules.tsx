@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
 
 export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";
@@ -31,7 +31,7 @@ export default function Modules() {
               </View>
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 router.push("../priceQuotation/selectFilialQuotation");
               }}
@@ -43,9 +43,9 @@ export default function Modules() {
                 </View>
                 <Text style={[styles.text, { color: theme.text }]}>Cotação de preços</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
                 // router.push("/");
               }}
@@ -57,7 +57,7 @@ export default function Modules() {
                 </View>
                 <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <TouchableOpacity
               onPress={() => {

@@ -130,6 +130,18 @@ android {
     androidResources {
         ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~'
     }
+
+    bundle {
+        abi {
+            enableSplit = false
+        }
+        density {
+            enableSplit = false
+        }
+        language {
+            enableSplit = false
+        }
+    }
 }
 
 // Apply static values from `gradle.properties` to the `android.packagingOptions`

@@ -1,5 +1,5 @@
+import { Colors } from "@/constants/colors";
 import { ActivityIndicator, Text, TouchableOpacity, TouchableOpacityProps, useColorScheme, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
 
 type Props = TouchableOpacityProps & {

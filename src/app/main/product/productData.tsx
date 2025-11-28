@@ -1,10 +1,10 @@
+import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
 
 export default function ProductData() {
   const colorScheme = useColorScheme() ?? "light";
@@ -50,7 +50,7 @@ export default function ProductData() {
       Number(product.qtEstGerDp6),
       Number(product.qtReservDp6),
       Number(product.qtBloqueadaDp6),
-    )
+    );
   }, []);
 
   return (
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     justifyContent: "center",
-    
+
     borderRadius: 12,
     gap: 5,
   },

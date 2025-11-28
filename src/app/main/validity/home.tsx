@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
 
 export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";

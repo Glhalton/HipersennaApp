@@ -1,3 +1,8 @@
+import ModalAlert from "@/components/modalAlert";
+import NoData from "@/components/noData";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { validityDataStore } from "@/store/validityDataStore";
 import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -13,12 +18,7 @@ import {
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import ModalAlert from "../../../components/modalAlert";
-import NoData from "../../../components/noData";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { validityDataStore } from "../../../store/validityDataStore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type validity = {
   id: number;
@@ -34,29 +34,26 @@ type validity = {
 export default function History() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const insets = useSafeAreaInsets();
-
   const { alertData, hideAlert, showAlert, visible } = useAlert();
-
   const [isLoading, setIsLoading] = useState(true);
-
   const url = process.env.EXPO_PUBLIC_API_URL;
 
   const [ordinationItems, setOrdinationItems] = useState([
     { label: "Recentes", value: "1" },
     { label: "Antigos", value: "2" },
   ]);
+
   const [ordination, setOrdination] = useState("");
   const [open, setOpen] = React.useState(false);
 
-  // const setProducts = getValidityDataStore((state) => state.setProducts);
   const setProducts = validityDataStore((state) => state.setProductsList);
 
   const [validities, setValidities] = useState<validity[]>([]);
   const [sortedValidities, setSortedValidities] = useState<validity[]>([]);
+
   const [noData, setNoData] = useState(false);
 
-  const selectValidities = async () => {
+  const getValidities = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
@@ -116,7 +113,7 @@ export default function History() {
   };
 
   useEffect(() => {
-    selectValidities();
+    getValidities();
   }, []);
 
   useEffect(() => {
@@ -133,8 +130,8 @@ export default function History() {
 
   if (noData) {
     return (
-      <SafeAreaView style={[styles.container, { paddingBottom: insets.bottom }]} edges={["bottom"]}>
-        <NoData/>
+      <SafeAreaView style={[styles.container]} edges={["bottom"]}>
+        <NoData />
       </SafeAreaView>
     );
   }
@@ -224,7 +221,7 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 15,
   },
-  main: {flex: 1},
+  main: { flex: 1 },
   flatList: {},
   card: {
     borderBottomWidth: 0.5,

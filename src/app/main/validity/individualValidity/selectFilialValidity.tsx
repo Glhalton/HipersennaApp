@@ -1,11 +1,11 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { DropdownInput } from "@/components/dropdownInput";
+import { Colors } from "@/constants/colors";
+import { validityDataStore } from "@/store/validityDataStore";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ButtonComponent } from "../../../../components/buttonComponent";
-import { DropdownInput } from "../../../../components/dropdownInput";
-import { Colors } from "../../../../constants/colors";
-import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function SelectFilialValidity() {
   const colorScheme = useColorScheme() ?? "light";

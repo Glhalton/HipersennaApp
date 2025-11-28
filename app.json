@@ -35,11 +35,11 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#ffffff",
-          "image": "./assets/images/hipersenna-light-splash-icon.png",
+          "image": "./assets/images/hipersenna-red-logo.png",
           "resizeMode": "contain",
           "dark": {
             "backgroundColor": "#232323",
-            "image": "./assets/images/hipersenna-dark-splash-icon.png"
+            "image": "./assets/images/hipersenna-red-logo.png"
           },
           "imageWidth": 200
         }

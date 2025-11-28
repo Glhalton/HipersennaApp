@@ -1,15 +1,15 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import ModalAlert from "@/components/modalAlert";
+import ModalPopup from "@/components/modalPopup";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { validityDataStore } from "@/store/validityDataStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ButtonComponent } from "../../../../components/buttonComponent";
-import ModalAlert from "../../../../components/modalAlert";
-import ModalPopup from "../../../../components/modalPopup";
-import { Colors } from "../../../../constants/colors";
-import { useAlert } from "../../../../hooks/useAlert";
-import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -84,7 +84,7 @@ export default function ValidityRequestProducts() {
 
   //Função para capturar o botão de voltar
   useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e: any) => {
       if (forceExit) return; // não intercepta se for saída forçada
 
       e.preventDefault();

@@ -1,7 +1,7 @@
+import { Colors } from "@/constants/colors";
 import React, { Fragment } from "react";
 import { Text, useColorScheme, View } from "react-native";
 import DropDownPicker, { ListModeType } from "react-native-dropdown-picker";
-import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
 
 interface DropDownInputProps {

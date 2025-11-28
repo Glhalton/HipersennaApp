@@ -1,14 +1,14 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { validityDataStore } from "@/store/validityDataStore";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ButtonComponent } from "../../../../components/buttonComponent";
-import ModalAlert from "../../../../components/modalAlert";
-import { Colors } from "../../../../constants/colors";
-import { useAlert } from "../../../../hooks/useAlert";
-import { validityDataStore } from "../../../../store/validityDataStore";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";

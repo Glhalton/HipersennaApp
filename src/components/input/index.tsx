@@ -1,7 +1,7 @@
+import { Colors } from "@/constants/colors";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React, { Fragment } from "react";
 import { Text, TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
 
 type IconComponent =

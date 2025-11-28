@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
 
 type User = {
   id: number;
@@ -43,7 +43,7 @@ export default function Profile() {
       });
 
       const responseData = await response.json();
-
+      ("");
       if (response.ok) {
         setUserData(responseData[0]);
       }
@@ -69,32 +69,32 @@ export default function Profile() {
     <SafeAreaView style={styles.container} edges={["bottom"]}>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View style={styles.header}>
-        <Text style={[styles.title, {color: theme.title}]}>DADOS DO USUÁRIO:</Text>
+        <Text style={[styles.title, { color: theme.title }]}>DADOS DO USUÁRIO:</Text>
       </View>
       <View style={styles.main}>
         <View style={styles.dataBox}>
           <View style={styles.rowBox}>
-            <Text style={[styles.label, {color: theme.text}]}>Nome:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Nome:</Text>
             <Text style={styles.text}>{userData?.name}</Text>
           </View>
           <View style={styles.rowBox}>
-            <Text style={[styles.label, {color: theme.text}]}>Username:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Username:</Text>
             <Text style={styles.text}>{userData?.username}</Text>
           </View>
           <View style={[styles.rowBox]}>
-            <Text style={[styles.label, {color: theme.text}]}>Cargo: </Text>
+            <Text style={[styles.label, { color: theme.text }]}>Cargo: </Text>
             <Text style={styles.text}>{userData?.hsusers_roles?.[0]?.hsroles?.name ?? "Sem cargo"}</Text>
           </View>
           <View style={styles.rowBox}>
-            <Text style={[styles.label, {color: theme.text}]}>Filial:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Filial:</Text>
             <Text style={styles.text}>{userData?.branch_id}</Text>
           </View>
           <View style={styles.rowBox}>
-            <Text style={[styles.label, {color: theme.text}]}>Código do Winthor:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Código do Winthor:</Text>
             <Text style={styles.text}>{userData?.winthor_id}</Text>
           </View>
           <View style={[styles.rowBox, { borderBottomWidth: 0 }]}>
-            <Text style={[styles.label, {color: theme.text}]}>Código do GHSApp:</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Código do GHSApp:</Text>
             <Text style={styles.text}>{userData?.id}</Text>
           </View>
         </View>
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   dataBox: {
     backgroundColor: "white",
     borderRadius: 12,
-
   },
   rowBox: {
     flexDirection: "row",

@@ -1,15 +1,15 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { useAuth } from "@/hooks/useAuth";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
 import { Image, Linking, Modal, Platform, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VersionCheck from "react-native-version-check";
-import { ButtonComponent } from "../components/buttonComponent";
-import { Input } from "../components/input";
-import ModalAlert from "../components/modalAlert";
-import { Colors } from "../constants/colors";
-import { useAlert } from "../hooks/useAlert";
-import { useAuth } from "../hooks/useAuth";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -59,7 +59,7 @@ export default function Index() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
+      <StatusBar barStyle={"dark-content"} />
       <View style={[styles.header]}>
         <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
         <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>

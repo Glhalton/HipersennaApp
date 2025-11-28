@@ -1,8 +1,8 @@
+import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Image, useColorScheme } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { Colors } from "../../../constants/colors";
 
 export default function MainTabsLayout() {
   const colorScheme = useColorScheme() ?? "light";

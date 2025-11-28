@@ -1,3 +1,10 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import ModalPopup from "@/components/modalPopup";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { useProduct } from "@/hooks/useProduct";
 import { Ionicons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -15,13 +22,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
-import { ButtonComponent } from "../../../components/buttonComponent";
-import { Input } from "../../../components/input";
-import ModalAlert from "../../../components/modalAlert";
-import ModalPopup from "../../../components/modalPopup";
-import { Colors } from "../../../constants/colors";
-import { useAlert } from "../../../hooks/useAlert";
-import { useProduct } from "../../../hooks/useProduct";
 
 type InputOptions = {
   label: string;
@@ -125,7 +125,7 @@ export default function ValidityForm() {
 
   //Função para capturar o botão de voltar
   useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault(); // bloqueia a navegação
       setExitAction(e.data.action); // salva a ação para executar depois
       setShowExitModal(true); // mostra o modal personalizado
@@ -226,7 +226,7 @@ export default function ValidityForm() {
             <View style={styles.summaryButtonComponent}>
               <ButtonComponent
                 text="Inserir"
-                style={{backgroundColor: theme.button}}
+                style={{ backgroundColor: theme.button }}
                 onPress={() => {
                   addProductList();
                   Keyboard.dismiss();
@@ -241,7 +241,7 @@ export default function ValidityForm() {
                   onPress={() => {
                     router.push("./validitySummary");
                   }}
-                  style={{backgroundColor: theme.button2}}
+                  style={{ backgroundColor: theme.button2 }}
                 />
               </View>
             )}

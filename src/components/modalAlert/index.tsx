@@ -1,7 +1,7 @@
+import { Colors } from "@/constants/colors";
 import { FontAwesome, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
-import { Colors } from "../../constants/colors";
 import { ButtonComponent } from "../buttonComponent";
 import { styles } from "./styles";
 

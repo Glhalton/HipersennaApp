@@ -1,3 +1,12 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { DateInput } from "@/components/dateInput";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import ModalPopup from "@/components/modalPopup";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { useProduct } from "@/hooks/useProduct";
+import { validityDataStore } from "@/store/validityDataStore";
 import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
@@ -14,15 +23,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
-import { ButtonComponent } from "../../../../components/buttonComponent";
-import { DateInput } from "../../../../components/dateInput";
-import { Input } from "../../../../components/input";
-import ModalAlert from "../../../../components/modalAlert";
-import ModalPopup from "../../../../components/modalPopup";
-import { Colors } from "../../../../constants/colors";
-import { useAlert } from "../../../../hooks/useAlert";
-import { useProduct } from "../../../../hooks/useProduct";
-import { validityDataStore } from "../../../../store/validityDataStore";
 
 type InputOptions = {
   label: string;
@@ -165,7 +165,7 @@ export default function ValidityForm() {
 
   //Função para capturar o botão de voltar
   useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+    const unsubscribe = navigation.addListener("beforeRemove", (e: any) => {
       e.preventDefault(); // bloqueia a navegação
       setExitAction(e.data.action); // salva a ação para executar depois
       setShowExitModal(true); // mostra o modal personalizado
@@ -244,8 +244,8 @@ export default function ValidityForm() {
           {productData?.descricao && (
             <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
               <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
-              <View style={{flexDirection: "row"}}>
-                <Text style={{fontSize: 14}}>Cod.Auxiliar: </Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={{ fontSize: 14 }}>Cod.Auxiliar: </Text>
                 <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
               </View>
             </View>
