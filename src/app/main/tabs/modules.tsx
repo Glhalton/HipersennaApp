@@ -1,4 +1,6 @@
+import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
+import { userDataStore } from "@/store/userDataStore";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -7,6 +9,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
+
+  const user = userDataStore((state) => state.user);
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -31,39 +35,54 @@ export default function Modules() {
               </View>
             </TouchableOpacity>
 
-            {/* <TouchableOpacity
-              onPress={() => {
-                router.push("../priceQuotation/selectFilialQuotation");
-              }}
-              style={styles.optionButtonComponent}
-            >
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Ionicons name="pricetag-outline" color={theme.iconColor} size={30} />
+            <PermissionWrapper requiredRole={1}>
+              <TouchableOpacity
+                onPress={() => {
+                  router.push("../priceQuotation/selectFilialQuotation");
+                }}
+                style={styles.optionButtonComponent}
+              >
+                <View style={styles.opcaoMenu}>
+                  <View style={styles.optionIcon}>
+                    <Ionicons name="pricetag-outline" color={theme.iconColor} size={30} />
+                  </View>
+                  <Text style={[styles.text, { color: theme.text }]}>Cotação de preços</Text>
                 </View>
-                <Text style={[styles.text, { color: theme.text }]}>Cotação de preços</Text>
-              </View>
-            </TouchableOpacity> */}
+              </TouchableOpacity>
+            </PermissionWrapper>
 
-            {/* <TouchableOpacity
-              onPress={() => {
-                // router.push("/");
-              }}
-              style={styles.optionButtonComponent}
-            >
+            <PermissionWrapper requiredRole={1}>
+              <TouchableOpacity
+                onPress={() => {
+                  // router.push("/");
+                }}
+                style={styles.optionButtonComponent}
+              >
+                <View style={styles.opcaoMenu}>
+                  <View style={styles.optionIcon}>
+                    <Ionicons name="document-text-outline" color={theme.iconColor} size={30} />
+                  </View>
+                  <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
+                </View>
+              </TouchableOpacity>
+            </PermissionWrapper>
+
+            <TouchableOpacity onPress={() => {
+              router.push("../consumptionControl/consumptionForm")
+            }} style={[styles.optionButtonComponent]}>
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
-                  <Ionicons name="document-text-outline" color={theme.iconColor} size={30} />
+                  <Ionicons name="clipboard-outline" color={theme.iconColor} size={30} />
                 </View>
-                <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
+                <Text style={[styles.text, { color: theme.text }]}>Controle de Consumos</Text>
               </View>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {
                 router.push("../validity/home");
               }}
-              style={[styles.optionButtonComponent, {borderBottomWidth: 0}]}
+              style={[styles.optionButtonComponent, { borderBottomWidth: 0 }]}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>

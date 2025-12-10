@@ -1,27 +1,8 @@
 import { Colors } from "@/constants/colors";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
+import { userDataStore } from "@/store/userDataStore";
+import { useState } from "react";
 import { ActivityIndicator, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-type User = {
-  id: number;
-  branch_id: number;
-  winthor_id: number;
-  name: string;
-  username: string;
-  created_at: string;
-  modified_at: string;
-  hsusers_roles: {
-    role_id: number;
-    hsroles: {
-      id: 1;
-      name: string;
-      description: string;
-    };
-  }[];
-  hsusers_permissions: any[];
-};
 
 export default function Profile() {
   const colorScheme = useColorScheme() ?? "light";
@@ -29,33 +10,8 @@ export default function Profile() {
   const url = process.env.EXPO_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
 
-  const [userData, setUserData] = useState<User>();
+  const user = userDataStore((state) => state.user)
 
-  const getUserData = async () => {
-    const token = await AsyncStorage.getItem("token");
-    setIsLoading(true);
-    try {
-      const response = await fetch(`${url}/users/me`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-      ("");
-      if (response.ok) {
-        setUserData(responseData[0]);
-      }
-    } catch (error: any) {
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getUserData();
-  }, []);
 
   if (isLoading) {
     return (
@@ -75,27 +31,27 @@ export default function Profile() {
         <View style={styles.dataBox}>
           <View style={styles.rowBox}>
             <Text style={[styles.label, { color: theme.text }]}>Nome:</Text>
-            <Text style={styles.text}>{userData?.name}</Text>
+            <Text style={styles.text}>{user.name}</Text>
           </View>
           <View style={styles.rowBox}>
             <Text style={[styles.label, { color: theme.text }]}>Username:</Text>
-            <Text style={styles.text}>{userData?.username}</Text>
+            <Text style={styles.text}>{user.username}</Text>
           </View>
           <View style={[styles.rowBox]}>
             <Text style={[styles.label, { color: theme.text }]}>Cargo: </Text>
-            <Text style={styles.text}>{userData?.hsusers_roles?.[0]?.hsroles?.name ?? "Sem cargo"}</Text>
+            <Text style={styles.text}>{user.role_id}</Text>
           </View>
           <View style={styles.rowBox}>
             <Text style={[styles.label, { color: theme.text }]}>Filial:</Text>
-            <Text style={styles.text}>{userData?.branch_id}</Text>
+            <Text style={styles.text}>{user.branch_id}</Text>
           </View>
           <View style={styles.rowBox}>
             <Text style={[styles.label, { color: theme.text }]}>Código do Winthor:</Text>
-            <Text style={styles.text}>{userData?.winthor_id}</Text>
+            <Text style={styles.text}>{user.winthor_id}</Text>
           </View>
           <View style={[styles.rowBox, { borderBottomWidth: 0 }]}>
             <Text style={[styles.label, { color: theme.text }]}>Código do GHSApp:</Text>
-            <Text style={styles.text}>{userData?.id}</Text>
+            <Text style={styles.text}>{user.id}</Text>
           </View>
         </View>
       </View>

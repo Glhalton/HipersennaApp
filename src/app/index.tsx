@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import VersionCheck from "react-native-version-check";
 
 export default function Index() {
+
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;

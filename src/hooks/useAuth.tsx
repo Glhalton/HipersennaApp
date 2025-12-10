@@ -1,3 +1,4 @@
+import { userDataStore } from "@/store/userDataStore";
 import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
@@ -6,6 +7,7 @@ import { Colors } from "../constants/colors";
 
 export function useAuth(url: string, showAlert: any) {
   const [isLoading, setIsLoading] = useState(false);
+  const setUser = userDataStore((state) => state.setUser);
 
   const login = async (username: string, password: string) => {
     setIsLoading(true);
@@ -21,6 +23,7 @@ export function useAuth(url: string, showAlert: any) {
 
       if (response.ok) {
         await AsyncStorage.setItem("token", data.token);
+        setUser(data.user);
         router.replace("/main/tabs/modules");
         return true;
       } else {

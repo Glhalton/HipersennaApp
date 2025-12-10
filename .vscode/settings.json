@@ -8,5 +8,6 @@
     "**/.expo": true,
     "**/node_modules": true,
   },
-  "explorer.compactFolders": false
+  "explorer.compactFolders": false,
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
