@@ -1,23 +1,23 @@
+import { Colors } from "@/constants/colors";
 import { Octicons } from "@expo/vector-icons";
 import React from "react";
 import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
-import { Colors } from "../../constants/colors";
-import { SmallButton } from "../smallButton";
+import { ButtonComponent } from "../buttonComponent";
 import { styles } from "./styles";
 
 type Props = ModalProps & {
-  buttonLeft: () => void;
-  buttonRight: () => void;
+  ButtonComponentLeft: () => void;
+  ButtonComponentRight: () => void;
 };
 
-export default function ModalPopup({ buttonLeft, buttonRight, ...rest }: Props) {
+export default function ModalPopup({ ButtonComponentLeft, ButtonComponentRight, ...rest }: Props) {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
 
   return (
     <Modal animationType="fade" transparent={true} {...rest}>
       <View style={styles.modalContainerCenter}>
-        <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
+        <View style={[styles.modalBox, { backgroundColor: theme.itemBackground }]}>
           <Octicons name="alert" size={110} color={Colors.red2} />
           <View style={styles.textBox}>
             <Text style={[styles.titleText, { color: theme.title }]}>Deseja sair?</Text>
@@ -25,9 +25,13 @@ export default function ModalPopup({ buttonLeft, buttonRight, ...rest }: Props) 
               Se sair agora, poderá perder dados que não foram salvos.
             </Text>
           </View>
-          <View style={styles.modalButtonsBox}>
-            <SmallButton backgroundColor={Colors.gray} title={"Cancelar"} onPress={buttonLeft} />
-            <SmallButton title={"Sair"} onPress={buttonRight} />
+          <View style={styles.modalButtonComponentsBox}>
+            <View style={styles.ButtonComponent}>
+              <ButtonComponent text={"Cancelar"} onPress={ButtonComponentLeft} style = {[styles.button, {backgroundColor : theme.button}]} />
+            </View>
+            <View style={styles.ButtonComponent}>
+              <ButtonComponent text={"Sair"} onPress={ButtonComponentRight} style = {[styles.button, {backgroundColor : theme.cancel}]} />
+            </View>
           </View>
         </View>
       </View>

@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 15,
     paddingVertical: 20,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
@@ -27,32 +27,21 @@ export const styles = StyleSheet.create({
     elevation: 7,
   },
   textBox: {
+    width: "100%",
+    alignItems: "center",
+    gap: 5,
     paddingBottom: 20,
-    justifyContent: "center",
-    alignItems: "center",
   },
-  buttonBox: {
+  ButtonComponentBox: {
     width: "100%",
-    alignItems: "flex-end",
-  },
-  button: {
-    backgroundColor: Colors.red,
-    borderRadius: 20,
-    width: "100%",
-    padding: 12,
-    alignItems: "center",
-  },
-  buttonText: {
-    fontFamily: "Lexend-Bold",
-    fontSize: 16,
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 28,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },

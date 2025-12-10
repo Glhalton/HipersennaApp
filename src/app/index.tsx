@@ -1,15 +1,15 @@
+import { ButtonComponent } from "@/components/buttonComponent";
+import { Input } from "@/components/input";
+import ModalAlert from "@/components/modalAlert";
+import { Colors } from "@/constants/colors";
+import { useAlert } from "@/hooks/useAlert";
+import { useAuth } from "@/hooks/useAuth";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import React, { useEffect, useState } from "react";
 import { Image, Linking, Modal, Platform, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import VersionCheck from "react-native-version-check";
-import { Input } from "../components/input";
-import { LargeButton } from "../components/largeButton";
-import ModalAlert from "../components/modalAlert";
-import { Colors } from "../constants/colors";
-import { useAlert } from "../hooks/useAlert";
-import { useAuth } from "../hooks/useAuth";
 
 export default function Index() {
   const colorScheme = useColorScheme() ?? "light";
@@ -58,8 +58,8 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
+    <SafeAreaView style={[styles.container, {backgroundColor: theme.background}]}>
+      <StatusBar barStyle={"dark-content"} />
       <View style={[styles.header]}>
         <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
         <Text style={[styles.title, { color: theme.title }]}>GHSApp</Text>
@@ -92,23 +92,23 @@ export default function Index() {
           />
         </View>
 
-        <View style={styles.loginButton}>
-          <LargeButton
+        <View style={styles.loginButtonComponent}>
+          <ButtonComponent
             text="Login"
             onPress={() => login(username, password)}
             loading={isLoading}
-            backgroundColor={theme.red}
+            style={{backgroundColor: theme.button2}}
           />
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Text style={[styles.versionText, { color: theme.text }]}>Versão: {appVersion}</Text>
+        <Text style={[styles.versionText, { color: theme.text }]}>{appVersion}</Text>
       </View>
 
       <Modal animationType="fade" transparent={true} visible={hasUpdate}>
         <View style={styles.modalContainerCenter}>
-          <View style={[styles.modalBox, { backgroundColor: theme.uiBackground }]}>
+          <View style={[styles.modalBox, { backgroundColor: theme.itemBackground }]}>
             <MaterialIcons name="update" size={110} color={Colors.red2} />
             <View style={styles.textBox}>
               <Text style={[styles.titleText, { color: theme.title }]}>App desatualizado</Text>
@@ -116,8 +116,8 @@ export default function Index() {
                 A versão do app é menor que a versão publicada na play store, atualize para a nova versão.
               </Text>
             </View>
-            <View style={styles.updateButtonBox}>
-              <LargeButton backgroundColor={theme.red} text={"Atualizar"} onPress={openPlayStore} />
+            <View style={styles.updateButtonComponentBox}>
+              <ButtonComponent style={{backgroundColor: theme.button2, borderRadius: 12}} text={"Atualizar"} onPress={openPlayStore} />
             </View>
           </View>
         </View>
@@ -127,7 +127,7 @@ export default function Index() {
         <ModalAlert
           visible={visible}
           onRequestClose={hideAlert}
-          buttonPress={hideAlert}
+          ButtonComponentPress={hideAlert}
           title={alertData.title}
           text={alertData.text}
           iconCenterName={alertData.icon}
@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    paddingHorizontal: 20,
   },
   header: {
     width: "100%",
@@ -152,25 +153,24 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   title: {
-    fontFamily: "Lexend-SemiBold",
+    fontFamily: "Roboto-Bold",
     color: "white",
     fontSize: 30,
   },
   main: {
     width: "100%",
     maxWidth: 500,
-    height: 350,
     gap: 12,
-    paddingHorizontal: 30,
   },
-  loginButton: {
+  loginButtonComponent: {
     paddingVertical: 20,
   },
   footer: {
     padding: 20,
   },
   versionText: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
+    fontSize: 16,
   },
   modalContainerCenter: {
     flex: 1,
@@ -202,16 +202,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  updateButtonBox: {
+  updateButtonComponentBox: {
     width: "100%",
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 24,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },

@@ -21,7 +21,7 @@ export function useAuth(url: string, showAlert: any) {
 
       if (response.ok) {
         await AsyncStorage.setItem("token", data.token);
-        router.replace("/main/home");
+        router.replace("/main/tabs/modules");
         return true;
       } else {
         showAlert({

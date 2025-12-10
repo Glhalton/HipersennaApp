@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: 15,
     paddingVertical: 20,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
@@ -31,19 +31,25 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  modalButtonsBox: {
+  modalButtonComponentsBox: {
     flexDirection: "row",
     width: "100%",
-    justifyContent: "space-between",
+    gap: 15,
+  },
+  ButtonComponent: {
+    flex: 1,
   },
   titleText: {
-    fontFamily: "Lexend-Bold",
+    fontFamily: "Roboto-Bold",
     fontSize: 28,
     color: Colors.blue,
   },
   text: {
-    fontFamily: "Lexend-Regular",
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: Colors.gray,
   },
+  button:{
+    borderRadius: 12
+  }
 });

@@ -1,7 +1,7 @@
+import { Colors } from "@/constants/colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { Fragment, useState } from "react";
 import { Pressable, Text, useColorScheme, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
 
 interface DateInputProps {
@@ -28,7 +28,7 @@ export function DateInput({ label, placeholder, value, onChange }: DateInputProp
     <Fragment>
       {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
       <View style={[styles.container]}>
-        <Pressable style={[styles.dataInputBox, { backgroundColor: theme.inputColor }]} onPress={() => setShow(true)}>
+        <Pressable style={[styles.dataInputBox, { backgroundColor: theme.inputColor, borderColor: theme.inputBorder }]} onPress={() => setShow(true)}>
           <Text style={[styles.dataInputText, { color: theme.title }, !value && { color: theme.inputPlaceholder }]}>
             {value ? value.toLocaleDateString("pt-BR") : placeholder}
           </Text>

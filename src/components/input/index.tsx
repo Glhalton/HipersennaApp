@@ -1,7 +1,7 @@
+import { Colors } from "@/constants/colors";
 import { FontAwesome, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React, { Fragment } from "react";
 import { Text, TextInput, TextInputProps, TouchableOpacity, useColorScheme, View } from "react-native";
-import { Colors } from "../../constants/colors";
 import { styles } from "./styles";
 
 type IconComponent =
@@ -27,15 +27,15 @@ export function Input(Props: Props) {
 
   return (
     <Fragment>
-      {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
-      <View style={[styles.boxInput, { backgroundColor: theme.inputColor }]}>
+      {label && <Text style={[styles.label, { color: theme.text }]}>{label}</Text>}
+      <View style={[styles.boxInput, { backgroundColor: theme.inputColor, borderColor: theme.inputBorder }]}>
         {IconLeft && iconLeftName && (
           <TouchableOpacity onPress={onIconLeftPress}>
             <IconLeft name={iconLeftName as any} size={20} color={theme.iconColor} style={styles.iconLeft} />
           </TouchableOpacity>
         )}
         <TextInput
-          style={[styles.input, { backgroundColor: theme.inputColor, color: theme.title }]}
+          style={[styles.input, { color: theme.text }]}
           placeholderTextColor={theme.inputPlaceholder}
           {...rest}
         />
