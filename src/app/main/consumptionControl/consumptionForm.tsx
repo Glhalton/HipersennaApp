@@ -5,13 +5,11 @@ import ModalAlert from "@/components/modalAlert";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Keyboard, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-
 
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
@@ -24,7 +22,7 @@ export default function ValidityForm() {
   const [productCode, setProductCode] = useState("");
 
   const [consumerGroups, setConsumerGroups] = useState([]);
-  const [consumerGroupId, setConsumerGroupId] = useState()
+  const [consumerGroupId, setConsumerGroupId] = useState();
 
   const [branchId, setBranchId] = useState("");
 
@@ -54,16 +52,86 @@ export default function ValidityForm() {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData)
-        setConsumerGroups(responseData.map(g => ({
-          label: g.description,
-          value: String(g.id)
-        })));
+        console.log(responseData);
+        setConsumerGroups(
+          responseData.map((g) => ({
+            label: g.description,
+            value: String(g.id),
+          })),
+        );
       }
     } catch (error: any) {
       console.log(error);
-    } finally{
-      setIsApiloading(false)
+    } finally {
+      setIsApiloading(false);
+    }
+  };
+
+  const createConsumerProducts = async () => {
+    if (!branchId || !consumerGroupId || !productCode || !quantity) {
+      showAlert({
+        title: "Atenção!",
+        text: "Preencha todos os campos obrigatórios!",
+        icon: "alert",
+        color: Colors.orange,
+        iconFamily: Octicons,
+      });
+      return;
+    }
+
+    const token = await AsyncStorage.getItem("token");
+    setIsApiloading(true);
+
+    try {
+      const response = await fetch(`${url}/consumer-products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          branch_id: branchId,
+          group_id: consumerGroupId,
+          product_code: productCode,
+          auxiliary_code: "teste",
+          quantity,
+        }),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        showAlert({
+          title: "Sucesso!",
+          text: "Produto de consumo cadastrado com sucesso!",
+          icon: "check-circle-outline",
+          color: "#13BE19",
+          onClose: () => {
+            setProductCode("");
+            setQuantity("");
+            setProductData(null);
+          },
+          iconFamily: MaterialIcons,
+        });
+      } else {
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
+      }
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons,
+      });
+    } finally {
+      setIsApiloading(false);
     }
   };
 
@@ -80,7 +148,7 @@ export default function ValidityForm() {
 
   useEffect(() => {
     getConsumerGroups();
-  }, [])
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
@@ -149,7 +217,7 @@ export default function ValidityForm() {
                 style={{ backgroundColor: theme.button }}
                 text="Enviar"
                 onPress={() => {
-                  console.log(consumerGroups)
+                  createConsumerProducts();
                   Keyboard.dismiss();
                 }}
               />
