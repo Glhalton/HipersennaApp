@@ -19,6 +19,10 @@ export function DropdownInput({ label, value, items, onChange, listMode }: DropD
   const [open, setOpen] = React.useState(false);
   const [dropDownItems, setDropDownItems] = React.useState(items);
 
+  React.useEffect(() => {
+    setDropDownItems(items);
+  }, [items]);
+
   return (
     <Fragment>
       {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
@@ -36,7 +40,10 @@ export function DropdownInput({ label, value, items, onChange, listMode }: DropD
           setItems={setDropDownItems}
           placeholder="Selecione uma opção"
           style={[styles.dropdownInput, { backgroundColor: theme.inputColor, borderColor: theme.inputBorder }]}
-          dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.inputColor, borderColor: theme.inputBorder }]}
+          dropDownContainerStyle={[
+            styles.optionsBox,
+            { backgroundColor: theme.inputColor, borderColor: theme.inputBorder },
+          ]}
           textStyle={[styles.optionsText, { color: theme.title }]}
           placeholderStyle={[styles.placeholder, { color: theme.text }]}
         />
