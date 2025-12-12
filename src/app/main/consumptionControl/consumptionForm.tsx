@@ -8,10 +8,20 @@ import { useProduct } from "@/hooks/useProduct";
 import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Keyboard, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Keyboard,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function ValidityForm() {
+export default function consumptionForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
@@ -52,7 +62,6 @@ export default function ValidityForm() {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData);
         setConsumerGroups(
           responseData.map((g) => ({
             label: g.description,
@@ -68,7 +77,7 @@ export default function ValidityForm() {
   };
 
   const createConsumerProducts = async () => {
-    if (!branchId || !consumerGroupId || !productCode || !quantity) {
+    if (!branchId || !consumerGroupId || !productCode || !quantity || !productData) {
       showAlert({
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
@@ -93,7 +102,7 @@ export default function ValidityForm() {
           branch_id: branchId,
           group_id: consumerGroupId,
           product_code: productCode,
-          auxiliary_code: "teste",
+          auxiliary_code: productData.codAuxiliar,
           quantity,
         }),
       });
@@ -180,7 +189,7 @@ export default function ValidityForm() {
             <TouchableOpacity
               style={[styles.searchButtonComponent, { backgroundColor: theme.button }]}
               onPress={() => {
-                productSearch("codauxiliar", productCode, 1);
+                productSearch("codprod", productCode, 1);
               }}
             >
               {isLoading ? (
@@ -214,6 +223,7 @@ export default function ValidityForm() {
           <View style={styles.ButtonComponentsBox}>
             <View style={styles.summaryButtonComponent}>
               <ButtonComponent
+                loading={isAPiLoading}
                 style={{ backgroundColor: theme.button }}
                 text="Enviar"
                 onPress={() => {
@@ -225,6 +235,42 @@ export default function ValidityForm() {
           </View>
         </View>
       </View>
+
+      <Modal
+        visible={productsListModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setProductsListModal(false);
+        }}
+      >
+        <View style={styles.modalContainerCenter}>
+          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
+            <FlatList
+              data={listProductFilter}
+              keyExtractor={(_, index) => index.toString()}
+              contentContainerStyle={{}}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style={[styles.productItem, { borderColor: theme.iconColor }]}
+                  onPress={() => {
+                    setProductData(item);
+                    setProductsListModal(false);
+                  }}
+                >
+                  <Text style={[styles.productNameText, { color: theme.title }]}>
+                    {item.codProd} - {item.descricao}
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>Cod.Auxiliar: </Text>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>{item.codAuxiliar}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
 
       {alertData && (
         <ModalAlert
@@ -256,22 +302,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
   },
-  filterIcon: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  main: {},
+  main: { flex: 1 },
   formBox: {
     gap: 20,
   },
@@ -290,10 +321,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 12,
   },
-  searchText: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-  },
   productDataBox: {
     borderRadius: 8,
     padding: 15,
@@ -306,12 +333,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2.62,
 
     elevation: 4,
-  },
-  textBold: {
-    fontFamily: "Roboto-Bold",
-  },
-  label: {
-    fontFamily: "Roboto-Regular",
   },
   productNameText: {
     fontSize: 15,
@@ -347,52 +368,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 7,
   },
-  titleBox: {
-    width: "100%",
-    alignItems: "center",
-  },
-  optionsBox: {
-    width: "100%",
-    paddingTop: 30,
-    paddingBottom: 30,
-  },
-  titleText: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 24,
-    textAlign: "center",
-  },
-  optionFilter: {
-    width: "100%",
-    alignItems: "center",
-    paddingVertical: 20,
-    borderRadius: 15,
-    marginVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
   productItem: {
     justifyContent: "center",
     borderBottomWidth: 0.4,
     paddingVertical: 10,
-  },
-  optionsBoxModal: {
-    width: "100%",
-    paddingTop: 30,
-    paddingBottom: 30,
-  },
-  textModal: {
-    fontSize: 18,
-    fontFamily: "Roboto-Regular",
-    color: Colors.gray,
-  },
-  camera: {
-    flex: 1,
   },
   productDataTextModal: {},
 });

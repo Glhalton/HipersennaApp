@@ -68,7 +68,7 @@ export default function Modules() {
             </PermissionWrapper>
 
             <TouchableOpacity onPress={() => {
-              router.push("../consumptionControl/consumptionForm")
+              router.push("../consumptionControl/home")
             }} style={[styles.optionButtonComponent]}>
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>

@@ -12,7 +12,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import VersionCheck from "react-native-version-check";
 
 export default function Index() {
-
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
@@ -59,7 +58,7 @@ export default function Index() {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.container, {backgroundColor: theme.background}]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle={"dark-content"} />
       <View style={[styles.header]}>
         <Image source={theme.logoIcon} resizeMode="contain" style={{ height: 80 }} />
@@ -98,7 +97,7 @@ export default function Index() {
             text="Login"
             onPress={() => login(username, password)}
             loading={isLoading}
-            style={{backgroundColor: theme.button2}}
+            style={{ backgroundColor: theme.button2 }}
           />
         </View>
       </View>
@@ -118,7 +117,11 @@ export default function Index() {
               </Text>
             </View>
             <View style={styles.updateButtonComponentBox}>
-              <ButtonComponent style={{backgroundColor: theme.button2, borderRadius: 12}} text={"Atualizar"} onPress={openPlayStore} />
+              <ButtonComponent
+                style={{ backgroundColor: theme.button2, borderRadius: 12 }}
+                text={"Atualizar"}
+                onPress={openPlayStore}
+              />
             </View>
           </View>
         </View>

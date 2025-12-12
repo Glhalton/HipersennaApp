@@ -74,7 +74,10 @@ export default function Layout() {
           <Stack.Screen name="main/priceQuotation/selectFilialQuotation" options={{ title: "Seleção de Filial" }} />
           <Stack.Screen name="main/priceQuotation/quotationForm" options={{ title: "Cotação de preços" }} />
           <Stack.Screen name="main/account/profile" options={{ title: "Conta" }} />
-          <Stack.Screen name="main/consumptionControl/consumptionForm" options={{ title: "Controle de consumos" }} />
+          <Stack.Screen name="main/consumptionControl/consumptionForm" options={{ title: "Cadastrar produto" }} />
+          <Stack.Screen name="main/consumptionControl/home" options={{ title: "Controle de consumos" }} />
+          <Stack.Screen name="main/consumptionControl/writeOffProducts" options={{ title: "Controle de consumos" }} />
+          <Stack.Screen name="main/consumptionControl/consumptionGroups" options={{ title: "Grupos de consumo" }} />
           
         </Stack>
       </View>
