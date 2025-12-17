@@ -35,6 +35,20 @@ export default function Modules() {
               </View>
             </TouchableOpacity>
 
+            <TouchableOpacity
+              onPress={() => {
+                router.push("../consumption-control/home");
+              }}
+              style={[styles.optionButtonComponent]}
+            >
+              <View style={styles.opcaoMenu}>
+                <View style={styles.optionIcon}>
+                  <Ionicons name="clipboard-outline" color={theme.iconColor} size={30} />
+                </View>
+                <Text style={[styles.text, { color: theme.text }]}>Controle de Consumos</Text>
+              </View>
+            </TouchableOpacity>
+
             <PermissionWrapper requiredRole={1}>
               <TouchableOpacity
                 onPress={() => {
@@ -66,17 +80,6 @@ export default function Modules() {
                 </View>
               </TouchableOpacity>
             </PermissionWrapper>
-
-            <TouchableOpacity onPress={() => {
-              router.push("../consumptionControl/home")
-            }} style={[styles.optionButtonComponent]}>
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Ionicons name="clipboard-outline" color={theme.iconColor} size={30} />
-                </View>
-                <Text style={[styles.text, { color: theme.text }]}>Controle de Consumos</Text>
-              </View>
-            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {

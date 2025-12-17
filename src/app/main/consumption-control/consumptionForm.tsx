@@ -21,7 +21,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function consumptionForm() {
+export default function ConsumptionForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
@@ -31,8 +31,8 @@ export default function consumptionForm() {
   const [quantity, setQuantity] = useState("");
   const [productCode, setProductCode] = useState("");
 
-  const [consumerGroups, setConsumerGroups] = useState([]);
-  const [consumerGroupId, setConsumerGroupId] = useState();
+  const [consumptionGroups, setconsumptionGroups] = useState([]);
+  const [consumptionGroupId, setconsumptionGroupId] = useState();
 
   const [branchId, setBranchId] = useState("");
 
@@ -46,13 +46,13 @@ export default function consumptionForm() {
     { label: "7 - Cidade Jardim", value: "7" },
   ];
 
-  const getConsumerGroups = async () => {
+  const getconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
 
     setIsApiloading(true);
 
     try {
-      const response = await fetch(`${url}/consumer-groups`, {
+      const response = await fetch(`${url}/consumption-groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -62,22 +62,36 @@ export default function consumptionForm() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setConsumerGroups(
+        setconsumptionGroups(
           responseData.map((g) => ({
             label: g.description,
             value: String(g.id),
           })),
         );
+      } else {
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
-      console.log(error);
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons,
+      });
     } finally {
       setIsApiloading(false);
     }
   };
 
-  const createConsumerProducts = async () => {
-    if (!branchId || !consumerGroupId || !productCode || !quantity || !productData) {
+  const createconsumptionProducts = async () => {
+    if (!branchId || !consumptionGroupId || !productCode || !quantity || !productData) {
       showAlert({
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
@@ -92,7 +106,7 @@ export default function consumptionForm() {
     setIsApiloading(true);
 
     try {
-      const response = await fetch(`${url}/consumer-products`, {
+      const response = await fetch(`${url}/consumption-products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +114,7 @@ export default function consumptionForm() {
         },
         body: JSON.stringify({
           branch_id: branchId,
-          group_id: consumerGroupId,
+          group_id: consumptionGroupId,
           product_code: productCode,
           auxiliary_code: productData.codAuxiliar,
           quantity,
@@ -156,7 +170,7 @@ export default function consumptionForm() {
   } = useProduct(url!, showAlert);
 
   useEffect(() => {
-    getConsumerGroups();
+    getconsumptionGroups();
   }, []);
 
   return (
@@ -165,21 +179,21 @@ export default function consumptionForm() {
       <View style={styles.main}>
         <View style={styles.formBox}>
           <View>
-            <DropdownInput label={"Filial:"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
+            <DropdownInput label={"Filial"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
           </View>
           <View>
             <DropdownInput
-              label={"Grupo de consumo:"}
-              value={consumerGroupId ?? ""}
-              items={consumerGroups}
-              onChange={(val: any) => setConsumerGroupId(val)}
+              label={"Grupo de consumo"}
+              value={consumptionGroupId ?? ""}
+              items={consumptionGroups}
+              onChange={(val: any) => setconsumptionGroupId(val)}
             />
           </View>
           <View style={styles.productSearchBox}>
             <View style={styles.productInputBox}>
               <Input
-                label="Código do Produto:"
-                placeholder="Cod. Produto"
+                label="Código do Produto"
+                placeholder="Ex: 2012"
                 keyboardType="numeric"
                 onChangeText={(codProd) => setProductCode(codProd.replace(/[^0-9]/g, ""))}
                 value={productCode}
@@ -212,8 +226,8 @@ export default function consumptionForm() {
 
           <View>
             <Input
-              label="Quantidade:"
-              placeholder="Insira a quantidade"
+              label="Quantidade"
+              placeholder="Ex: 10"
               keyboardType="numeric"
               value={quantity}
               onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
@@ -221,17 +235,15 @@ export default function consumptionForm() {
           </View>
 
           <View style={styles.ButtonComponentsBox}>
-            <View style={styles.summaryButtonComponent}>
-              <ButtonComponent
-                loading={isAPiLoading}
-                style={{ backgroundColor: theme.button }}
-                text="Enviar"
-                onPress={() => {
-                  createConsumerProducts();
-                  Keyboard.dismiss();
-                }}
-              />
-            </View>
+            <ButtonComponent
+              loading={isAPiLoading}
+              style={{ backgroundColor: theme.button }}
+              text="Enviar"
+              onPress={() => {
+                createconsumptionProducts();
+                Keyboard.dismiss();
+              }}
+            />
           </View>
         </View>
       </View>
@@ -292,16 +304,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingVertical: 10,
   },
-  header: {
-    alignItems: "flex-end",
-    paddingBottom: 5,
-  },
-  headerButtonComponents: {
-    flexDirection: "row",
-    gap: 10,
-  },
+  header: {},
   main: { flex: 1 },
   formBox: {
     gap: 20,
@@ -341,9 +346,6 @@ const styles = StyleSheet.create({
   },
   ButtonComponentsBox: {
     marginVertical: 10,
-  },
-  summaryButtonComponent: {
-    marginBottom: 10,
   },
   modalContainerCenter: {
     flex: 1,

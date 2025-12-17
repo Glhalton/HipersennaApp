@@ -47,13 +47,26 @@ export default function Modules() {
               onPress={() => {
                 router.push("./writeOffProducts");
               }}
-              style={[styles.optionButtonComponent, { borderBottomWidth: 0 }]}
+              style={[styles.optionButtonComponent]}
             >
               <View style={styles.opcaoMenu}>
                 <View style={styles.optionIcon}>
                   <Ionicons name="archive-outline" color={theme.iconColor} size={30} />
                 </View>
                 <Text style={[styles.text, { color: theme.text }]}>Baixa de produtos</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                router.push("./consumptionNotes");
+              }}
+              style={[styles.optionButtonComponent, { borderBottomWidth: 0 }]}
+            >
+              <View style={styles.opcaoMenu}>
+                <View style={styles.optionIcon}>
+                  <Ionicons name="receipt-outline" color={theme.iconColor} size={30} />
+                </View>
+                <Text style={[styles.text, { color: theme.text }]}>Notas de consumo</Text>
               </View>
             </TouchableOpacity>
           </View>

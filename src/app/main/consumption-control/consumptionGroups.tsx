@@ -8,18 +8,18 @@ import { Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import {
-    ActivityIndicator,
-    FlatList,
-    Modal,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    useColorScheme,
-    View,
+  ActivityIndicator,
+  FlatList,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type ConsumerGroup = {
+type consumptionGroup = {
   id: number;
   description: string;
   created_at: string;
@@ -32,23 +32,23 @@ export default function ConsumptionGroups() {
   const theme = Colors[colorScheme];
   const [isLoading, setIsLoading] = useState(false);
 
-  const [consumerGroups, setConsumerGroups] = useState<ConsumerGroup[]>();
-  const [newConsumerGroupDescription, setNewConsumerGroupDescription] = useState("");
+  const [consumptionGroups, setconsumptionGroups] = useState<consumptionGroup[]>();
+  const [newconsumptionGroupDescription, setNewconsumptionGroupDescription] = useState("");
 
   const [editOrCreateModal, setEditOrCreateModal] = useState(false);
   const [editOrCreateOption, setEditOrCreateOption] = useState("");
 
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
-  const [selectedConsumerGroup, setSelectedConsumerGroup] = useState<number>();
+  const [selectedconsumptionGroup, setSelectedconsumptionGroup] = useState<number>();
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
-  const getConsumerGroups = async () => {
+  const getconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
 
     setIsLoading(true);
 
     try {
-      const response = await fetch(`${url}/consumer-groups`, {
+      const response = await fetch(`${url}/consumption-groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ export default function ConsumptionGroups() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setConsumerGroups(responseData);
+        setconsumptionGroups(responseData);
       } else {
         showAlert({
           title: "Erro!",
@@ -81,8 +81,8 @@ export default function ConsumptionGroups() {
     }
   };
 
-  const createConsumerGroups = async () => {
-    if (!newConsumerGroupDescription) {
+  const createconsumptionGroups = async () => {
+    if (!newconsumptionGroupDescription) {
       showAlert({
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
@@ -96,13 +96,13 @@ export default function ConsumptionGroups() {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/consumer-groups`, {
+      const response = await fetch(`${url}/consumption-groups`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ description: newConsumerGroupDescription }),
+        body: JSON.stringify({ description: newconsumptionGroupDescription }),
       });
 
       const responseData = await response.json();
@@ -114,8 +114,8 @@ export default function ConsumptionGroups() {
           icon: "check-circle-outline",
           color: "#13BE19",
           onClose: () => {
-            getConsumerGroups();
-            setNewConsumerGroupDescription("");
+            getconsumptionGroups();
+            setNewconsumptionGroupDescription("");
           },
           iconFamily: MaterialIcons,
         });
@@ -139,17 +139,17 @@ export default function ConsumptionGroups() {
     }
   };
 
-  const updateConsumerGroups = async () => {
+  const updateconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/consumer-groups/${selectedConsumerGroup}`, {
+      const response = await fetch(`${url}/consumption-groups/${selectedconsumptionGroup}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ description: newConsumerGroupDescription }),
+        body: JSON.stringify({ description: newconsumptionGroupDescription }),
       });
 
       const responseData = await response.json();
@@ -161,8 +161,8 @@ export default function ConsumptionGroups() {
           icon: "check-circle-outline",
           color: "#13BE19",
           onClose: () => {
-            getConsumerGroups();
-            setNewConsumerGroupDescription("");
+            getconsumptionGroups();
+            setNewconsumptionGroupDescription("");
           },
           iconFamily: MaterialIcons,
         });
@@ -186,11 +186,11 @@ export default function ConsumptionGroups() {
     }
   };
 
-  const deleteConsumerGroups = async (id: number) => {
+  const deleteconsumptionGroups = async (id: number) => {
     const token = await AsyncStorage.getItem("token");
 
     try {
-      const response = await fetch(`${url}/consumer-groups/${id}`, {
+      const response = await fetch(`${url}/consumption-groups/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -200,7 +200,7 @@ export default function ConsumptionGroups() {
       const responseData = await response.json();
 
       if (response.ok) {
-        getConsumerGroups();
+        getconsumptionGroups();
       } else {
         showAlert({
           title: "Erro!",
@@ -222,7 +222,7 @@ export default function ConsumptionGroups() {
   };
 
   useEffect(() => {
-    getConsumerGroups();
+    getconsumptionGroups();
   }, []);
 
   if (isLoading) {
@@ -238,7 +238,7 @@ export default function ConsumptionGroups() {
       <View style={styles.header}></View>
       <View style={styles.main}>
         <FlatList
-          data={consumerGroups}
+          data={consumptionGroups}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
           style={[styles.flatList, { borderColor: theme.border }]}
@@ -255,21 +255,21 @@ export default function ConsumptionGroups() {
                     style={[styles.button]}
                     onPress={() => {
                       setEditOrCreateOption("Edit");
-                      setSelectedConsumerGroup(item.id);
-                      setNewConsumerGroupDescription(item.description);
+                      setSelectedconsumptionGroup(item.id);
+                      setNewconsumptionGroupDescription(item.description);
                       setEditOrCreateModal(true);
                     }}
                   >
-                    <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={30} />
+                    <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={27} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.button, { borderColor: theme.cancel }]}
                     onPress={() => {
-                      setSelectedConsumerGroup(item.id);
+                      setSelectedconsumptionGroup(item.id);
                       setConfirmDeleteModal(true);
                     }}
                   >
-                    <Ionicons name="trash-outline" size={30} color={theme.cancel} />
+                    <Ionicons name="trash-outline" size={27} color={theme.cancel} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -284,7 +284,7 @@ export default function ConsumptionGroups() {
               setEditOrCreateModal(true);
             }}
           >
-            <Ionicons name="add-sharp" size={40} color={Colors.white} />
+            <Ionicons name="add-sharp" size={30} color={Colors.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -295,16 +295,17 @@ export default function ConsumptionGroups() {
         transparent={true}
         onRequestClose={() => {
           setEditOrCreateModal(false);
+          setNewconsumptionGroupDescription("")
         }}
       >
         <View style={styles.modalContainer}>
           <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
             <View>
               <Input
-                label="Nome do grupo:"
-                placeholder="Nome"
-                value={newConsumerGroupDescription}
-                onChangeText={setNewConsumerGroupDescription}
+                label="Nome do grupo"
+                placeholder="Ex: Administração"
+                value={newconsumptionGroupDescription}
+                onChangeText={setNewconsumptionGroupDescription}
               />
             </View>
             <View style={styles.buttonsBox}>
@@ -313,10 +314,10 @@ export default function ConsumptionGroups() {
                 style={{ backgroundColor: theme.button, borderRadius: 12 }}
                 onPress={() => {
                   if (editOrCreateOption == "Create") {
-                    createConsumerGroups();
+                    createconsumptionGroups();
                     setEditOrCreateModal(false);
                   } else {
-                    updateConsumerGroups();
+                    updateconsumptionGroups();
                     setEditOrCreateModal(false);
                   }
                 }}
@@ -326,7 +327,7 @@ export default function ConsumptionGroups() {
                 style={{ backgroundColor: theme.button2, borderRadius: 12 }}
                 onPress={() => {
                   setEditOrCreateModal(false);
-                  setNewConsumerGroupDescription("");
+                  setNewconsumptionGroupDescription("");
                 }}
               />
             </View>
@@ -357,7 +358,7 @@ export default function ConsumptionGroups() {
           setConfirmDeleteModal(false);
         }}
         ButtonComponentRight={() => {
-          (deleteConsumerGroups(selectedConsumerGroup), setConfirmDeleteModal(false));
+          (deleteconsumptionGroups(selectedconsumptionGroup), setConfirmDeleteModal(false));
         }}
         messageButtonRight="Excluir"
       />
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
   },
   card: {
     borderBottomWidth: 0.5,
-    paddingVertical: 10,
+    paddingVertical: 8,
     borderColor: Colors.gray,
   },
   cardTitle: {
@@ -411,7 +412,7 @@ const styles = StyleSheet.create({
   addButton: {
     backgroundColor: "red",
     position: "absolute",
-    padding: 10,
+    padding: 15,
     borderRadius: 22,
     bottom: 20,
     alignSelf: "flex-end",
@@ -433,7 +434,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.53)",
   },
   modalBox: {
-    gap: 50,
+    gap: 30,
     maxHeight: 600,
     width: "100%",
     paddingHorizontal: 15,

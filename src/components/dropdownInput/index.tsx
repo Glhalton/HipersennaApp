@@ -28,6 +28,7 @@ export function DropdownInput({ label, value, items, onChange, listMode }: DropD
       {label && <Text style={[styles.label, { color: theme.label }]}>{label}</Text>}
       <View style={[styles.container, { backgroundColor: theme.inputColor }]}>
         <DropDownPicker
+          closeOnBackPressed={true}
           listMode={listMode}
           open={open}
           value={value}
