@@ -118,17 +118,17 @@ export default function SelectFilialQuotation() {
         {concurrentData && (
           <View style={[styles.concurrentDataBox]}>
             <View>
-              <Text style={[{color: theme.label}]}>Nome:</Text>
+              <Text style={[{ color: theme.label }]}>Nome:</Text>
               <Text style={[styles.text, { fontSize: 18, color: theme.text }]}>{concurrentData?.concorrente}</Text>
             </View>
             <View style={styles.codeActivityBox}>
               <View style={styles.rowBox}>
-                <Text style={[{color: theme.label}]}>Código:</Text>
-                <Text style={[styles.text, {color: theme.text}]}>{concurrentData?.codConc}</Text>
+                <Text style={[{ color: theme.label }]}>Código:</Text>
+                <Text style={[styles.text, { color: theme.text }]}>{concurrentData?.codConc}</Text>
               </View>
               <View style={styles.rowBox}>
-                <Text style={[{color: theme.label}]}>Ativo:</Text>
-                <Text style={[styles.text, {color: theme.text}]}>{concurrentData?.ativo}</Text>
+                <Text style={[{ color: theme.label }]}>Ativo:</Text>
+                <Text style={[styles.text, { color: theme.text }]}>{concurrentData?.ativo}</Text>
               </View>
             </View>
           </View>

@@ -25,9 +25,10 @@ export function DropdownInput({ label, value, items, onChange, listMode }: DropD
 
   return (
     <Fragment>
-      {label && <Text style={[styles.label, { color: theme.title }]}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: theme.label }]}>{label}</Text>}
       <View style={[styles.container, { backgroundColor: theme.inputColor }]}>
         <DropDownPicker
+          closeOnBackPressed={true}
           listMode={listMode}
           open={open}
           value={value}

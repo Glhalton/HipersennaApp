@@ -5,15 +5,23 @@ import ModalAlert from "@/components/modalAlert";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Keyboard, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Keyboard,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
-
-export default function ValidityForm() {
+export default function ConsumptionForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
@@ -23,8 +31,8 @@ export default function ValidityForm() {
   const [quantity, setQuantity] = useState("");
   const [productCode, setProductCode] = useState("");
 
-  const [consumerGroups, setConsumerGroups] = useState([]);
-  const [consumerGroupId, setConsumerGroupId] = useState()
+  const [consumptionGroups, setconsumptionGroups] = useState([]);
+  const [consumptionGroupId, setconsumptionGroupId] = useState();
 
   const [branchId, setBranchId] = useState("");
 
@@ -38,13 +46,13 @@ export default function ValidityForm() {
     { label: "7 - Cidade Jardim", value: "7" },
   ];
 
-  const getConsumerGroups = async () => {
+  const getconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
 
     setIsApiloading(true);
 
     try {
-      const response = await fetch(`${url}/consumer-groups`, {
+      const response = await fetch(`${url}/consumption-groups`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -54,16 +62,99 @@ export default function ValidityForm() {
       const responseData = await response.json();
 
       if (response.ok) {
-        console.log(responseData)
-        setConsumerGroups(responseData.map(g => ({
-          label: g.description,
-          value: String(g.id)
-        })));
+        setconsumptionGroups(
+          responseData.map((g) => ({
+            label: g.description,
+            value: String(g.id),
+          })),
+        );
+      } else {
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
-      console.log(error);
-    } finally{
-      setIsApiloading(false)
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons,
+      });
+    } finally {
+      setIsApiloading(false);
+    }
+  };
+
+  const createconsumptionProducts = async () => {
+    if (!branchId || !consumptionGroupId || !productCode || !quantity || !productData) {
+      showAlert({
+        title: "Atenção!",
+        text: "Preencha todos os campos obrigatórios!",
+        icon: "alert",
+        color: Colors.orange,
+        iconFamily: Octicons,
+      });
+      return;
+    }
+
+    const token = await AsyncStorage.getItem("token");
+    setIsApiloading(true);
+
+    try {
+      const response = await fetch(`${url}/consumption-products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          branch_id: branchId,
+          group_id: consumptionGroupId,
+          product_code: productCode,
+          auxiliary_code: productData.codAuxiliar,
+          quantity,
+        }),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        showAlert({
+          title: "Sucesso!",
+          text: "Produto de consumo cadastrado com sucesso!",
+          icon: "check-circle-outline",
+          color: "#13BE19",
+          onClose: () => {
+            setProductCode("");
+            setQuantity("");
+            setProductData(null);
+          },
+          iconFamily: MaterialIcons,
+        });
+      } else {
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
+      }
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons,
+      });
+    } finally {
+      setIsApiloading(false);
     }
   };
 
@@ -79,8 +170,8 @@ export default function ValidityForm() {
   } = useProduct(url!, showAlert);
 
   useEffect(() => {
-    getConsumerGroups();
-  }, [])
+    getconsumptionGroups();
+  }, []);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
@@ -88,21 +179,21 @@ export default function ValidityForm() {
       <View style={styles.main}>
         <View style={styles.formBox}>
           <View>
-            <DropdownInput label={"Filial:"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
+            <DropdownInput label={"Filial"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
           </View>
           <View>
             <DropdownInput
-              label={"Grupo de consumo:"}
-              value={consumerGroupId ?? ""}
-              items={consumerGroups}
-              onChange={(val: any) => setConsumerGroupId(val)}
+              label={"Grupo de consumo"}
+              value={consumptionGroupId ?? ""}
+              items={consumptionGroups}
+              onChange={(val: any) => setconsumptionGroupId(val)}
             />
           </View>
           <View style={styles.productSearchBox}>
             <View style={styles.productInputBox}>
               <Input
-                label="Código do Produto:"
-                placeholder="Cod. Produto"
+                label="Código do Produto"
+                placeholder="Ex: 2012"
                 keyboardType="numeric"
                 onChangeText={(codProd) => setProductCode(codProd.replace(/[^0-9]/g, ""))}
                 value={productCode}
@@ -112,7 +203,7 @@ export default function ValidityForm() {
             <TouchableOpacity
               style={[styles.searchButtonComponent, { backgroundColor: theme.button }]}
               onPress={() => {
-                productSearch("codauxiliar", productCode, 1);
+                productSearch("codprod", productCode, 1);
               }}
             >
               {isLoading ? (
@@ -135,8 +226,8 @@ export default function ValidityForm() {
 
           <View>
             <Input
-              label="Quantidade:"
-              placeholder="Insira a quantidade"
+              label="Quantidade"
+              placeholder="Ex: 10"
               keyboardType="numeric"
               value={quantity}
               onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
@@ -144,19 +235,54 @@ export default function ValidityForm() {
           </View>
 
           <View style={styles.ButtonComponentsBox}>
-            <View style={styles.summaryButtonComponent}>
-              <ButtonComponent
-                style={{ backgroundColor: theme.button }}
-                text="Enviar"
-                onPress={() => {
-                  console.log(consumerGroups)
-                  Keyboard.dismiss();
-                }}
-              />
-            </View>
+            <ButtonComponent
+              loading={isAPiLoading}
+              style={{ backgroundColor: theme.button }}
+              text="Enviar"
+              onPress={() => {
+                createconsumptionProducts();
+                Keyboard.dismiss();
+              }}
+            />
           </View>
         </View>
       </View>
+
+      <Modal
+        visible={productsListModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => {
+          setProductsListModal(false);
+        }}
+      >
+        <View style={styles.modalContainerCenter}>
+          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
+            <FlatList
+              data={listProductFilter}
+              keyExtractor={(_, index) => index.toString()}
+              contentContainerStyle={{}}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  style={[styles.productItem, { borderColor: theme.iconColor }]}
+                  onPress={() => {
+                    setProductData(item);
+                    setProductsListModal(false);
+                  }}
+                >
+                  <Text style={[styles.productNameText, { color: theme.title }]}>
+                    {item.codProd} - {item.descricao}
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>Cod.Auxiliar: </Text>
+                    <Text style={[styles.productDataTextModal, { color: theme.title }]}>{item.codAuxiliar}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        </View>
+      </Modal>
 
       {alertData && (
         <ModalAlert
@@ -178,32 +304,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 10,
+    paddingVertical: 10,
   },
-  header: {
-    alignItems: "flex-end",
-    paddingBottom: 5,
-  },
-  headerButtonComponents: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  filterIcon: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  main: {},
+  header: {},
+  main: { flex: 1 },
   formBox: {
     gap: 20,
   },
@@ -222,10 +326,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 12,
   },
-  searchText: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-  },
   productDataBox: {
     borderRadius: 8,
     padding: 15,
@@ -239,12 +339,6 @@ const styles = StyleSheet.create({
 
     elevation: 4,
   },
-  textBold: {
-    fontFamily: "Roboto-Bold",
-  },
-  label: {
-    fontFamily: "Roboto-Regular",
-  },
   productNameText: {
     fontSize: 15,
     color: Colors.gray,
@@ -252,9 +346,6 @@ const styles = StyleSheet.create({
   },
   ButtonComponentsBox: {
     marginVertical: 10,
-  },
-  summaryButtonComponent: {
-    marginBottom: 10,
   },
   modalContainerCenter: {
     flex: 1,
@@ -279,52 +370,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4.65,
     elevation: 7,
   },
-  titleBox: {
-    width: "100%",
-    alignItems: "center",
-  },
-  optionsBox: {
-    width: "100%",
-    paddingTop: 30,
-    paddingBottom: 30,
-  },
-  titleText: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 24,
-    textAlign: "center",
-  },
-  optionFilter: {
-    width: "100%",
-    alignItems: "center",
-    paddingVertical: 20,
-    borderRadius: 15,
-    marginVertical: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
   productItem: {
     justifyContent: "center",
     borderBottomWidth: 0.4,
     paddingVertical: 10,
-  },
-  optionsBoxModal: {
-    width: "100%",
-    paddingTop: 30,
-    paddingBottom: 30,
-  },
-  textModal: {
-    fontSize: 18,
-    fontFamily: "Roboto-Regular",
-    color: Colors.gray,
-  },
-  camera: {
-    flex: 1,
   },
   productDataTextModal: {},
 });

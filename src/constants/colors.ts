@@ -39,7 +39,7 @@ export const Colors = {
   // },
   dark: {
     text: "#25292E",
-    label: "#797f85ff",
+    label: "#4e4e50ff",
     title: "#25292E",
     navTitle: "#eeeeeeff",
     background: "#F4F6F8",
