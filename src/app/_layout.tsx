@@ -60,7 +60,7 @@ export default function Layout() {
           <Stack.Screen name="main/product/searchProduct" options={{ title: "Consultar Produto" }} />
           <Stack.Screen name="main/product/productData" options={{ title: "Produto" }} />
 
-          <Stack.Screen name="main/validity/home" options={{ title: "Vencimento" }} />
+          <Stack.Screen name="main/validity/validityHome" options={{ title: "Vencimento" }} />
           <Stack.Screen name="main/validity/history" options={{ title: "Histórico" }} />
           <Stack.Screen name="main/validity/historyProducts" options={{ title: "Produtos" }} />
           <Stack.Screen
@@ -76,7 +76,7 @@ export default function Layout() {
           <Stack.Screen name="main/price-quotation/selectFilialQuotation" options={{ title: "Seleção de Filial" }} />
           <Stack.Screen name="main/price-quotation/quotationForm" options={{ title: "Cotação de preços" }} />
           <Stack.Screen name="main/account/profile" options={{ title: "Conta" }} />
-          <Stack.Screen name="main/consumption-control/home" options={{ title: "Controle de consumos" }} />
+          <Stack.Screen name="main/consumption-control/consumptionHome" options={{ title: "Controle de consumos" }} />
           <Stack.Screen name="main/consumption-control/writeOffProducts" options={{ title: "Produtos de consumo" }} />
           <Stack.Screen name="main/consumption-control/consumptionForm" options={{ title: "Cadastrar produto" }} />
           <Stack.Screen name="main/consumption-control/consumptionGroups" options={{ title: "Grupos de consumo" }} />

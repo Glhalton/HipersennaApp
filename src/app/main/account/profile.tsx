@@ -39,7 +39,7 @@ export default function Profile() {
           </View>
           <View style={[styles.rowBox]}>
             <Text style={[styles.label, { color: theme.text }]}>Cargo: </Text>
-            <Text style={styles.text}>{user.role_id}</Text>
+            <Text style={styles.text}>{user.role.description}</Text>
           </View>
           <View style={styles.rowBox}>
             <Text style={[styles.label, { color: theme.text }]}>Filial:</Text>

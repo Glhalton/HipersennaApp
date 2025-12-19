@@ -4,17 +4,17 @@ type User = {
   id: number;
   branch_id: number;
   winthor_id: number;
-  role_id: number;
   name: string;
   username: string;
-  created_at: string;
-  modified_at: string;
-  hsusers_permissions: {
-    permission_id: number;
-    hspermissions: {
-      description: string;
-    }
-  }[];
+  created_at: Date;
+  modified_at: Date;
+  role: {
+    role_id: number;
+    description: string;
+    permissions: number[];
+  };
+  userPermissions: number[];
+  allPermissions: number[];
 };
 
 

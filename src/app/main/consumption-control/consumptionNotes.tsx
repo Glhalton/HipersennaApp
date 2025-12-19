@@ -1,6 +1,7 @@
 import { ButtonComponent } from "@/components/buttonComponent";
 import { Input } from "@/components/input";
 import NoData from "@/components/noData";
+import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { consumptionProductsStore } from "@/store/consumptionProductsStore";
@@ -183,7 +184,7 @@ export default function ConsumptionNotes() {
                     <Text style={[styles.text, { color: theme.text }]}>{item.hsconsumptionProducts[0].group_id}</Text>
                   </View>
                   <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>NFe: </Text>
+                    <Text style={[styles.label, { color: theme.title }]}>Nota Fiscal: </Text>
                     <Text style={[styles.text, { color: theme.text }]}>
                       {item.nfe_number ? item.nfe_number : "N/A"}
                     </Text>
@@ -208,16 +209,18 @@ export default function ConsumptionNotes() {
             </TouchableOpacity>
           )}
         />
-        <View>
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: theme.iconColor }]}
-            onPress={() => {
-              setEdit(!edit);
-            }}
-          >
-            <MaterialCommunityIcons name="pencil-outline" size={40} color={Colors.white} />
-          </TouchableOpacity>
-        </View>
+        <PermissionWrapper requiredPermissions={[36]}>
+          <View>
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: theme.iconColor }]}
+              onPress={() => {
+                setEdit(!edit);
+              }}
+            >
+              <MaterialCommunityIcons name="pencil-outline" size={40} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        </PermissionWrapper>
       </View>
 
       <Modal
