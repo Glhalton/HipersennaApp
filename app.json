@@ -3,7 +3,7 @@
     "name": "GHSApp",
     "slug": "GHSApp",
     "owner": "glhalton",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/hipersenna-light-icon.png",
     "scheme": "myapp",
@@ -13,7 +13,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 8,
+      "versionCode": 9,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/hipersenna-light-icon-v3.png"
       },
