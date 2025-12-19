@@ -24,6 +24,7 @@ export default function SelectFilialValidity() {
     { label: "5 - Xinguara", value: "5" },
     { label: "6 - DP6", value: "6" },
     { label: "7 - Cidade Jardim", value: "7" },
+    { label: "8 - Canaã dos Carajás", value: "8" },
   ];
 
   //Cria a validade com request = null, pois é avulsa
@@ -31,7 +32,7 @@ export default function SelectFilialValidity() {
     setValidity({
       branch_id: Number(branchId),
       request_id: null,
-      products: []
+      products: [],
     });
   }
 
@@ -53,7 +54,7 @@ export default function SelectFilialValidity() {
         </View>
         {branchId && (
           <ButtonComponent
-          style={{backgroundColor: theme.button}}
+            style={{ backgroundColor: theme.button }}
             text="Continuar"
             onPress={() => {
               addValidity();
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    paddingVertical: 30
+    paddingVertical: 30,
   },
   title: {
     fontSize: 26,

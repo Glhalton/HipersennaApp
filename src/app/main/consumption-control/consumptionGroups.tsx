@@ -2,9 +2,11 @@ import { ButtonComponent } from "@/components/buttonComponent";
 import { Input } from "@/components/input";
 import ModalAlert from "@/components/modalAlert";
 import ModalPopup from "@/components/modalPopup";
+import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -20,20 +22,14 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-type consumptionGroup = {
-  id: number;
-  description: string;
-  created_at: string;
-  modified_at: string;
-};
-
 export default function ConsumptionGroups() {
   const url = process.env.EXPO_PUBLIC_API_URL;
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const [isLoading, setIsLoading] = useState(false);
 
-  const [consumptionGroups, setconsumptionGroups] = useState<consumptionGroup[]>();
+  const consumptionGroups = consumptionGroupsStore((state) => state.consumptionGroups);
+  const setConsumptionGroups = consumptionGroupsStore((state) => state.setGroupsList);
   const [newconsumptionGroupDescription, setNewconsumptionGroupDescription] = useState("");
 
   const [editOrCreateModal, setEditOrCreateModal] = useState(false);
@@ -42,6 +38,8 @@ export default function ConsumptionGroups() {
   const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
   const [selectedconsumptionGroup, setSelectedconsumptionGroup] = useState<number>();
   const { alertData, hideAlert, showAlert, visible } = useAlert();
+
+  const [noData, setNoData] = useState(false);
 
   const getconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -59,7 +57,9 @@ export default function ConsumptionGroups() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setconsumptionGroups(responseData);
+        setConsumptionGroups(responseData);
+      } else if (response.status === 404) {
+        setNoData(true);
       } else {
         showAlert({
           title: "Erro!",
@@ -225,6 +225,14 @@ export default function ConsumptionGroups() {
   useEffect(() => {
     getconsumptionGroups();
   }, []);
+
+  if (noData) {
+    return (
+      <SafeAreaView style={[styles.container]} edges={["bottom"]}>
+        <NoData />
+      </SafeAreaView>
+    );
+  }
 
   if (isLoading) {
     return (

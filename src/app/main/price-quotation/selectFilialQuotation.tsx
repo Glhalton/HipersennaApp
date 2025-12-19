@@ -45,6 +45,7 @@ export default function SelectFilialQuotation() {
     { label: "5 - Xinguara", value: "5" },
     { label: "6 - DP6", value: "6" },
     { label: "7 - Cidade Jardim", value: "7" },
+    { label: "8 - Canaã dos Carajás", value: "8" },
   ];
 
   const searchConcurrent = async () => {

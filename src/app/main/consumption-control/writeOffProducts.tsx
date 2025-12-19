@@ -6,6 +6,7 @@ import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useRef, useState } from "react";
@@ -57,7 +58,16 @@ export default function WriteOffProducts() {
 
   const [branchId, setBranchId] = useState("");
 
-  const [consumptionGroups, setconsumptionGroups] = useState([]);
+  const consumptionGroups = consumptionGroupsStore((state) => state.consumptionGroups);
+
+  const dropdownItems = [
+    { label: "Selecione uma opção", value: "" },
+    ...consumptionGroups.map((item) => ({
+      label: item.description,
+      value: String(item.id),
+    })),
+  ];
+
   const [consumptionGroupId, setconsumptionGroupId] = useState("");
 
   const branches = [
@@ -69,6 +79,7 @@ export default function WriteOffProducts() {
     { label: "5 - Xinguara", value: "5" },
     { label: "6 - DP6", value: "6" },
     { label: "7 - Cidade Jardim", value: "7" },
+    { label: "8 - Canaã dos Carajás", value: "8" },
   ];
 
   const toggleCheckbox = (id: number) => {
@@ -181,55 +192,12 @@ export default function WriteOffProducts() {
     }
   };
 
-  const getconsumptionGroups = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    try {
-      const response = await fetch(`${url}/consumption-groups`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setconsumptionGroups([
-          { label: "Selecione um grupo", value: "" },
-          ...responseData.map((g) => ({
-            label: g.description,
-            value: String(g.id),
-          })),
-        ]);
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
-    } finally {
-    }
-  };
-
   const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       getconsumptionProducts();
-      getconsumptionGroups(); // busca imediata
       return;
     }
 
@@ -379,7 +347,7 @@ export default function WriteOffProducts() {
                 <DropdownInput
                   label={"Grupo de consumo:"}
                   value={consumptionGroupId ?? ""}
-                  items={consumptionGroups}
+                  items={dropdownItems}
                   onChange={(val: any) => setconsumptionGroupId(val)}
                 />
               </View>

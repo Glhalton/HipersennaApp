@@ -25,6 +25,7 @@ export default function Index() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(true);
 
+
   const openPlayStore = () => {
     Linking.openURL("https://play.google.com/store/apps/details?id=com.hipersenna.GHSApp");
   };

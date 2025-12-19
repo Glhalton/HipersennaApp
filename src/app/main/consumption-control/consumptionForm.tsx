@@ -5,9 +5,10 @@ import ModalAlert from "@/components/modalAlert";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
+import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
@@ -31,7 +32,13 @@ export default function ConsumptionForm() {
   const [quantity, setQuantity] = useState("");
   const [productCode, setProductCode] = useState("");
 
-  const [consumptionGroups, setconsumptionGroups] = useState([]);
+  const consumptionGroups = consumptionGroupsStore((state) => state.consumptionGroups);
+
+  const dropdownItems = consumptionGroups.map((item) => ({
+    label: item.description,
+    value: String(item.id),
+  }));
+
   const [consumptionGroupId, setconsumptionGroupId] = useState();
 
   const [branchId, setBranchId] = useState("");
@@ -44,51 +51,8 @@ export default function ConsumptionForm() {
     { label: "5 - Xinguara", value: "5" },
     { label: "6 - DP6", value: "6" },
     { label: "7 - Cidade Jardim", value: "7" },
+    { label: "8 - Canaã dos Carajás", value: "8" },
   ];
-
-  const getconsumptionGroups = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    setIsApiloading(true);
-
-    try {
-      const response = await fetch(`${url}/consumption-groups`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setconsumptionGroups(
-          responseData.map((g) => ({
-            label: g.description,
-            value: String(g.id),
-          })),
-        );
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
-    } finally {
-      setIsApiloading(false);
-    }
-  };
 
   const createconsumptionProducts = async () => {
     if (!branchId || !consumptionGroupId || !productCode || !quantity || !productData) {
@@ -169,10 +133,6 @@ export default function ConsumptionForm() {
     setProductData,
   } = useProduct(url!, showAlert);
 
-  useEffect(() => {
-    getconsumptionGroups();
-  }, []);
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
       <View style={styles.header}></View>
@@ -185,7 +145,7 @@ export default function ConsumptionForm() {
             <DropdownInput
               label={"Grupo de consumo"}
               value={consumptionGroupId ?? ""}
-              items={consumptionGroups}
+              items={dropdownItems}
               onChange={(val: any) => setconsumptionGroupId(val)}
             />
           </View>
