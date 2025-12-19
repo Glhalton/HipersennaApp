@@ -5,6 +5,7 @@ type PermissionWrapperProps = {
   requiredPermission?: number;
   requiredPermissions?: number[];
   requiredRole?: number;
+  mode?: "ALL" | "ANY";
 };
 
 export function PermissionWrapper({
@@ -12,18 +13,19 @@ export function PermissionWrapper({
   requiredPermission,
   requiredPermissions,
   requiredRole,
+  mode = "ALL",
 }: PermissionWrapperProps) {
-  const permissions = userDataStore((state) => state.user.hsusers_permissions);
-  const role = userDataStore((state) => state.user.role_id);
-
-  const permissionIds = permissions.map((p) => p.permission_id);
+  const permissionIds = userDataStore((state) => state.user.allPermissions);
+  const role = userDataStore((state) => state.user.role.role_id);
 
   const neededPermissions = requiredPermissions ?? (requiredPermission ? [requiredPermission] : []);
 
   const hasPermissions =
     neededPermissions.length === 0
       ? true
-      : neededPermissions.every((p) => permissionIds.includes(p));
+      : mode === "ANY"
+        ? neededPermissions.some((p) => permissionIds.includes(p))
+        : neededPermissions.every((p) => permissionIds.includes(p));
 
   const hasRole = requiredRole ? role === requiredRole : true;
 

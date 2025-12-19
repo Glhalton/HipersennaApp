@@ -3,6 +3,7 @@ import { DropdownInput } from "@/components/dropdownInput";
 import { Input } from "@/components/input";
 import ModalAlert from "@/components/modalAlert";
 import NoData from "@/components/noData";
+import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
@@ -282,20 +283,12 @@ export default function WriteOffProducts() {
               const isChecked = selectedIds.has(item.id);
 
               return (
-                <TouchableOpacity
-                  activeOpacity={0.6}
-                  style={styles.card}
-                  onPress={() => {
-                    toggleCheckbox(item.id);
-                  }}
-                >
+                <View style={styles.card}>
                   <View style={styles.dataBox}>
                     <View style={styles.productDataBox}>
-                      <View style={[styles.rowBox]}>
-                        <Text style={[styles.text, { color: theme.text }]}>
-                          {item.product_code} - {item.description}
-                        </Text>
-                      </View>
+                      <Text style={[styles.text, { color: theme.text }]}>
+                        {item.product_code} - {item.description}
+                      </Text>
 
                       <View style={styles.rowBox}>
                         <Text style={[styles.label, { color: theme.title }]}>Filial: </Text>
@@ -317,15 +310,23 @@ export default function WriteOffProducts() {
                         </Text>
                       </View>
                     </View>
-                    <View style={[styles.checkBox]}>
-                      <MaterialCommunityIcons
-                        name={isChecked ? "checkbox-marked" : "checkbox-blank-outline"}
-                        color={theme.iconColor}
-                        size={35}
-                      />
-                    </View>
+                    <PermissionWrapper requiredPermissions={[35]}>
+                      <TouchableOpacity
+                        style={[styles.checkBox]}
+                        activeOpacity={0.6}
+                        onPress={() => {
+                          toggleCheckbox(item.id);
+                        }}
+                      >
+                        <MaterialCommunityIcons
+                          name={isChecked ? "checkbox-marked" : "checkbox-blank-outline"}
+                          color={theme.iconColor}
+                          size={35}
+                        />
+                      </TouchableOpacity>
+                    </PermissionWrapper>
                   </View>
-                </TouchableOpacity>
+                </View>
               );
             }}
           />

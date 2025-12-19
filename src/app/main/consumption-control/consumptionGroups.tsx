@@ -2,6 +2,7 @@ import { ButtonComponent } from "@/components/buttonComponent";
 import { Input } from "@/components/input";
 import ModalAlert from "@/components/modalAlert";
 import ModalPopup from "@/components/modalPopup";
+import { PermissionWrapper } from "@/components/permissionWrapper";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
@@ -244,49 +245,56 @@ export default function ConsumptionGroups() {
           style={[styles.flatList, { borderColor: theme.border }]}
           contentContainerStyle={{ paddingBottom: 90 }}
           renderItem={({ item, index }) => (
-            <TouchableOpacity activeOpacity={0.6} style={styles.card} onPress={() => {}}>
+            <View style={styles.card}>
               <View style={styles.dataBox}>
                 <View style={styles.rowBox}>
                   <Text style={[styles.label, { color: theme.title }]}>{item.id} - </Text>
                   <Text style={[styles.text, { color: theme.title }]}>{item.description} </Text>
                 </View>
                 <View style={styles.rowButtonsBox}>
-                  <TouchableOpacity
-                    style={[styles.button]}
-                    onPress={() => {
-                      setEditOrCreateOption("Edit");
-                      setSelectedconsumptionGroup(item.id);
-                      setNewconsumptionGroupDescription(item.description);
-                      setEditOrCreateModal(true);
-                    }}
-                  >
-                    <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={27} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.button, { borderColor: theme.cancel }]}
-                    onPress={() => {
-                      setSelectedconsumptionGroup(item.id);
-                      setConfirmDeleteModal(true);
-                    }}
-                  >
-                    <Ionicons name="trash-outline" size={27} color={theme.cancel} />
-                  </TouchableOpacity>
+                  <PermissionWrapper requiredPermissions={[44]}>
+                    <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() => {
+                        setEditOrCreateOption("Edit");
+                        setSelectedconsumptionGroup(item.id);
+                        setNewconsumptionGroupDescription(item.description);
+                        setEditOrCreateModal(true);
+                      }}
+                    >
+                      <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={27} />
+                    </TouchableOpacity>
+                  </PermissionWrapper>
+
+                  <PermissionWrapper requiredPermissions={[45]}>
+                    <TouchableOpacity
+                      style={[styles.button, { borderColor: theme.cancel }]}
+                      onPress={() => {
+                        setSelectedconsumptionGroup(item.id);
+                        setConfirmDeleteModal(true);
+                      }}
+                    >
+                      <Ionicons name="trash-outline" size={27} color={theme.cancel} />
+                    </TouchableOpacity>
+                  </PermissionWrapper>
                 </View>
               </View>
-            </TouchableOpacity>
+            </View>
           )}
         />
-        <View>
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: theme.iconColor }]}
-            onPress={() => {
-              setEditOrCreateOption("Create");
-              setEditOrCreateModal(true);
-            }}
-          >
-            <Ionicons name="add-sharp" size={30} color={Colors.white} />
-          </TouchableOpacity>
-        </View>
+        <PermissionWrapper requiredPermissions={[43]}>
+          <View>
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: theme.iconColor }]}
+              onPress={() => {
+                setEditOrCreateOption("Create");
+                setEditOrCreateModal(true);
+              }}
+            >
+              <Ionicons name="add-sharp" size={30} color={Colors.white} />
+            </TouchableOpacity>
+          </View>
+        </PermissionWrapper>
       </View>
 
       <Modal
@@ -295,7 +303,7 @@ export default function ConsumptionGroups() {
         transparent={true}
         onRequestClose={() => {
           setEditOrCreateModal(false);
-          setNewconsumptionGroupDescription("")
+          setNewconsumptionGroupDescription("");
         }}
       >
         <View style={styles.modalContainer}>
