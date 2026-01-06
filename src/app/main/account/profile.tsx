@@ -79,12 +79,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: 0.5,
     borderColor: "#aaaaaaff",
-    paddingVertical: 13,
+    paddingVertical: 10,
     paddingHorizontal: 10,
   },
-  text: { fontSize: 16, color: Colors.gray },
+  text: {color: Colors.gray },
   label: {
     fontFamily: "Roboto-Bold",
-    fontSize: 16,
   },
 });

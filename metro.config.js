@@ -1,5 +1,6 @@
 // Learn more https://docs.expo.io/guides/customizing-metro
 const { getDefaultConfig } = require("expo/metro-config");
+const { withNativeWind } = require('nativewind/metro');
 
 /** @type {import('expo/metro-config').MetroConfig} */
 
@@ -13,3 +14,4 @@ config.resolver.unstable_enablePackageExports = true;
 // config.watchFolders = [__dirname + '/src'];
 
 module.exports = config;
+module.exports = withNativeWind(config, { input: './src/styles/global.css' })

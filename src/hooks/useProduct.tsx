@@ -39,7 +39,7 @@ export function useProduct(url: string, showAlert: any) {
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
         icon: "alert",
-        color: Colors.orange,
+        color: "red",
         iconFamily: Octicons,
       });
       return;
@@ -57,41 +57,40 @@ export function useProduct(url: string, showAlert: any) {
       });
 
       const data = await response.json();
-
       if (response.ok) {
-        if (optionFilter == "descricao") {
-          setListProductsFilter(data);
-          setProductsListModal(true);
-          return null;
-        } else {
-          if (data.length > 1) {
+        if (data.length > 0) {
+          if (optionFilter == "descricao") {
             setListProductsFilter(data);
             setProductsListModal(true);
             return null;
           } else {
-            setProductData(data[0]);
-            const product: Product = data[0];
-            return product;
+            if (data.length > 1) {
+              setListProductsFilter(data);
+              setProductsListModal(true);
+              return null;
+            } else {
+              setProductData(data[0]);
+              const product: Product = data[0];
+              return product;
+            }
           }
+        } else if (data.length == 0) {
+          showAlert({
+            title: "Erro",
+            text: "Produto não encontrado.",
+            icon: "error-outline",
+            color: Colors.red,
+            iconFamily: MaterialIcons,
+          });
         }
       } else {
-        if (response.status == 404) {
-          showAlert({
-            title: "Erro!",
-            text: "Produto não encontrado",
-            icon: "error-outline",
-            color: Colors.red,
-            iconFamily: MaterialIcons,
-          });
-        } else {
-          showAlert({
-            title: "Erro!",
-            text: `${data.message}`,
-            icon: "error-outline",
-            color: Colors.red,
-            iconFamily: MaterialIcons,
-          });
-        }
+        showAlert({
+          title: "Erro!",
+          text: `${data.message}`,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
       }
     } catch (error: any) {
       showAlert({

@@ -1,16 +1,17 @@
+import { ItemList } from "@/components/UI/ItemList";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { Alert, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 
 export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-    const signOut = async () => {
+  const signOut = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
 
@@ -35,45 +36,22 @@ export default function Modules() {
   };
 
   return (
-    <SafeAreaView style={styles.container}  edges={["bottom"]}>
-      <View style={styles.header}></View>
-      <View style={styles.main}>
+    <Screen>
+      <View className="gap-4">
+        <Text className="font-bold text-3xl">Configurações</Text>
+        <View>
+          <ItemList IconFamily={Ionicons} iconName="person-outline" label="Conta" route="../account/profile" />
 
-        <Text style={[styles.title, {color: theme.title}]}>Configurações</Text>
-
-        <View style={styles.modulesList}>
-          <View>
-            <TouchableOpacity
-              onPress={() => {
-                router.push("../account/profile");
-              }}
-              style={styles.optionButtonComponent}
-            >
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Ionicons name="person-outline" color={theme.iconColor} size={30} />
-                </View>
-                <Text style={[styles.text, { color: theme.text }]}>Conta</Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                signOut();
-              }}
-              style={[styles.optionButtonComponent, {borderBottomWidth: 0}]}
-            >
-              <View style={styles.opcaoMenu}>
-                <View style={styles.optionIcon}>
-                  <Ionicons name="exit-outline" color={Colors.red2} size={30} />
-                </View>
-                <Text style={[styles.text, { color: Colors.red2 }]}>Sair do aplicativo</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          <ItemList
+            IconFamily={Ionicons}
+            iconName="exit-outline"
+            iconColor="red"
+            label="Sair"
+            onPress={() => signOut()}
+          />
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 

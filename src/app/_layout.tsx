@@ -3,7 +3,9 @@ import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIc
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { ActivityIndicator, useColorScheme, View } from "react-native";
+
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import "../styles/global.css";
 
 export default function Layout() {
   const colorScheme = useColorScheme() ?? "light";
@@ -85,6 +87,7 @@ export default function Layout() {
             name="main/consumption-control/consumptionNotesProducts"
             options={{ title: "Produtos da nota" }}
           />
+          <Stack.Screen name="main/merchandise-dispatch/dispatchForm" options={{ title: "Expedição de cargas" }} />
         </Stack>
       </View>
     </SafeAreaProvider>

@@ -1,8 +1,8 @@
 import { ButtonComponent } from "@/components/buttonComponent";
 import { DateInput } from "@/components/dateInput";
 import { Input } from "@/components/input";
-import ModalAlert from "@/components/modalAlert";
 import ModalPopup from "@/components/modalPopup";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
@@ -415,7 +415,7 @@ export default function ValidityForm() {
       />
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           onRequestClose={hideAlert}
           ButtonComponentPress={hideAlert}

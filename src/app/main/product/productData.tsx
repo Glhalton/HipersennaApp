@@ -1,10 +1,10 @@
+import { InfoItem } from "@/components/UI/InfoItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
-import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useColorScheme, View } from "react-native";
 
 export default function ProductData() {
   const colorScheme = useColorScheme() ?? "light";
@@ -53,134 +53,37 @@ export default function ProductData() {
     );
   }, []);
 
-  return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <View style={styles.main}>
-        <View style={styles.bigItemProductData}>
-          <Text style={[styles.label, { color: theme.text }]}>Descrição:</Text>
-          <Text style={styles.text}>{product.descricao}</Text>
-        </View>
-        <View style={styles.bigItemProductData}>
-          <View style={styles.copyBox}>
-            <Text style={[styles.label, { color: theme.text }]}>Cód. de Barras:</Text>
-            <TouchableOpacity
-              onPress={() => {
-                copyText(String(product.codAuxiliar));
-              }}
-            >
-              <Ionicons name="copy-outline" size={22} />
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.text}>{product.codAuxiliar}</Text>
-        </View>
-        <View style={styles.rowBox}>
-          <View style={styles.itemProductData}>
-            <View style={styles.copyBox}>
-              <Text style={[styles.label, { color: theme.text }]}>Cód. Interno:</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  copyText(String(product.codProd));
-                }}
-              >
-                <Ionicons name="copy-outline" size={22} />
-              </TouchableOpacity>
-            </View>
+  function formatValue(value: number) {
+    return value.toFixed(2).replace(".", ",");
+  }
 
-            <Text style={[styles.text, { color: theme.text }]}>{product.codProd}</Text>
+  return (
+    <Screen>
+      <View className="gap-4 pr-2">
+        <InfoItem label="Descrição:" value={product.descricao} />
+        <InfoItem label="Cód de Barras:" value={product.codAuxiliar} textToCopy={product.codAuxiliar} />
+        <View className="flex-row gap-28">
+          <View className="gap-4">
+            <InfoItem label="Cód Interno:" value={product.codProd} textToCopy={product.codProd} />
+            <InfoItem label="Embalagem:" value={product.unidade} />
+            <InfoItem label="Qtd. Disponível:" value={availableStock} />
+            <InfoItem label="Varejo:" value={`R$ ${formatValue(Number(product.precoVenda))}`} />
+            <InfoItem label="Varejo Futuro:" value={`R$ ${formatValue(Number(product.precoTabela))}`} />
+            {product.vlOferta && (
+              <View className="bg-blue-200 rounded-md">
+                <InfoItem label="Oferta:" value={`R$ ${formatValue(Number(product.vlOferta))}`} />
+              </View>
+            )}
           </View>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Situação:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{inativity}</Text>
-          </View>
-        </View>
-        <View style={styles.rowBox}>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Varejo:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoVenda}</Text>
-          </View>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Atacado:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoVendaAtac}</Text>
-          </View>
-        </View>
-        <View style={styles.rowBox}>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Varejo Futuro:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoTabela}</Text>
-          </View>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Atacado Futuro:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>R$ {product.precoTabelaAtac}</Text>
-          </View>
-        </View>
-        <View style={styles.rowBox}>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Embalagem:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{product.embalagem}</Text>
-          </View>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Unidade:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{product.unidade}</Text>
-          </View>
-        </View>
-        <View style={styles.rowBox}>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Qtd. Disponível:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{availableStock}</Text>
-          </View>
-          <View style={styles.itemProductData}>
-            <Text style={[styles.label, { color: theme.text }]}>Qtd. Disponível DP6:</Text>
-            <Text style={[styles.text, { color: theme.text }]}>{availableStockDp6}</Text>
+          <View className="gap-4">
+            <InfoItem label="Situação:" value={inativity} />
+            <InfoItem label="Unidade:" value={product.unidade} />
+            <InfoItem label="Qtd. Disponível DP6:" value={availableStockDp6} />
+            <InfoItem label="Atacado:" value={`R$ ${formatValue(Number(product.precoVendaAtac))}`} />
+            <InfoItem label="Atacado Futuro:" value={`R$ ${formatValue(Number(product.precoTabelaAtac))}`} />
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  main: {
-    gap: 10,
-    // backgroundColor: "white",
-    // borderRadius: 12,
-  },
-  bigItemProductData: {
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    gap: 5,
-    // backgroundColor: "white",
-    borderRadius: 12,
-  },
-  rowBox: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    gap: 10,
-  },
-  itemProductData: {
-    flex: 1,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    justifyContent: "center",
-
-    borderRadius: 12,
-    gap: 5,
-  },
-  label: {
-    fontSize: 16,
-    fontFamily: "Roboto-Regular",
-  },
-  text: {
-    fontSize: 18,
-    fontFamily: "Roboto-Bold",
-  },
-  copyBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-  },
-});

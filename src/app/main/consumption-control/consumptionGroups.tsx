@@ -1,9 +1,9 @@
 import { ButtonComponent } from "@/components/buttonComponent";
 import { Input } from "@/components/input";
-import ModalAlert from "@/components/modalAlert";
 import ModalPopup from "@/components/modalPopup";
 import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
@@ -352,7 +352,7 @@ export default function ConsumptionGroups() {
       </Modal>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           ButtonComponentPress={hideAlert}
           title={alertData.title}

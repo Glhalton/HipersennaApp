@@ -1,6 +1,6 @@
 import { ButtonComponent } from "@/components/buttonComponent";
-import ModalAlert from "@/components/modalAlert";
 import ModalPopup from "@/components/modalPopup";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -372,7 +372,7 @@ export default function ValidityRequestProducts() {
       </Modal>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           ButtonComponentPress={hideAlert}
           title={alertData.title}

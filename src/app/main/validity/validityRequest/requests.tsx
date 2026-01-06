@@ -1,5 +1,5 @@
-import ModalAlert from "@/components/modalAlert";
 import NoData from "@/components/noData";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -227,7 +227,7 @@ export default function Requests() {
       </View>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           ButtonComponentPress={hideAlert}
           title={alertData.title}
