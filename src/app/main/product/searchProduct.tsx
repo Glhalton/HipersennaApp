@@ -1,15 +1,17 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { DropdownInput } from "@/components/dropdownInput";
-import { Input } from "@/components/input";
-import ModalAlert from "@/components/modalAlert";
+import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import { DropDownInput } from "@/components/UI/DropDownInput";
+import { Input } from "@/components/UI/Input";
+import { Screen } from "@/components/UI/Screen";
+import { SmallButton } from "@/components/UI/SmallButton";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
+import { branchesStore } from "@/store/branchesStore";
 import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 
 type InputOptions = {
@@ -40,16 +42,12 @@ export default function SearchProduct() {
   });
 
   const [branchId, setBranchId] = useState("");
-  const [branches, setBranches] = useState([
-    { label: "1 - Matriz", value: "1" },
-    { label: "2 - Faruk", value: "2" },
-    { label: "3 - Carajás", value: "3" },
-    { label: "4 - VS10", value: "4" },
-    { label: "5 - Xinguara", value: "5" },
-    { label: "6 - DP6", value: "6" },
-    { label: "7 - Cidade Jardim", value: "7" },
-    { label: "8 - Canaã dos Carajás", value: "8" },
-  ]);
+
+  const branches = branchesStore((state) => state.branches);
+  const dropdownItems = branches.map((item) => ({
+    label: item.description,
+    value: String(item.id),
+  }));
 
   const [cameraModal, setCameraModal] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -126,63 +124,49 @@ export default function SearchProduct() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      {/* <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} /> */}
-      <StatusBar barStyle={"dark-content"} />
+    <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View style={styles.header}>
-        <View style={styles.headerButtonComponents}>
-          <TouchableOpacity
-            style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
-            onPress={() => {
-              setOptionFilter("codauxiliar");
-              setCodProductInput("");
-              setProductData(undefined);
-              setInputOptions({
-                IconRight: FontAwesome,
-                iconRightName: "search",
-                label: "Código de barras:",
-                placeholder: "Cod. Barras:",
-                keyboardType: "numeric",
-                onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
-              });
-              openCamera();
-            }}
-          >
-            <MaterialCommunityIcons name="barcode-scan" color={theme.iconColor} size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
-            onPress={() => {
-              setFilterProductModal(true);
-            }}
-          >
-            <FontAwesome6 name="sliders" color={theme.iconColor} size={25} />
-          </TouchableOpacity>
-        </View>
+      <View className="justify-end flex-row gap-3">
+        <SmallButton
+          IconFamily={MaterialCommunityIcons}
+          iconName="barcode-scan"
+          iconSize={30}
+          onPress={() => {
+            setOptionFilter("codauxiliar");
+            setCodProductInput("");
+            setProductData(undefined);
+            setInputOptions({
+              IconRight: FontAwesome,
+              iconRightName: "search",
+              label: "Código de barras:",
+              placeholder: "Cod. Barras:",
+              keyboardType: "numeric",
+              onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
+            });
+            openCamera();
+          }}
+        />
+
+        <SmallButton
+          IconFamily={FontAwesome6}
+          iconName="sliders"
+          iconSize={25}
+          onPress={() => {
+            setFilterProductModal(true);
+          }}
+        />
       </View>
 
-      <View style={styles.main}>
-        <View style={styles.formBox}>
-          <View>
-            <DropdownInput label={"Filial:"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
-          </View>
-
-          <View style={styles.searchBox}>
-            <Input {...inputOptions} value={codProductInput} />
-          </View>
-
-          <View>
-            <ButtonComponent
-              style={{ backgroundColor: theme.button }}
-              text={"Pesquisar"}
-              onPress={() => {
-                searchProduct();
-              }}
-              loading={isLoading}
-            />
-          </View>
-        </View>
+      <View className="gap-4">
+        <DropDownInput label={"Filial:"} value={branchId} items={dropdownItems} onChange={(val) => setBranchId(val)} />
+        <Input {...inputOptions} value={codProductInput} />
+        <Button
+          text={"Pesquisar"}
+          onPress={() => {
+            searchProduct();
+          }}
+          loading={isLoading}
+        />
       </View>
 
       <Modal
@@ -320,7 +304,7 @@ export default function SearchProduct() {
       </Modal>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           onRequestClose={hideAlert}
           visible={visible}
           ButtonComponentPress={hideAlert}
@@ -331,7 +315,7 @@ export default function SearchProduct() {
           iconColor={alertData.color}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 

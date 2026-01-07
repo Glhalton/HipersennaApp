@@ -1,3 +1,4 @@
+import { branchesStore } from "@/store/branchesStore";
 import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { userDataStore } from "@/store/userDataStore";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -6,10 +7,12 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Colors } from "../constants/colors";
 
-export function useAuth(url: string, showAlert: any) {
+export function useAuth(showAlert: any) {
+  const url = process.env.EXPO_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
   const setUser = userDataStore((state) => state.setUser);
   const setConsumptionGroups = consumptionGroupsStore((state) => state.setGroupsList);
+  const setBranches = branchesStore((state) => state.setBranchesList);
 
   const getconsumptionGroups = async () => {
     const token = await AsyncStorage.getItem("token");
@@ -46,6 +49,41 @@ export function useAuth(url: string, showAlert: any) {
     }
   };
 
+  const getBranches = async () => {
+    const token = await AsyncStorage.getItem("token");
+
+    try {
+      const response = await fetch(`${url}/branches`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        setBranches(responseData);
+      } else {
+        showAlert({
+          title: "Erro!",
+          text: responseData.message,
+          icon: "error-outline",
+          color: Colors.red,
+          iconFamily: MaterialIcons,
+        });
+      }
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: `Não foi possível conectar ao servidor: ${error}`,
+        icon: "error-outline",
+        color: Colors.red,
+        iconFamily: MaterialIcons,
+      });
+    }
+  };
+
   const login = async (username: string, password: string) => {
     setIsLoading(true);
 
@@ -62,6 +100,7 @@ export function useAuth(url: string, showAlert: any) {
         await AsyncStorage.setItem("token", data.token);
         setUser(data.user);
         await getconsumptionGroups();
+        await getBranches();
         router.replace("/main/tabs/modules");
         return true;
       } else {

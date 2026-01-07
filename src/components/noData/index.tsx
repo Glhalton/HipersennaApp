@@ -1,6 +1,7 @@
 import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { styles } from "./style";
 
 type IconComponent = React.ComponentType<React.ComponentProps<typeof Ionicons>>;
@@ -18,9 +19,9 @@ export default function NoData({
   iconColor = Colors.gray,
 }) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["bottom"]}>
       <Ionicons name={iconName as any} size={iconSize} color={iconColor} />
       <Text style={styles.text}>{message}</Text>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -6,7 +6,7 @@
   },
   "files.exclude": {
     "**/.expo": true,
-    "**/node_modules": true,
+    "**/node_modules": false,
   },
   "explorer.compactFolders": false,
   "java.configuration.updateBuildConfiguration": "interactive"

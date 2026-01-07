@@ -1,7 +1,7 @@
 import { ButtonComponent } from "@/components/buttonComponent";
 import { DropdownInput } from "@/components/dropdownInput";
 import { Input } from "@/components/input";
-import ModalAlert from "@/components/modalAlert";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -146,7 +146,7 @@ export default function SelectFilialQuotation() {
       </View>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           onRequestClose={hideAlert}
           visible={visible}
           ButtonComponentPress={hideAlert}

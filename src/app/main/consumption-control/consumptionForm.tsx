@@ -1,7 +1,7 @@
 import { ButtonComponent } from "@/components/buttonComponent";
 import { DropdownInput } from "@/components/dropdownInput";
 import { Input } from "@/components/input";
-import ModalAlert from "@/components/modalAlert";
+import AlertModal from "@/components/UI/AlertModal";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
@@ -245,7 +245,7 @@ export default function ConsumptionForm() {
       </Modal>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           onRequestClose={hideAlert}
           ButtonComponentPress={hideAlert}

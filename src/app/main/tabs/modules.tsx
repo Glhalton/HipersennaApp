@@ -1,149 +1,59 @@
-import { PermissionWrapper } from "@/components/permissionWrapper";
-import { Colors } from "@/constants/colors";
-import { userDataStore } from "@/store/userDataStore";
-import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ItemList } from "@/components/UI/ItemList";
+import { Screen } from "@/components/UI/Screen";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { StatusBar, Text, View } from "react-native";
 
 export default function Modules() {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
-
-  const user = userDataStore((state) => state.user);
-
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
+    <Screen>
       <StatusBar barStyle="light-content" />
-      <View style={styles.header}></View>
-      <View style={styles.main}>
-        <Text style={[styles.title, { color: theme.title }]}>Módulos</Text>
+      <View className="gap-4">
+        <Text className="font-bold text-3xl">Módulos</Text>
+        <View>
+          <ItemList
+            IconFamily={Ionicons}
+            iconName="search"
+            label="Consulta de produtos"
+            requiredPermissions={[7]}
+            route="../product/searchProduct"
+          />
 
-        <View style={styles.modulesList}>
-          <View>
-            <PermissionWrapper requiredPermissions={[7]}>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("../product/searchProduct");
-                }}
-                style={styles.optionButtonComponent}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Ionicons name="search" color={theme.iconColor} size={30} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Consulta de produtos</Text>
-                </View>
-              </TouchableOpacity>
-            </PermissionWrapper>
+          {/* <ItemList
+            IconFamily={Ionicons}
+            iconName="clipboard-outline"
+            label="Controle de Consumos"
+            requiredPermissions={[34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]}
+            mode="ANY"
+            route="../consumption-control/consumptionHome"
+          /> */}
 
-            <PermissionWrapper requiredPermissions={[34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]} mode="ANY">
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("../consumption-control/consumptionHome");
-                }}
-                style={[styles.optionButtonComponent]}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Ionicons name="clipboard-outline" color={theme.iconColor} size={30} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Controle de Consumos</Text>
-                </View>
-              </TouchableOpacity>
-            </PermissionWrapper>
+          <ItemList
+            IconFamily={MaterialCommunityIcons}
+            iconName="truck-outline"
+            label="Expedição de cargas"
+            route="../merchandise-dispatch/dispatchForm"
+          />
 
-            <PermissionWrapper requiredRole={1}>
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("../priceQuotation/selectFilialQuotation");
-                }}
-                style={styles.optionButtonComponent}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Ionicons name="pricetag-outline" color={theme.iconColor} size={30} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Cotação de preços</Text>
-                </View>
-              </TouchableOpacity>
-            </PermissionWrapper>
+          {/* <ItemList
+            IconFamily={Ionicons}
+            iconName="pricetag-outline"
+            label="Cotação de preços"
+            requiredRole={1}
+            route="../priceQuotation/selectFilialQuotation"
+          /> */}
 
-            <PermissionWrapper requiredRole={1}>
-              <TouchableOpacity
-                onPress={() => {
-                  // router.push("/");
-                }}
-                style={styles.optionButtonComponent}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Ionicons name="document-text-outline" color={theme.iconColor} size={30} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Requisição</Text>
-                </View>
-              </TouchableOpacity>
-            </PermissionWrapper>
+          {/* <ItemList IconFamily={Ionicons} iconName="document-text-outline" label="Requisição" requiredRole={1} /> */}
 
-            <PermissionWrapper requiredPermissions={[29, 31]} mode="ANY">
-              <TouchableOpacity
-                onPress={() => {
-                  router.push("../validity/validityHome");
-                }}
-                style={[styles.optionButtonComponent, { borderBottomWidth: 0 }]}
-              >
-                <View style={styles.opcaoMenu}>
-                  <View style={styles.optionIcon}>
-                    <Ionicons name="calendar-outline" color={theme.iconColor} size={30} />
-                  </View>
-                  <Text style={[styles.text, { color: theme.text }]}>Vencimento</Text>
-                </View>
-              </TouchableOpacity>
-            </PermissionWrapper>
-          </View>
+          <ItemList
+            IconFamily={Ionicons}
+            iconName="calendar-outline"
+            label="Vencimento"
+            requiredPermissions={[29, 31]}
+            mode="ANY"
+            route="../validity/validityHome"
+          />
         </View>
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  header: {},
-  main: {
-    gap: 15,
-  },
-  title: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 30,
-  },
-  footer: {},
-  modulesList: {
-    gap: 15,
-  },
-  text: {
-    fontSize: 17,
-    fontFamily: "Roboto-SemiBold",
-  },
-  opcaoMenu: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-  },
-  optionButtonComponent: {
-    borderBottomWidth: 0.4,
-    borderColor: Colors.gray,
-    paddingVertical: 6,
-  },
-  optionIcon: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    width: 40,
-    height: 40,
-  },
-});

@@ -3,7 +3,7 @@
     "name": "GHSApp",
     "slug": "GHSApp",
     "owner": "glhalton",
-    "version": "2.1.1",
+    "version": "2.1.2",
     "orientation": "portrait",
     "icon": "./assets/images/hipersenna-light-icon.png",
     "scheme": "myapp",
@@ -13,21 +13,19 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 9,
+      "versionCode": 10,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/hipersenna-light-icon-v3.png"
+        "foregroundImage": "./assets/images/hipersenna-dark-icon.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.hipersenna.GHSApp",
-      "permissions": [
-        "INTERNET"
-      ],
+      "permissions": ["INTERNET"],
       "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/hipersenna-light-icon.png"
+      "favicon": "./assets/images/hipersenna-dark-icon.png"
     },
     "plugins": [
       "expo-router",
@@ -35,11 +33,11 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#F4F6F8",
-          "image": "./assets/images/hipersenna-light-splash-icon-v2.png",
+          "image": "./assets/images/hipersenna-dark-splash-icon-v2.png",
           "resizeMode": "contain",
           "dark": {
             "backgroundColor": "#F4F6F8",
-            "image": "./assets/images/hipersenna-light-splash-icon-v2.png"
+            "image": "./assets/images/hipersenna-dark-splash-icon-v2.png"
           },
           "imageWidth": 200
         }

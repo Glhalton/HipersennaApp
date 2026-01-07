@@ -1,5 +1,7 @@
-import ModalAlert from "@/components/modalAlert";
-import NoData from "@/components/noData";
+import AlertModal from "@/components/UI/AlertModal";
+import { NoData } from "@/components/UI/NoData";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -12,13 +14,11 @@ import {
   FlatList,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type validity = {
   id: number;
@@ -67,9 +67,11 @@ export default function History() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setValidities(responseData);
-      } else if (response.status == 404) {
-        setNoData(true);
+        if (responseData.length > 0) {
+          setValidities(responseData);
+        } else {
+          setNoData(true);
+        }
       } else {
         showAlert({
           title: "Erro!",
@@ -129,17 +131,13 @@ export default function History() {
   }
 
   if (noData) {
-    return (
-      <SafeAreaView style={[styles.container]} edges={["bottom"]}>
-        <NoData />
-      </SafeAreaView>
-    );
+    return <NoData />;
   }
 
   return (
-    <SafeAreaView style={[styles.container]} edges={["bottom"]}>
+    <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View style={styles.header}>
+      <View className="">
         <DropDownPicker
           open={open}
           value={ordination}
@@ -161,37 +159,28 @@ export default function History() {
         />
       </View>
 
-      <View style={styles.main}>
+      <View className="flex-1">
         <FlatList
           data={sortedValidities}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{}}
-          style={[styles.flatList, { borderColor: theme.border }]}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.6}
-              style={styles.card}
+              className="border-b border-gray-300 py-2"
               onPress={() => {
                 router.push("./historyProducts");
                 setProducts(item.hsvalidity_products);
               }}
             >
-              <View style={styles.requestDataBox}>
+              <View className="flex-row justify-between items-center">
                 <View>
-                  <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
-                  <Text style={[styles.text, { color: theme.text }]}>
-                    <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
-                  </Text>
-                  <View style={styles.dates}>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                      <Text style={[styles.label, { color: theme.title }]}>Criado em:</Text>{" "}
-                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                    </Text>
-                  </View>
+                  <RowItem label="#" value={item.id} />
+                  <RowItem label="Filial: " value={item.branch_id} />
+                  <RowItem label="Criado em: " value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
                 </View>
-                <View style={styles.iconBox}>
-                  <Octicons name="chevron-right" size={40} color={theme.iconColor} />
+                <View>
+                  <Octicons name="chevron-right" size={30} />
                 </View>
               </View>
             </TouchableOpacity>
@@ -200,7 +189,7 @@ export default function History() {
       </View>
 
       {alertData && (
-        <ModalAlert
+        <AlertModal
           visible={visible}
           ButtonComponentPress={hideAlert}
           title={alertData.title}
@@ -209,7 +198,7 @@ export default function History() {
           IconCenter={alertData.iconFamily}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
