@@ -4,7 +4,7 @@ import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Alert, Text, useColorScheme, View } from "react-native";
 
 export default function Modules() {
   const colorScheme = useColorScheme() ?? "light";
@@ -29,6 +29,8 @@ export default function Modules() {
         router.replace("/");
       } else {
         Alert.alert("Erro", "Erro ao sair do aplicativo:");
+        await AsyncStorage.removeItem("token");
+        router.replace("/");
       }
     } catch (error: any) {
       Alert.alert("Erro", `Não foi possível conectar ao servidor: ${error.message}`);
@@ -41,7 +43,6 @@ export default function Modules() {
         <Text className="font-bold text-3xl">Configurações</Text>
         <View>
           <ItemList IconFamily={Ionicons} iconName="person-outline" label="Conta" route="../account/profile" />
-
           <ItemList
             IconFamily={Ionicons}
             iconName="exit-outline"
@@ -54,44 +55,3 @@ export default function Modules() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  header: {},
-  main: {
-    gap: 15,
-  },
-  title: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 30,
-  },
-  footer: {},
-  modulesList: {
-    gap: 15,
-  },
-  text: {
-    fontSize: 17,
-    fontFamily: "Roboto-SemiBold",
-  },
-  opcaoMenu: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 20,
-  },
-  optionButtonComponent: {
-    borderBottomWidth: 0.4,
-    borderColor: Colors.gray,
-    paddingVertical: 6,
-  },
-  optionIcon: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    width: 40,
-    height: 40,
-  },
-});

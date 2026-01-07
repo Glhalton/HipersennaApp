@@ -40,7 +40,6 @@ export function Input({
             rounded-xl
             px-4
             h-12
-            
             bg-[#F4F6F8]
             flex-row
             shadow-lg

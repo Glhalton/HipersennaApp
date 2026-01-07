@@ -1,5 +1,7 @@
-import NoData from "@/components/noData";
 import AlertModal from "@/components/UI/AlertModal";
+import { NoData } from "@/components/UI/NoData";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -9,7 +11,7 @@ import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type Request = {
   id: number;
@@ -68,9 +70,11 @@ export default function SelectRequest() {
       const responseData = await response.json();
 
       if (response.ok) {
-        setValidityRequests(responseData);
-      } else if (response.status === 404) {
-        setNoData(true);
+        if (responseData.length > 0) {
+          setValidityRequests(responseData);
+        } else {
+          setNoData(true);
+        }
       } else {
         showAlert({
           title: "Erro!",
@@ -102,10 +106,10 @@ export default function SelectRequest() {
   }
 
   function getColor(status: string | null) {
-    if (status === "Pendente") return "#E80000";
-    if (status === "Em_andamento") return "#51ABFF";
-    if (status === "Concluido") return "#13BE19";
-    if (status === "Expirado") return "#383838ff";
+    if (status === "PENDENTE") return "#E80000";
+    if (status === "EM ANDAMENTO") return "#51ABFF";
+    if (status === "CONCLUIDO") return "#13BE19";
+    if (status === "EXPIRADO") return "#383838ff";
     return "black";
   }
 
@@ -153,17 +157,13 @@ export default function SelectRequest() {
   }
 
   if (noData) {
-    return (
-      <SafeAreaView style={styles.container} edges={["bottom"]}>
-        <NoData />
-      </SafeAreaView>
-    );
+    return <NoData />;
   }
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <View style={styles.header}>
-        <Text style={[styles.titleText, { color: theme.title }]}>Selecione uma solicitação:</Text>
+    <Screen>
+      <View className="gap-3">
+        <Text className="font-bold text-2xl">Selecione uma solicitação:</Text>
         <DropDownPicker
           open={open}
           value={ordination}
@@ -184,7 +184,7 @@ export default function SelectRequest() {
           TickIconComponent={() => <Ionicons name="checkmark" size={20} color={Colors.white} />}
         />
       </View>
-      <View style={[styles.main]}>
+      <View className="flex-1">
         <FlatList
           data={sortedRequests}
           showsVerticalScrollIndicator={false}
@@ -193,32 +193,26 @@ export default function SelectRequest() {
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.6}
+              className="border-b border-gray-300 py-2 flex-row justify-between items-center"
               onPress={() => {
                 selectedRequest(item);
               }}
             >
-              <View style={[styles.card]}>
-                <View style={styles.requestDataBox}>
-                  <View>
-                    <Text style={[styles.cardId, { color: theme.title }]}># {item.id}</Text>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                      <Text style={[styles.label, { color: theme.title }]}>Filial:</Text> {item.branch_id}
-                    </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                      <Text style={[styles.label, { color: theme.title }]}>Dt. Criação:</Text>{" "}
-                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                    </Text>
-                    <View style={styles.statusBox}>
-                      <Text style={[styles.label, { color: theme.title }]}>Status:</Text>
-                      <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
-                      <Text style={[styles.text, { color: getColor(item.status) }]}>{item.status}</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.iconBox}>
-                    <Octicons name="chevron-right" size={40} color={theme.iconColor} />
-                  </View>
+              <View>
+                <RowItem label="# " value={item.id} />
+                <RowItem label="Filial: " value={item.branch_id} />
+                <RowItem label="Dt. criação: " value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
+                <View className="flex-row items-center gap-2">
+                  <Text>Status:</Text>
+                  <View className="size-4 rounded-full" style={[{ backgroundColor: getColor(item.status) }]}></View>
+                  <Text className="font-bold" style={[{ color: getColor(item.status) }]}>
+                    {item.status}
+                  </Text>
                 </View>
+              </View>
+
+              <View>
+                <Octicons name="chevron-right" size={30} />
               </View>
             </TouchableOpacity>
           )}
@@ -235,60 +229,11 @@ export default function SelectRequest() {
           iconColor={alertData.color}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  header: {
-    paddingVertical: 15,
-  },
-  titleText: {
-    fontFamily: "Roboto-Bold",
-    fontSize: 22,
-    paddingBottom: 10,
-  },
-  main: { flex: 1 },
-  card: {
-    borderBottomWidth: 0.5,
-    paddingVertical: 8,
-    borderColor: Colors.gray,
-  },
-  requestDataBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  cardId: {
-    fontSize: 16,
-    fontFamily: "Roboto-SemiBold",
-  },
-  label: {
-    fontFamily: "Roboto-SemiBold",
-  },
-  text: {
-    fontFamily: "Roboto-Regular",
-  },
-  statusBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-  },
-  dotView: {
-    borderRadius: 50,
-    width: 13,
-    height: 13,
-  },
-  iconBox: {
-    width: 40,
-    height: 40,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   dropdownInput: {
     minHeight: 20,
     width: 140,

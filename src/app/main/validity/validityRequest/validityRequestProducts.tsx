@@ -1,6 +1,8 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import ModalPopup from "@/components/modalPopup";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import ExitModal from "@/components/UI/ExitModal";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -9,7 +11,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ValidityRequestProducts() {
   const colorScheme = useColorScheme() ?? "light";
@@ -24,7 +25,7 @@ export default function ValidityRequestProducts() {
 
   const updateQuantity = validityDataStore((state) => state.setProductQuantity);
   const updateStatus = validityDataStore((state) => state.setProductStatus);
-  
+
   const validityData = validityDataStore((state) => state.validity);
 
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
@@ -52,9 +53,9 @@ export default function ValidityRequestProducts() {
     updateQuantity(selectedProduct.id, quantNumber);
 
     if (quantNumber > 0) {
-      updateStatus(selectedProduct.id, "Vistoriado");
+      updateStatus(selectedProduct.id, "VISTORIADO");
     } else {
-      updateStatus(selectedProduct.id, "Nao_encontrado");
+      updateStatus(selectedProduct.id, "NAO_ENCONTRADO");
       updateQuantity(selectedProduct.id, 0);
     }
 
@@ -63,22 +64,22 @@ export default function ValidityRequestProducts() {
   };
 
   const notFoundButtonComponentModal = (id: number) => {
-    updateStatus(id, "Nao_encontrado");
+    updateStatus(id, "NAO_ENCONTRADO");
     setModalVisible(false);
     updateQuantity(id, 0);
     setQuantity("");
   };
 
   function getColor(status: string | undefined) {
-    if (status === "Nao_vistoriado") return "#ff9100ff";
-    if (status === "Vistoriado") return "#5FE664";
-    if (status === "Nao_encontrado") return Colors.red2;
+    if (status === "NAO_VISTORIADO") return "#ff9100ff";
+    if (status === "VISTORIADO") return "#5FE664";
+    if (status === "NAO_ENCONTRADO") return Colors.red2;
     return;
   }
 
   function getColorText(status: string | undefined) {
-    if (status === "Nao_encontrado") return "white";
-    if (status === "Vistoriado") return Colors.blue;
+    if (status === "NAO_ENCONTRADO") return "white";
+    if (status === "VISTORIADO") return Colors.blue;
     return theme.text;
   }
 
@@ -98,7 +99,7 @@ export default function ValidityRequestProducts() {
   // Quando quiser substituir a tela sem abrir modal:
   const goHome = () => {
     setForceExit(true);
-    router.replace("../home");
+    router.replace("../validityHome");
   };
 
   const handleConfirmExit = () => {
@@ -114,9 +115,9 @@ export default function ValidityRequestProducts() {
   };
 
   function statusName(status: string | undefined) {
-    if (status === "Nao_encontrado") return "Não encontrado";
-    if (status === "Nao_vistoriado") return "Não vistoriado";
-    if (status === "Vistoriado") return "Vistoriado";
+    if (status === "NAO_ENCONTRADO") return "NÃO ENCONTRADO";
+    if (status === "NAO_VISTORIADO") return "NÃO VISTORIADO";
+    if (status === "VISTORIADO") return "VISTORIADO";
   }
 
   const updateStatusRequest = async () => {
@@ -136,7 +137,7 @@ export default function ValidityRequestProducts() {
         },
         body: JSON.stringify({
           requestId: Number(validityData.request_id),
-          status: "Concluido",
+          status: "CONCLUIDO",
           products: productsPayload,
         }),
       });
@@ -190,7 +191,7 @@ export default function ValidityRequestProducts() {
           onClose: () => {
             setForceExit(true);
             resetProducts();
-            router.replace("../home");
+            router.replace("../validityHome");
           },
         });
       } else {
@@ -216,54 +217,33 @@ export default function ValidityRequestProducts() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <View style={styles.header}>
-        <Text style={[styles.titleText, { color: theme.title }]}>Digite a quantidade para cada produto:</Text>
-      </View>
-      <View style={styles.main}>
+    <Screen>
+      <Text className="pb-3 font-bold text-2xl">Selecione o produto e digite a quantidade:</Text>
+
+      <View className="flex-1">
         <FlatList
           data={productsList}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               onPress={() => {
                 ProductPress(item);
               }}
+              className="border-b border-gray-300 py-2"
             >
-              <View style={[styles.card]}>
-                <View style={styles.listId}>
-                  <Text style={[styles.label]}># {index + 1}</Text>
-                </View>
-                <View style={styles.rowBox}>
-                  <Text style={[styles.label]}>{item.product_code}: </Text>
-                  <Text style={[styles.productDataText]}>{item.description}</Text>
-                </View>
-                <View style={styles.rowBox}>
-                  <Text style={[styles.label]}>Cod. auxiliar: </Text>
-                  <Text style={[styles.productDataText]}>{item.auxiliary_code}</Text>
-                </View>
-                <View style={styles.rowBox}>
-                  <Text style={[styles.label]}>Dt. vencimento: </Text>
-                  <Text style={[styles.productDataText]}>
-                    {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                  </Text>
-                </View>
-                <View style={styles.rowBox}>
-                  <Text style={[styles.label]}>Quantidade: </Text>
-                  <Text style={[styles.productDataText]}>{item.quantity}</Text>
-                </View>
-                <View style={styles.statusBox}>
-                  <Text style={[styles.label]}>Status: </Text>
-                  <View style={[styles.dotView, { backgroundColor: getColor(item.status) }]}></View>
-                  <Text
-                    style={[styles.productDataText, { color: getColor(item.status), fontFamily: "Roboto-SemiBold" }]}
-                  >
-                    {" "}
-                    {statusName(item.status)}{" "}
-                  </Text>
-                </View>
+              <RowItem label={`${item.product_code} - `} value={item.description} />
+              <RowItem label="Cod. auxiliar: " value={item.auxiliary_code} />
+              <RowItem label="Dt. vencimento: " value={new Date(item.validity_date).toLocaleDateString("pt-BR")} />
+              {item.quantity !== undefined && item.quantity !== null && (
+                <RowItem label="Quantidade: " value={item.quantity} />
+              )}
+              <View style={styles.statusBox}>
+                <Text>Status: </Text>
+                <View className="size-4 rounded-full" style={[{ backgroundColor: getColor(item.status) }]}></View>
+                <Text className="font-bold" style={[{ color: getColor(item.status) }]}>
+                  {statusName(item.status)}
+                </Text>
               </View>
             </TouchableOpacity>
           )}
@@ -271,17 +251,12 @@ export default function ValidityRequestProducts() {
 
         {!hasEmpty && (
           <View style={styles.insertButtonComponent}>
-            <ButtonComponent
-              style={{ backgroundColor: Colors.green }}
-              text="Finalizar validade"
-              onPress={postValidity}
-              loading={isLoading}
-            />
+            <Button text="Finalizar validade" onPress={postValidity} loading={isLoading} />
           </View>
         )}
       </View>
 
-      <ModalPopup
+      <ExitModal
         visible={showExitModal}
         onRequestClose={handleCancelExit}
         ButtonComponentLeft={handleCancelExit}
@@ -352,15 +327,14 @@ export default function ValidityRequestProducts() {
               </View>
             </View>
             <View style={styles.modalButtonComponentsBox}>
-              <ButtonComponent
+              <Button
                 text={"Não encontrei"}
-                style={{ backgroundColor: theme.cancel, borderRadius: 12 }}
                 onPress={() => {
                   notFoundButtonComponentModal(selectedProduct.id);
                 }}
               />
-              <ButtonComponent
-                style={{ backgroundColor: theme.button, borderRadius: 12 }}
+              <Button
+                type={2}
                 text={"Confirmar"}
                 onPress={() => {
                   backButtonComponentModal(quantity);
@@ -382,7 +356,7 @@ export default function ValidityRequestProducts() {
           iconColor={alertData.color}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 

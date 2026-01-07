@@ -44,14 +44,14 @@ export default function Modules() {
 
           {/* <ItemList IconFamily={Ionicons} iconName="document-text-outline" label="Requisição" requiredRole={1} /> */}
 
-          {/* <ItemList
+          <ItemList
             IconFamily={Ionicons}
             iconName="calendar-outline"
             label="Vencimento"
             requiredPermissions={[29, 31]}
             mode="ANY"
             route="../validity/validityHome"
-          /> */}
+          />
         </View>
       </View>
     </Screen>

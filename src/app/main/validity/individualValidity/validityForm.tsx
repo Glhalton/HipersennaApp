@@ -1,8 +1,10 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { DateInput } from "@/components/dateInput";
-import { Input } from "@/components/input";
-import ModalPopup from "@/components/modalPopup";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import { DateInput } from "@/components/UI/DateInput";
+import ExitModal from "@/components/UI/ExitModal";
+import { Input } from "@/components/UI/Input";
+import { Screen } from "@/components/UI/Screen";
+import { SmallButton } from "@/components/UI/SmallButton";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
@@ -21,7 +23,6 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from "react-native-vision-camera";
 
 type InputOptions = {
@@ -45,7 +46,7 @@ export default function ValidityForm() {
   const [codProductInput, setCodProductInput] = useState("");
   const [inputOptions, setInputOptions] = useState<InputOptions>({
     label: "Código do produto:",
-    placeholder: "Cod. Produto",
+    placeholder: "0",
     keyboardType: "numeric",
     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
   });
@@ -187,112 +188,104 @@ export default function ValidityForm() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <View style={styles.header}>
-        <View style={styles.headerButtonComponents}>
-          <TouchableOpacity
-            style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
-            onPress={() => {
-              setOptionFilter("codauxiliar");
-              setCodProductInput("");
-              setProductData(undefined);
-              setInputOptions({
-                IconRight: FontAwesome,
-                iconRightName: "search",
-                label: "Código de barras:",
-                placeholder: "Cod. Barras:",
-                keyboardType: "numeric",
-                onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
-              });
-              openCamera();
-            }}
-          >
-            <MaterialCommunityIcons name="barcode-scan" color={theme.iconColor} size={30} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.filterIcon, { backgroundColor: theme.itemBackground }]}
-            onPress={() => {
-              setFilterProductModal(true);
-            }}
-          >
-            <FontAwesome6 name="sliders" color={theme.iconColor} size={25} />
-          </TouchableOpacity>
-        </View>
+    <Screen>
+      <View className="justify-end flex-row gap-3">
+        <SmallButton
+          IconFamily={MaterialCommunityIcons}
+          iconName="barcode-scan"
+          iconSize={30}
+          onPress={() => {
+            setOptionFilter("codauxiliar");
+            setCodProductInput("");
+            setProductData(undefined);
+            setInputOptions({
+              IconRight: FontAwesome,
+              iconRightName: "search",
+              label: "Código de barras:",
+              placeholder: "0",
+              keyboardType: "numeric",
+              onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
+            });
+            openCamera();
+          }}
+        />
+
+        <SmallButton
+          IconFamily={FontAwesome6}
+          iconName="sliders"
+          iconSize={25}
+          onPress={() => {
+            setFilterProductModal(true);
+          }}
+        />
       </View>
 
-      <View style={styles.main}>
-        <View style={styles.formBox}>
-          <View style={styles.productSearchBox}>
-            <View style={styles.productInputBox}>
-              <Input {...inputOptions} value={codProductInput} />
-            </View>
-
-            <TouchableOpacity
-              style={[styles.searchButtonComponent, { backgroundColor: theme.button }]}
-              onPress={() => {
-                productSearch(optionFilter, codProductInput, validity.branch_id);
-              }}
-            >
-              {isLoading ? (
-                <ActivityIndicator color={Colors.white} />
-              ) : (
-                <Ionicons name="search" size={25} color={Colors.white} />
-              )}
-            </TouchableOpacity>
+      <View className="gap-5">
+        <View style={styles.productSearchBox}>
+          <View style={styles.productInputBox}>
+            <Input {...inputOptions} value={codProductInput} />
           </View>
 
-          {productData?.descricao && (
-            <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
-              <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontSize: 14 }}>Cod.Auxiliar: </Text>
-                <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
-              </View>
-            </View>
-          )}
-
-          <View>
-            <DateInput
-              label="Data de Validade:"
-              placeholder="Data de Vencimento"
-              value={validityDate}
-              onChange={setValidityDate}
-            />
-          </View>
-          <View>
-            <Input
-              label="Quantidade:"
-              placeholder="Insira a quantidade"
-              keyboardType="numeric"
-              value={quantity}
-              onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
-            />
-          </View>
-
-          <View style={styles.ButtonComponentsBox}>
-            <View style={styles.summaryButtonComponent}>
-              <ButtonComponent
-                style={{ backgroundColor: theme.button }}
-                text="Inserir"
-                onPress={() => {
-                  addProductList();
-                  Keyboard.dismiss();
-                }}
-              />
-            </View>
-
-            {validity.products.length > 0 && (
-              <View style={styles.summaryButtonComponent}>
-                <ButtonComponent
-                  style={{ backgroundColor: theme.button2 }}
-                  text="Resumo"
-                  onPress={() => {
-                    router.push({ pathname: "./validitySummary" });
-                  }}
-                />
-              </View>
+          <TouchableOpacity
+            className="h-12 w-14 bg-black-700 justify-center items-center rounded-xl"
+            onPress={() => {
+              productSearch(optionFilter, codProductInput, validity.branch_id);
+            }}
+          >
+            {isLoading ? (
+              <ActivityIndicator color={Colors.white} />
+            ) : (
+              <Ionicons name="search" size={25} color={Colors.white} />
             )}
+          </TouchableOpacity>
+        </View>
+
+        {productData?.descricao && (
+          <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
+            <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={{ fontSize: 14 }}>Cod.Auxiliar: </Text>
+              <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
+            </View>
           </View>
+        )}
+
+        <View>
+          <DateInput
+            label="Data de Validade:"
+            placeholder="01/01/2026"
+            value={validityDate}
+            onChange={setValidityDate}
+          />
+        </View>
+        <View>
+          <Input
+            label="Quantidade:"
+            placeholder="0"
+            keyboardType="numeric"
+            value={quantity}
+            onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
+          />
+        </View>
+
+        <View className="gap-3">
+          <Button
+            text="Inserir"
+            onPress={() => {
+              addProductList();
+              Keyboard.dismiss();
+            }}
+          />
+
+          {validity.products.length > 0 && (
+            <Button
+              type={2}
+              text="Resumo"
+              onPress={() => {
+                router.push({ pathname: "./validitySummary" });
+              }}
+            />
+          )}
         </View>
       </View>
 
@@ -324,7 +317,7 @@ export default function ValidityForm() {
                   setProductData(undefined);
                   setInputOptions({
                     label: "Código do produto:",
-                    placeholder: "Cod. Produto",
+                    placeholder: "0",
                     keyboardType: "numeric",
                     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
                   });
@@ -341,7 +334,7 @@ export default function ValidityForm() {
                   setProductData(undefined);
                   setInputOptions({
                     label: "Código de barras:",
-                    placeholder: "Cod. Barras:",
+                    placeholder: "0:",
                     keyboardType: "numeric",
                     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
                   });
@@ -407,7 +400,7 @@ export default function ValidityForm() {
         </View>
       </Modal>
 
-      <ModalPopup
+      <ExitModal
         visible={showExitModal}
         onRequestClose={handleCancelExit}
         ButtonComponentLeft={handleCancelExit}
@@ -441,7 +434,7 @@ export default function ValidityForm() {
           <Text>Carregando câmera...</Text>
         )}
       </Modal>
-    </SafeAreaView>
+    </Screen>
   );
 }
 

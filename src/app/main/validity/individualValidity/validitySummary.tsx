@@ -1,5 +1,7 @@
-import { ButtonComponent } from "@/components/buttonComponent";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
@@ -8,7 +10,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ValiditySummary() {
   const colorScheme = useColorScheme() ?? "light";
@@ -89,63 +90,35 @@ export default function ValiditySummary() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <View style={styles.header}>
-        <Text style={[styles.filialTitleText, { color: theme.title }]}>Filial: {validity.branch_id}</Text>
-      </View>
-
-      <View style={styles.main}>
+    <Screen>
+      <Text className="text-2xl font-bold">Filial: {validity.branch_id}</Text>
+      <View className="flex-1">
         <FlatList
           data={validity.products}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          contentContainerStyle={{ paddingVertical: 20 }}
           renderItem={({ item, index }) => (
-            <View style={[styles.card]}>
-              <Text style={[styles.cardTitleText, { color: theme.title }]}>
-                #{index + 1} - {item.description}
-              </Text>
+            <View className="border-b border-gray-300 py-3">
               <View style={styles.productDataBox}>
                 <View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Código: </Text>
-                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.product_code}</Text>
-                  </View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Código Auxiliar: </Text>
-                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.auxiliary_code}</Text>
-                  </View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Quantidade: </Text>
-                    <Text style={[styles.productDataText, { color: theme.text }]}>{item.quantity}</Text>
-                  </View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Validade: </Text>
-                    <Text style={[styles.productDataText, { color: theme.text }]}>
-                      {new Date(item.validity_date).toLocaleDateString("pt-BR")}
-                    </Text>
-                  </View>
+                  <RowItem label={`${index + 1} - `} value={item.description} />
+                  <RowItem label="Código: " value={item.product_code} />
+                  <RowItem label="Código auxiliar: " value={item.auxiliary_code} />
+                  <RowItem label="Quantidade: " value={item.quantity} />
+                  <RowItem label="Validade: " value={new Date(item.validity_date).toLocaleDateString("pt-BR")} />
                 </View>
-                <View>
-                  <TouchableOpacity
-                    style={[styles.removeButtonComponent, { borderColor: theme.cancel }]}
-                    onPress={() => removeProduct(index)}
-                  >
-                    <Ionicons name="trash-outline" size={30} color={theme.cancel} />
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                  style={[styles.removeButtonComponent, { borderColor: theme.cancel }]}
+                  onPress={() => removeProduct(index)}
+                >
+                  <Ionicons name="trash-outline" size={30} color={theme.cancel} />
+                </TouchableOpacity>
               </View>
             </View>
           )}
         />
-
-        <View style={styles.insertButtonComponent}>
-          <ButtonComponent
-            style={{ backgroundColor: Colors.green }}
-            text="Salvar dados"
-            onPress={postValidity}
-            loading={isLoading}
-          />
+        <View className="my-3">
+          <Button text="Salvar dados" onPress={postValidity} loading={isLoading} />
         </View>
       </View>
 
@@ -160,7 +133,7 @@ export default function ValiditySummary() {
           iconColor={alertData.color}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
