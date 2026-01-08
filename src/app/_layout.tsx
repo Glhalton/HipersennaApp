@@ -87,7 +87,9 @@ export default function Layout() {
             name="main/consumption-control/consumptionNotesProducts"
             options={{ title: "Produtos da nota" }}
           />
-          <Stack.Screen name="main/merchandise-dispatch/dispatchForm" options={{ title: "Expedição de cargas" }} />
+          <Stack.Screen name="main/merchandise-dispatch/dispatchHome" options={{ title: "Expedição de cargas" }} />
+          <Stack.Screen name="main/merchandise-dispatch/dispatchForm" options={{ title: "Cadastro de expedição" }} />
+          <Stack.Screen name="main/merchandise-dispatch/dispatchSearch" options={{ title: "Consulta de expedições" }} />
         </Stack>
       </View>
     </SafeAreaProvider>

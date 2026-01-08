@@ -129,7 +129,6 @@ export default function ConsumptionForm() {
     isLoading,
     listProductFilter,
     productData,
-    setListProductsFilter,
     setProductData,
   } = useProduct(url!, showAlert);
 

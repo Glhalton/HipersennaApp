@@ -31,7 +31,9 @@ export default function Modules() {
             IconFamily={MaterialCommunityIcons}
             iconName="truck-outline"
             label="Expedição de cargas"
-            route="../merchandise-dispatch/dispatchForm"
+            requiredPermissions={[46, 47, 48, 49]}
+            mode="ANY"
+            route="../merchandise-dispatch/dispatchHome"
           />
 
           {/* <ItemList

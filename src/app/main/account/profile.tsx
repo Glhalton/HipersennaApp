@@ -1,25 +1,13 @@
 import { Colors } from "@/constants/colors";
 import { userDataStore } from "@/store/userDataStore";
-import { useState } from "react";
-import { ActivityIndicator, StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { StatusBar, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const url = process.env.EXPO_PUBLIC_API_URL;
-  const [isLoading, setIsLoading] = useState(false);
 
-  const user = userDataStore((state) => state.user)
-
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={60} color={theme.iconColor} />
-      </View>
-    );
-  }
+  const user = userDataStore((state) => state.user);
 
   return (
     <SafeAreaView style={styles.container} edges={["bottom"]}>
@@ -82,7 +70,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
-  text: {color: Colors.gray },
+  text: { color: Colors.gray },
   label: {
     fontFamily: "Roboto-Bold",
   },

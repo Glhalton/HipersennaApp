@@ -334,7 +334,7 @@ export default function ValidityForm() {
                   setProductData(undefined);
                   setInputOptions({
                     label: "Código de barras:",
-                    placeholder: "0:",
+                    placeholder: "0",
                     keyboardType: "numeric",
                     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
                   });
