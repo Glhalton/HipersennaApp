@@ -41,6 +41,7 @@ export function DropDownInput({ label, value, items, onChange, listMode }: Props
 
 export const styles = StyleSheet.create({
   dropdownInput: {
+    zIndex: 1,
     backgroundColor: "#F4F6F8",
     minHeight: 45,
     borderWidth: 0.4,

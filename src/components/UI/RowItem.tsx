@@ -5,7 +5,7 @@ type Props = {
   label: string;
 };
 
-export function RowItem({ value, label }: Props) {
+export function RowItem({ value, label, }: Props) {
   return (
     <View className="flex-row">
       <Text>{label}</Text>

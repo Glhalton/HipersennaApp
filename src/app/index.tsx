@@ -3,7 +3,6 @@ import Button from "@/components/UI/Button";
 import { Input } from "@/components/UI/Input";
 import { Screen } from "@/components/UI/Screen";
 import UpdateModal from "@/components/UI/UpdateModal";
-
 import { useAlert } from "@/hooks/useAlert";
 import { useAuth } from "@/hooks/useAuth";
 import { useCheckAppUpdate } from "@/hooks/useCheckAppUpdate";
@@ -14,7 +13,7 @@ import { Image, StatusBar, Text, View } from "react-native";
 
 export default function Index() {
   const appVersion = Constants.expoConfig?.version;
-  const { hasUpdate, loading } = useCheckAppUpdate();
+  const { hasUpdate } = useCheckAppUpdate();
 
   const { visible, alertData, hideAlert, showAlert } = useAlert();
   const { isLoading, login } = useAuth(showAlert);

@@ -1,25 +1,16 @@
 import AlertModal from "@/components/UI/AlertModal";
 import { NoData } from "@/components/UI/NoData";
+import { OrdinationButton } from "@/components/UI/OrdinationButton";
 import { RowItem } from "@/components/UI/RowItem";
 import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { validityDataStore } from "@/store/validityDataStore";
-import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
+import { MaterialIcons, Octicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
-import DropDownPicker from "react-native-dropdown-picker";
+import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type Request = {
   id: number;
@@ -51,13 +42,12 @@ export default function Requests() {
 
   const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const [filterItems, setFilterItems] = useState([
-    { label: "Novos", value: "1" },
-    { label: "Antigos", value: "2" },
+  const [ordinationItems, setOrdinationItems] = useState([
+    { label: "Recentes", value: "desc" },
+    { label: "Antigos", value: "asc" },
   ]);
-  const [open, setOpen] = React.useState(false);
 
-  const [ordination, setOrdination] = useState("");
+  const [ordination, setOrdination] = useState<"asc" | "desc">("desc");
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -70,8 +60,9 @@ export default function Requests() {
   const getValidityRequests = async () => {
     const token = await AsyncStorage.getItem("token");
 
+    setIsLoading(true);
     try {
-      const response = await fetch(`${url}/validity-requests/me`, {
+      const response = await fetch(`${url}/validity-requests/me?orderBy=${ordination}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -108,34 +99,13 @@ export default function Requests() {
     }
   };
 
-  const [sortedRequests, setSortedRequests] = useState<Request[]>([]);
-
-  const sortRequests = (option: string | null) => {
-    let sorted: Request[] = [...requests];
-
-    switch (option) {
-      case "1":
-        sorted.sort((a, b) => b.id - a.id);
-        break;
-      case "2":
-        sorted.sort((a, b) => a.id - b.id);
-        break;
-    }
-
-    setSortedRequests(sorted);
-  };
-
-  const handleOrdinationChange = (newValue: string) => {
-    setOrdination(newValue);
-    sortRequests(newValue);
-  };
-
   useEffect(() => {
     getValidityRequests();
   }, []);
+
   useEffect(() => {
-    sortRequests(ordination || "1");
-  }, [requests]);
+    getValidityRequests();
+  }, [ordination]);
 
   function getColor(status: string | null) {
     if (status === "PENDENTE") return "#E80000";
@@ -143,14 +113,6 @@ export default function Requests() {
     if (status === "CONCLUIDO") return "#13BE19";
     if (status === "EXPIRADO") return "#555353ff";
     return "black";
-  }
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator color={theme.iconColor} size={60} />
-      </View>
-    );
   }
 
   if (noData) {
@@ -161,59 +123,45 @@ export default function Requests() {
     <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
       <View>
-        <DropDownPicker
-          open={open}
-          value={ordination}
-          items={filterItems}
-          setOpen={setOpen}
-          setValue={(callback) => {
-            const newValue = callback(ordination);
-            handleOrdinationChange(newValue);
-          }}
-          setItems={setFilterItems}
-          placeholder="Ordenar por"
-          style={[styles.dropdownInput, { backgroundColor: theme.button }]}
-          dropDownContainerStyle={[styles.optionsBox, { backgroundColor: theme.button }]}
-          textStyle={[styles.optionsText, { color: theme.buttonText }]}
-          placeholderStyle={[styles.placeholder, { color: theme.buttonText }]}
-          ArrowDownIconComponent={() => <Ionicons name="chevron-down-outline" size={20} color={Colors.white} />}
-          ArrowUpIconComponent={() => <Ionicons name="chevron-up-outline" size={20} color={Colors.white} />}
-          TickIconComponent={() => <Ionicons name="checkmark" size={20} color={Colors.white} />}
-        />
+        <OrdinationButton items={ordinationItems} value={ordination} onChange={(val: any) => setOrdination(val)} />
       </View>
       <View className="flex-1">
-        <FlatList
-          data={sortedRequests}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              className="border-b border-gray-300 py-2 flex-row justify-between items-center"
-              activeOpacity={0.6}
-              onPress={() => {
-                router.push("./requestProducts");
-                setProductsList(item.hsvalidity_request_products);
-              }}
-            >
-              <View>
-                <RowItem label="# " value={item.id} />
-                <RowItem label="Filial: " value={item.branch_id} />
-                <RowItem label="Dt. criação: " value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
+        {isLoading ? (
+          <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+            <ActivityIndicator color={theme.iconColor} size={60} />
+          </View>
+        ) : (
+          <FlatList
+            data={requests}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item, index }) => (
+              <TouchableOpacity
+                className="border-b border-gray-300 py-2 flex-row justify-between items-center"
+                activeOpacity={0.6}
+                onPress={() => {
+                  router.push("./requestProducts");
+                  setProductsList(item.hsvalidity_request_products);
+                }}
+              >
+                <View>
+                  <RowItem label="# " value={item.id} />
+                  <RowItem label="Filial: " value={item.branch_id} />
+                  <RowItem label="Dt. criação: " value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
 
-                <View className="flex-row items-center gap-2">
-                  <Text>Status:</Text>
-                  <View className="size-4 rounded-full" style={[{ backgroundColor: getColor(item.status) }]}></View>
-                  <Text className="font-bold" style={[{ color: getColor(item.status) }]}>
-                    {item.status}
-                  </Text>
+                  <View className="flex-row items-center gap-2">
+                    <Text>Status:</Text>
+                    <View className="size-4 rounded-full" style={[{ backgroundColor: getColor(item.status) }]}></View>
+                    <Text className="font-bold" style={[{ color: getColor(item.status) }]}>
+                      {item.status}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View>
                 <Octicons name="chevron-right" size={30} />
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+              </TouchableOpacity>
+            )}
+          />
+        )}
       </View>
 
       {alertData && (
@@ -229,35 +177,3 @@ export default function Requests() {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create({
-  dropdownInput: {
-    minHeight: 20,
-    width: 140,
-    zIndex: 1,
-    borderWidth: 0,
-    borderRadius: 20,
-  },
-  optionsBox: {
-    minHeight: 20,
-    width: 140,
-    borderColor: "gray",
-    paddingLeft: 4,
-    borderWidth: 0,
-    borderTopWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-  },
-  optionsText: {
-    fontFamily: "Roboto-Regular",
-  },
-  placeholder: {
-    fontFamily: "Roboto-Regular",
-  },
-});

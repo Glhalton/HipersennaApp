@@ -65,7 +65,7 @@ export default function DispatchForm() {
       if (response.ok) {
         showAlert({
           title: "Sucesso!",
-          text: "Produto de consumo cadastrado com sucesso!",
+          text: "Registro de expedição cadastrado com sucesso!",
           icon: "check-circle-outline",
           color: "#13BE19",
           onClose() {
