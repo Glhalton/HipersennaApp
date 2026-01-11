@@ -1,7 +1,9 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { Input } from "@/components/input";
 import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
+import Button from "@/components/UI/Button";
+import { Input } from "@/components/UI/Input";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { consumptionProductsStore } from "@/store/consumptionProductsStore";
@@ -9,17 +11,7 @@ import { MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-ic
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator, FlatList, Modal, StyleSheet, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type consumptionNotes = {
   id: number;
@@ -141,27 +133,21 @@ export default function ConsumptionNotes() {
   }
 
   if (noData) {
-    return (
-      <SafeAreaView style={[styles.container]} edges={["bottom"]}>
-        <NoData />
-      </SafeAreaView>
-    );
+    return <NoData />;
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <View style={styles.header}></View>
-      <View style={styles.main}>
+    <Screen>
+      <View className="flex-1">
         <FlatList
           data={consumptionNotes}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
           contentContainerStyle={{ paddingBottom: 90 }}
-          style={[styles.flatList, { borderColor: theme.border }]}
           renderItem={({ item, index }) => (
             <TouchableOpacity
               activeOpacity={0.6}
-              style={styles.card}
+              className="border-b border-gray-300 py-2 flex-row justify-between items-center"
               onPress={() => {
                 if (edit) {
                   setConsumptionNoteId(item.id);
@@ -173,51 +159,34 @@ export default function ConsumptionNotes() {
                 }
               }}
             >
-              <View style={styles.requestDataBox}>
-                <View>
-                  <Text style={[styles.cardTitle, { color: theme.title }]}># {item.id}</Text>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Filial: </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>{item.hsconsumptionProducts[0].branch_id}</Text>
-                    <Text style={[styles.text, { color: theme.text }]}> | </Text>
-                    <Text style={[styles.label, { color: theme.title }]}>Grupo: </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>{item.hsconsumptionProducts[0].group_id}</Text>
-                  </View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Nota Fiscal: </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                      {item.nfe_number ? item.nfe_number : "N/A"}
-                    </Text>
-                  </View>
-                  <View style={styles.rowBox}>
-                    <Text style={[styles.label, { color: theme.title }]}>Criado em: </Text>
-                    <Text style={[styles.text, { color: theme.text }]}>
-                      {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                    </Text>
-                  </View>
-                </View>
-                {edit ? (
-                  <View style={styles.iconBox}>
-                    <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={30} />
-                  </View>
-                ) : (
-                  <View style={styles.iconBox}>
-                    <Octicons name="chevron-right" size={40} color={theme.iconColor} />
-                  </View>
-                )}
+              <View>
+                <RowItem label={"# "} value={item.id} />
+                <RowItem label={"Filial: "} value={item.hsconsumptionProducts[0].branch_id} />
+                <RowItem label={"Grupo: "} value={item.hsconsumptionProducts[0].group_id} />
+                <RowItem label={"Nota Fiscal: "} value={item.nfe_number ? item.nfe_number : "N/A"} />
+                <RowItem label={"Criado em: "} value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
               </View>
+              {edit ? (
+                <View style={styles.iconBox}>
+                  <MaterialCommunityIcons name="pencil-outline" color={"black"} size={30} />
+                </View>
+              ) : (
+                <View style={styles.iconBox}>
+                  <Octicons name="chevron-right" size={30} />
+                </View>
+              )}
             </TouchableOpacity>
           )}
         />
         <PermissionWrapper requiredPermissions={[36]}>
           <View>
             <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: theme.iconColor }]}
+              style={[styles.addButton, { backgroundColor: "black" }]}
               onPress={() => {
                 setEdit(!edit);
               }}
             >
-              <MaterialCommunityIcons name="pencil-outline" size={40} color={Colors.white} />
+              <MaterialCommunityIcons name="pencil-outline" size={30} color={Colors.white} />
             </TouchableOpacity>
           </View>
         </PermissionWrapper>
@@ -232,87 +201,56 @@ export default function ConsumptionNotes() {
           setEditModal(false);
         }}
       >
-        <View style={styles.modalContainer}>
-          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
+        <View className="flex-1 items-center justify-center px-10 bg-[rgba(0,0,0,0.53)]">
+          <View className="w-full px-4 py-5 bg-white-500 rounded-xl gap-8 ">
             <View>
               <Input
-                label="Número da nota fiscal:"
-                placeholder="Nota fiscal"
+                label="Nota fiscal:"
+                placeholder="0"
                 keyboardType="numeric"
                 value={nfeNumber}
                 onChangeText={setNfeNumber}
               />
             </View>
-            <View style={styles.buttonsBox}>
-              <ButtonComponent
-                text="Concluir"
-                style={{ backgroundColor: theme.button, borderRadius: 12 }}
-                onPress={() => {
-                  updateConsumptionNote();
-                  setEditModal(false);
-                }}
-              />
-              <ButtonComponent
-                text="Cancelar"
-                style={{ backgroundColor: theme.button2, borderRadius: 12 }}
-                onPress={() => {
-                  setEditModal(false);
-                  setNfeNumber("");
-                }}
-              />
+            <View className="flex-row gap-4">
+              <View className="flex-1">
+                <Button
+                  text="Cancelar"
+                  type={2}
+                  onPress={() => {
+                    setEditModal(false);
+                    setNfeNumber("");
+                  }}
+                />
+              </View>
+              <View className="flex-1">
+                <Button
+                  text="Concluir"
+                  onPress={() => {
+                    updateConsumptionNote();
+                    setEditModal(false);
+                  }}
+                />
+              </View>
             </View>
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  header: {},
-  main: {
-    flex: 1,
-  },
-  flatList: {},
-  card: {
-    borderBottomWidth: 0.5,
-    paddingVertical: 8,
-    borderColor: Colors.gray,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontFamily: "Roboto-Bold",
-  },
-  label: {
-    fontFamily: "Roboto-Regular",
-  },
-  text: {
-    color: Colors.gray,
-    fontFamily: "Roboto-SemiBold",
-  },
-  requestDataBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  dates: {},
   iconBox: {
     width: 40,
     height: 40,
     alignItems: "center",
     justifyContent: "center",
   },
-  rowBox: {
-    flexDirection: "row",
-  },
   addButton: {
     backgroundColor: "red",
     position: "absolute",
-    padding: 10,
+    padding: 15,
     borderRadius: 22,
     bottom: 20,
     alignSelf: "flex-end",
@@ -325,32 +263,5 @@ const styles = StyleSheet.create({
     shadowRadius: 6.27,
 
     elevation: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.53)",
-  },
-  modalBox: {
-    gap: 20,
-    maxHeight: 600,
-    width: "100%",
-    paddingHorizontal: 15,
-    paddingVertical: 20,
-    borderRadius: 12,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-  },
-  buttonsBox: {
-    gap: 10,
   },
 });

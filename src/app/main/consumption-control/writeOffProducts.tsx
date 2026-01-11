@@ -1,14 +1,18 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { DropdownInput } from "@/components/dropdownInput";
-import { Input } from "@/components/input";
 import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import { DropDownInput } from "@/components/UI/DropDownInput";
+import { Input } from "@/components/UI/Input";
+import { RowItem } from "@/components/UI/RowItem";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import { createConsumptionNotesServices } from "@/services/consumptionNotes.services";
+import { getConsumptionProductService } from "@/services/consumptionProducts";
+import { branchesStore } from "@/store/branchesStore";
 import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
-import { FontAwesome6, Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { FontAwesome6, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -20,7 +24,6 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 type consumptionProduct = {
   id: number;
@@ -43,8 +46,8 @@ type consumptionProduct = {
 };
 
 export default function WriteOffProducts() {
-  const url = process.env.EXPO_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
+  const [buttonIsLoading, setButtonIsLoading] = useState(false);
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
   const { alertData, hideAlert, showAlert, visible } = useAlert();
@@ -53,10 +56,7 @@ export default function WriteOffProducts() {
   const [noData, setNoData] = useState(false);
   const [filterModal, setFilterModal] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-
   const [productCode, setProductCode] = useState("");
-
-  const [branchId, setBranchId] = useState("");
 
   const consumptionGroups = consumptionGroupsStore((state) => state.consumptionGroups);
 
@@ -70,18 +70,12 @@ export default function WriteOffProducts() {
 
   const [consumptionGroupId, setconsumptionGroupId] = useState("");
 
-  const branches = [
-    { label: "Selecione uma opção", value: "" },
-    { label: "1 - Matriz", value: "1" },
-    { label: "2 - Faruk", value: "2" },
-    { label: "3 - Carajás", value: "3" },
-    { label: "4 - VS10", value: "4" },
-    { label: "5 - Xinguara", value: "5" },
-    { label: "6 - DP6", value: "6" },
-    { label: "7 - Cidade Jardim", value: "7" },
-    { label: "8 - Canaã dos Carajás", value: "8" },
-  ];
-
+  const branches = branchesStore((state) => state.branches);
+  const [branchId, setBranchId] = useState("");
+  const branchItems = branches.map((item) => ({
+    label: item.description,
+    value: String(item.id),
+  }));
   const toggleCheckbox = (id: number) => {
     setSelectedIds((prev) => {
       const newSet = new Set(prev);
@@ -90,43 +84,24 @@ export default function WriteOffProducts() {
     });
   };
 
-  const getconsumptionProducts = async () => {
-    const token = await AsyncStorage.getItem("token");
-    setIsLoading(true);
-
+  const getConsumptionProducts = async () => {
     try {
-      const response = await fetch(
-        `${url}/consumption-products?product_code=${productCode}&branch_id=${branchId}&group_id=${consumptionGroupId}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
+      setIsLoading(true);
 
-      const responseData = await response.json();
+      const data = await getConsumptionProductService({ productCode, branchId, consumptionGroupId });
 
-      if (response.ok) {
-        setconsumptionProducts(responseData);
+      if (data.length > 0) {
+        setconsumptionProducts(data);
         setNoData(false);
-      } else if (response.status === 404) {
-        setNoData(true);
       } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
+        setNoData(true);
       }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {
@@ -134,7 +109,7 @@ export default function WriteOffProducts() {
     }
   };
 
-  const createconsumptionNotes = async () => {
+  const createConsumptionNotes = async () => {
     if (Array.from(selectedIds).length === 0) {
       showAlert({
         title: "Atenção!",
@@ -145,50 +120,32 @@ export default function WriteOffProducts() {
       });
       return;
     }
-
-    const token = await AsyncStorage.getItem("token");
-
     try {
-      const response = await fetch(`${url}/consumption-notes`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      setButtonIsLoading(true);
+
+      await createConsumptionNotesServices({ id: Array.from(selectedIds) });
+
+      showAlert({
+        title: "Sucesso!",
+        text: "Nota de consumo criada com sucesso!",
+        icon: "check-circle-outline",
+        color: "#13BE19",
+        onClose: () => {
+          setSelectedIds(new Set());
+          getConsumptionProducts();
         },
-        body: JSON.stringify({ id: Array.from(selectedIds) }),
+        iconFamily: MaterialIcons,
       });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        showAlert({
-          title: "Sucesso!",
-          text: "Nota de consumo criada com sucesso!",
-          icon: "check-circle-outline",
-          color: "#13BE19",
-          onClose: () => {
-            setSelectedIds(new Set());
-            getconsumptionProducts();
-          },
-          iconFamily: MaterialIcons,
-        });
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
+    } finally {
+      setButtonIsLoading(false);
     }
   };
 
@@ -197,86 +154,57 @@ export default function WriteOffProducts() {
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
-      getconsumptionProducts();
+      getConsumptionProducts();
       return;
     }
 
     const delay = setTimeout(() => {
-      getconsumptionProducts();
+      getConsumptionProducts();
     }, 500);
 
     return () => clearTimeout(delay);
   }, [productCode]);
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <View style={styles.header}>
-        <View style={styles.productSearchBox}>
-          <View style={styles.productInputBox}>
-            <Input
-              placeholder="Cod. Produto"
-              keyboardType="numeric"
-              value={productCode}
-              onChangeText={setProductCode}
-              IconRight={Ionicons}
-              iconRightName="search"
-            />
-          </View>
-
-          <TouchableOpacity
-            style={[styles.filterButtonComponent, { backgroundColor: theme.itemBackground }]}
-            onPress={() => {
-              setFilterModal(true);
-            }}
-          >
-            <FontAwesome6 name="sliders" color={theme.iconColor} size={25} />
-          </TouchableOpacity>
-        </View>
+    <Screen>
+      <View className="pb-3">
+        <Input
+          iconRightName="sliders"
+          IconRightFamily={FontAwesome6}
+          onIconRightPress={() => setFilterModal(true)}
+          value={productCode}
+          onChangeText={setProductCode}
+          keyboardType={"number-pad"}
+          placeholder={"Cód. produto"}
+        />
       </View>
 
       {isLoading ? (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-          <ActivityIndicator size={60} color={theme.iconColor} />
+          <ActivityIndicator size={60} color={"black"} />
         </View>
       ) : noData ? (
         <NoData />
       ) : (
-        <View style={styles.main}>
+        <View className="flex-1">
           <FlatList
             data={consumptionProducts}
             showsVerticalScrollIndicator={false}
             keyExtractor={(_, index) => index.toString()}
-            style={[styles.flatList, { borderColor: theme.border }]}
             renderItem={({ item, index }) => {
               const isChecked = selectedIds.has(item.id);
-
               return (
-                <View style={styles.card}>
-                  <View style={styles.dataBox}>
+                <View className="border-b border-gray-300 py-2">
+                  <View className="flex-row items-center">
                     <View style={styles.productDataBox}>
-                      <Text style={[styles.text, { color: theme.text }]}>
-                        {item.product_code} - {item.description}
-                      </Text>
-
-                      <View style={styles.rowBox}>
-                        <Text style={[styles.label, { color: theme.title }]}>Filial: </Text>
-                        <Text style={[styles.text, { color: theme.text }]}>{item.branch_id}</Text>
-                        <Text style={[styles.label, { color: theme.title }]}> | </Text>
-                        <Text style={[styles.label, { color: theme.title }]}>Grupo: </Text>
-                        <Text style={[styles.text, { color: theme.text }]}>
-                          {item.hsconsumption_groups.description}
-                        </Text>
+                      <RowItem label={`${item.product_code} - `} value={item.description} />
+                      <View className="flex-row">
+                        <RowItem label="Filial: " value={item.branch_id} />
+                        <Text> | </Text>
+                        <RowItem label={"Grupo: "} value={item.hsconsumption_groups.description} />
                       </View>
-                      <View style={styles.rowBox}>
-                        <Text style={[styles.label, { color: theme.title }]}>Quantidade: </Text>
-                        <Text style={[styles.text, { color: theme.text }]}>{item.quantity}</Text>
-                      </View>
-                      <View style={[styles.rowBox]}>
-                        <Text style={[styles.label, { color: theme.title }]}>Criado em: </Text>
-                        <Text style={[styles.text, { color: theme.text }]}>
-                          {new Date(item.created_at).toLocaleDateString("pt-BR")}
-                        </Text>
-                      </View>
+                      <RowItem label={"Quant: "} value={item.quantity} />
+                      <RowItem label={"Criado em: "} value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
                     </View>
                     <PermissionWrapper requiredPermissions={[35]}>
                       <TouchableOpacity
@@ -288,7 +216,6 @@ export default function WriteOffProducts() {
                       >
                         <MaterialCommunityIcons
                           name={isChecked ? "checkbox-marked" : "checkbox-blank-outline"}
-                          color={theme.iconColor}
                           size={35}
                         />
                       </TouchableOpacity>
@@ -300,12 +227,12 @@ export default function WriteOffProducts() {
           />
           {Array.from(selectedIds).length > 0 && (
             <View style={styles.button}>
-              <ButtonComponent
+              <Button
                 text="Gerar nota"
                 onPress={() => {
-                  createconsumptionNotes();
+                  createConsumptionNotes();
                 }}
-                style={{ backgroundColor: theme.button }}
+                loading={buttonIsLoading}
               />
             </View>
           )}
@@ -332,37 +259,34 @@ export default function WriteOffProducts() {
           setFilterModal(false);
         }}
       >
-        <View style={styles.modalContainerCenter}>
-          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
-            <View style={styles.filterFormBox}>
-              <View>
-                <DropdownInput
-                  label={"Filial:"}
-                  value={branchId}
-                  items={branches}
-                  onChange={(val) => setBranchId(val)}
-                />
-              </View>
-              <View>
-                <DropdownInput
-                  label={"Grupo de consumo:"}
-                  value={consumptionGroupId ?? ""}
-                  items={dropdownItems}
-                  onChange={(val: any) => setconsumptionGroupId(val)}
-                />
-              </View>
+        <View className="flex-1 items-center justify-center px-12 bg-[rgba(0,0,0,0.53)]">
+          <View className="w-full px-4 py-5 bg-white-500 rounded-xl gap-8 ">
+            <View className="gap-3">
+              <DropDownInput
+                label={"Filial:"}
+                value={branchId}
+                items={branchItems}
+                onChange={(val) => setBranchId(val)}
+              />
+
+              <DropDownInput
+                label={"Grupo de consumo:"}
+                value={consumptionGroupId ?? ""}
+                items={dropdownItems}
+                onChange={(val: any) => setconsumptionGroupId(val)}
+              />
             </View>
-            <ButtonComponent
+            <Button
               text="Confirmar"
               onPress={() => {
-                getconsumptionProducts();
+                getConsumptionProducts();
                 setFilterModal(false);
               }}
             />
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </Screen>
   );
 }
 

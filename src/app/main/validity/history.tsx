@@ -3,14 +3,13 @@ import { NoData } from "@/components/UI/NoData";
 import { OrdinationButton } from "@/components/UI/OrdinationButton";
 import { RowItem } from "@/components/UI/RowItem";
 import { Screen } from "@/components/UI/Screen";
-import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import { getMyValidities } from "@/services/validities.services";
 import { validityDataStore } from "@/store/validityDataStore";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, StatusBar, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, useColorScheme, View } from "react-native";
 
 type validity = {
   id: number;
@@ -25,12 +24,11 @@ type validity = {
 
 export default function History() {
   const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
+
   const { alertData, hideAlert, showAlert, visible } = useAlert();
   const [isLoading, setIsLoading] = useState(true);
-  const url = process.env.EXPO_PUBLIC_API_URL;
 
-  const [ordinationItems, setOrdinationItems] = useState([
+  const [ordinationItems] = useState([
     { label: "Recentes", value: "desc" },
     { label: "Antigos", value: "asc" },
   ]);
@@ -44,44 +42,22 @@ export default function History() {
   const [noData, setNoData] = useState(false);
 
   const getValidities = async () => {
-    const token = await AsyncStorage.getItem("token");
-
     try {
       setIsLoading(true);
 
-      const response = await fetch(`${url}/validities/me?orderBy=${ordination}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const data = await getMyValidities({ ordination });
 
-      const responseData = await response.json();
-
-      if (response.ok) {
-        if (responseData.length > 0) {
-          setValidities(responseData);
-          console.log(responseData);
-        } else {
-          setNoData(true);
-        }
+      if (data.length > 0) {
+        setValidities(data);
       } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-        console.log(ordination);
-        console.log(responseData.errors);
+        setNoData(true);
       }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error.message}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {
@@ -104,14 +80,15 @@ export default function History() {
   return (
     <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View className="">
+      <View className="gap-3 pb-2">
         <OrdinationButton items={ordinationItems} value={ordination} onChange={(val: any) => setOrdination(val)} />
+        <Text>Selecione uma validade</Text>
       </View>
 
       <View className="flex-1">
         {isLoading ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator size={60} color={theme.iconColor} />
+            <ActivityIndicator size={60} color={"black"} />
           </View>
         ) : (
           <FlatList

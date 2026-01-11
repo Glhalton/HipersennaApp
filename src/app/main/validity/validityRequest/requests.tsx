@@ -3,11 +3,10 @@ import { NoData } from "@/components/UI/NoData";
 import { OrdinationButton } from "@/components/UI/OrdinationButton";
 import { RowItem } from "@/components/UI/RowItem";
 import { Screen } from "@/components/UI/Screen";
-import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import { getMyValidityRequests } from "@/services/validiyRequests.services copy";
 import { validityDataStore } from "@/store/validityDataStore";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, StatusBar, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -36,13 +35,10 @@ type Product = {
 
 export default function Requests() {
   const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
 
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
-  const url = process.env.EXPO_PUBLIC_API_URL;
-
-  const [ordinationItems, setOrdinationItems] = useState([
+  const [ordinationItems] = useState([
     { label: "Recentes", value: "desc" },
     { label: "Antigos", value: "asc" },
   ]);
@@ -58,40 +54,22 @@ export default function Requests() {
   const setProductsList = validityDataStore((state) => state.setProductsList);
 
   const getValidityRequests = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    setIsLoading(true);
     try {
-      const response = await fetch(`${url}/validity-requests/me?orderBy=${ordination}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      setIsLoading(true);
 
-      const responseData = await response.json();
+      const data = await getMyValidityRequests({ ordination });
 
-      if (response.ok) {
-        if (responseData.length > 0) {
-          setRequests(responseData);
-        } else {
-          setNoData(true);
-        }
+      if (data.length > 0) {
+        setRequests(data);
       } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.error,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
+        setNoData(true);
       }
-    } catch (error) {
+    } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {
@@ -122,13 +100,14 @@ export default function Requests() {
   return (
     <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View>
+      <View className="gap-3 pb-2">
         <OrdinationButton items={ordinationItems} value={ordination} onChange={(val: any) => setOrdination(val)} />
+        <Text>Escolha uma solicitação</Text>
       </View>
       <View className="flex-1">
         {isLoading ? (
           <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-            <ActivityIndicator color={theme.iconColor} size={60} />
+            <ActivityIndicator color={"black"} size={40} />
           </View>
         ) : (
           <FlatList

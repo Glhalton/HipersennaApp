@@ -1,14 +1,11 @@
 import { ItemList } from "@/components/UI/ItemList";
 import { Screen } from "@/components/UI/Screen";
-import { Colors } from "@/constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
-import { Alert, Text, useColorScheme, View } from "react-native";
+import { Alert, Text, View } from "react-native";
 
 export default function Modules() {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
   const url = process.env.EXPO_PUBLIC_API_URL;
 
   const signOut = async () => {

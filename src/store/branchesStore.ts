@@ -7,13 +7,13 @@ type hsbranches = {
   modified_at: string;
 };
 
-type branchesStore = {
+type branches = {
   branches: hsbranches[] | null;
   setBranchesList: (products: hsbranches[]) => void;
   resetBranchesList: () => void;
 };
 
-export const branchesStore = create<branchesStore>((set) => ({
+export const branchesStore = create<branches>((set) => ({
   branches: null,
 
   setBranchesList: (branches) => set({ branches }),

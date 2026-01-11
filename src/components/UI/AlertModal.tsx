@@ -1,7 +1,7 @@
 import { Colors } from "@/constants/colors";
 import { FontAwesome, Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
 import React from "react";
-import { Modal, ModalProps, Text, View, useColorScheme } from "react-native";
+import { Modal, ModalProps, Text, View } from "react-native";
 import Button from "./Button";
 
 type IconComponent =
@@ -28,9 +28,6 @@ export default function ModalAlert({
   ButtonComponentPress,
   ...rest
 }: Props) {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
-
   return (
     <Modal animationType="fade" transparent={true} {...rest}>
       <View className="flex-1 items-center justify-center px-12 bg-[rgba(0,0,0,0.53)]">

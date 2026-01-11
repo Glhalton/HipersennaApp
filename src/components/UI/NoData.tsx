@@ -4,12 +4,12 @@ import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type IconComponent = React.ComponentType<React.ComponentProps<typeof Ionicons>>;
-type NoDataProps = {
-  message?: string;
-  iconName?: IconComponent;
-  iconSize?: number;
-  iconColor?: string;
-};
+// type NoDataProps = {
+//   message?: string;
+//   iconName?: IconComponent;
+//   iconSize?: number;
+//   iconColor?: string;
+// };
 
 export function NoData({
   message = "Nenhum dado foi encontrado!",

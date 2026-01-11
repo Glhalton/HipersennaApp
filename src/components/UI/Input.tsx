@@ -32,7 +32,7 @@ export function Input({
   ...rest
 }: Props) {
   return (
-    <View className="gap-1">
+    <View className="gap-1 z-0">
       {label && <Text className="text-base">{label}</Text>}
 
       <View

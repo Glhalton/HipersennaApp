@@ -133,9 +133,9 @@ export default function SelectRequest() {
 
   return (
     <Screen>
-      <View className="gap-3">
-        <Text className="font-bold text-2xl">Selecione uma solicitação:</Text>
+      <View className="gap-3 pb-2">
         <OrdinationButton items={ordinationItems} value={ordination} onChange={(val: any) => setOrdination(val)} />
+        <Text>Escolha uma solicitação</Text>
       </View>
       <View className="flex-1">
         {isLoading ? (

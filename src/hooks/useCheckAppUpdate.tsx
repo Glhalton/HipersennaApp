@@ -21,7 +21,6 @@ export function useCheckAppUpdate() {
         packageName,
         provider: Platform.OS === "android" ? "playStore" : "appStore",
       });
-      console.log(result);
       setHasUpdate(result?.isNeeded ?? false);
     } catch (error: any) {
       console.log("Erro ao verificar versão", error);

@@ -16,7 +16,7 @@ export default function dispatchHome() {
         />
         <ItemList
           IconFamily={Ionicons}
-          iconName="receipt-outline"
+          iconName="search"
           label="Consultar expedições"
           requiredPermissions={[46]}
           route="./dispatchSearch"

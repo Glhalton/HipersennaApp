@@ -8,7 +8,7 @@ import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
 import { branchesStore } from "@/store/branchesStore";
-import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Modal, StatusBar, StyleSheet, Text, TouchableOpacity, useColorScheme, View } from "react-native";
@@ -19,22 +19,17 @@ type InputOptions = {
   placeholder: string;
   keyboardType?: "default" | "numeric" | "email-address" | "phone-pad";
   onChangeText?: (text: string) => void;
-  IconRight?: any;
-  iconRightName?: string;
 };
 
 export default function SearchProduct() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const url = process.env.EXPO_PUBLIC_API_URL;
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const [codProductInput, setCodProductInput] = useState("");
   const [optionFilter, setOptionFilter] = useState("codprod");
   const [filterProductModal, setFilterProductModal] = useState(false);
   const [inputOptions, setInputOptions] = useState<InputOptions>({
-    IconRight: FontAwesome,
-    iconRightName: "search",
     label: "Código do produto:",
     placeholder: "Cod. Produto",
     keyboardType: "numeric",
@@ -42,7 +37,6 @@ export default function SearchProduct() {
   });
 
   const [branchId, setBranchId] = useState("");
-
   const branches = branchesStore((state) => state.branches);
   const dropdownItems = branches.map((item) => ({
     label: item.description,
@@ -52,7 +46,6 @@ export default function SearchProduct() {
   const [cameraModal, setCameraModal] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
   const [scanned, setScanned] = useState(false);
-
   const device = useCameraDevice("back");
 
   const codeScanner = useCodeScanner({
@@ -114,7 +107,7 @@ export default function SearchProduct() {
     listProductFilter,
     setListProductsFilter,
     setProductData,
-  } = useProduct(url!, showAlert);
+  } = useProduct(showAlert);
 
   const searchProduct = async () => {
     const product = await productSearch(optionFilter, codProductInput, Number(branchId));
@@ -126,40 +119,38 @@ export default function SearchProduct() {
   return (
     <Screen>
       <StatusBar barStyle={colorScheme === "dark" ? "light-content" : "dark-content"} />
-      <View className="justify-end flex-row gap-3">
-        <SmallButton
-          IconFamily={MaterialCommunityIcons}
-          iconName="barcode-scan"
-          iconSize={30}
-          onPress={() => {
-            setOptionFilter("codauxiliar");
-            setCodProductInput("");
-            setProductData(undefined);
-            setInputOptions({
-              IconRight: FontAwesome,
-              iconRightName: "search",
-              label: "Código de barras:",
-              placeholder: "Cod. Barras:",
-              keyboardType: "numeric",
-              onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
-            });
-            openCamera();
-          }}
-        />
-
-        <SmallButton
-          IconFamily={FontAwesome6}
-          iconName="sliders"
-          iconSize={25}
-          onPress={() => {
-            setFilterProductModal(true);
-          }}
-        />
-      </View>
-
       <View className="gap-4">
-        <DropDownInput label={"Filial:"} value={branchId} items={dropdownItems} onChange={(val) => setBranchId(val)} />
-        <Input {...inputOptions} value={codProductInput} />
+        <DropDownInput label={"Filial"} value={branchId} items={dropdownItems} onChange={(val) => setBranchId(val)} />
+        <View className="flex-row items-end gap-3">
+          <View className="flex-1 bg-red">
+            <Input
+              {...inputOptions}
+              value={codProductInput}
+              IconRightFamily={FontAwesome6}
+              iconRightName="sliders"
+              onIconRightPress={() => setFilterProductModal(true)}
+            />
+          </View>
+          <View className="">
+            <SmallButton
+              IconFamily={Ionicons}
+              iconName="camera"
+              iconSize={30}
+              onPress={() => {
+                setOptionFilter("codauxiliar");
+                setCodProductInput("");
+                setProductData(undefined);
+                setInputOptions({
+                  label: "Código de barras",
+                  placeholder: "Cod. barras",
+                  keyboardType: "numeric",
+                  onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
+                });
+                openCamera();
+              }}
+            />
+          </View>
+        </View>
         <Button
           text={"Pesquisar"}
           onPress={() => {
@@ -234,8 +225,6 @@ export default function SearchProduct() {
                   setCodProductInput("");
                   setProductData(undefined);
                   setInputOptions({
-                    IconRight: FontAwesome,
-                    iconRightName: "search",
                     label: "Código do produto:",
                     placeholder: "Cod. Produto",
                     keyboardType: "numeric",
@@ -253,10 +242,8 @@ export default function SearchProduct() {
                   setCodProductInput("");
                   setProductData(undefined);
                   setInputOptions({
-                    IconRight: FontAwesome,
-                    iconRightName: "search",
-                    label: "Código de barras:",
-                    placeholder: "Cod. Barras:",
+                    label: "Código de barras",
+                    placeholder: "Cod. barras",
                     keyboardType: "numeric",
                     onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
                   });
@@ -273,8 +260,6 @@ export default function SearchProduct() {
                   setCodProductInput("");
                   setProductData(undefined);
                   setInputOptions({
-                    IconRight: FontAwesome,
-                    iconRightName: "search",
                     label: "Descrição do Produto:",
                     placeholder: "Descrição",
                     onChangeText: setCodProductInput,
@@ -320,39 +305,6 @@ export default function SearchProduct() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-
-  header: {
-    alignItems: "flex-end",
-  },
-  headerButtonComponents: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  filterIcon: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  main: {},
-  formBox: {
-    gap: 16,
-  },
-  searchBox: {},
   optionFilter: {
     width: "100%",
     alignItems: "center",

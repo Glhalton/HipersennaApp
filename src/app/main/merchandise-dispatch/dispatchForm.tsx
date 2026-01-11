@@ -4,13 +4,14 @@ import { DropDownInput } from "@/components/UI/DropDownInput";
 import { Input } from "@/components/UI/Input";
 import { Screen } from "@/components/UI/Screen";
 import { useAlert } from "@/hooks/useAlert";
+import { createDispatch } from "@/services/dispatchRecords.services";
 import { branchesStore } from "@/store/branchesStore";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { View } from "react-native";
 
 export default function DispatchForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const branches = branchesStore((state) => state.branches);
 
   const dropdownItems = branches.map((item) => ({
@@ -25,10 +26,6 @@ export default function DispatchForm() {
   const [bonusNumber, setBonusNumber] = useState("");
   const [licensePlate, setLicensePlate] = useState("");
 
-  const url = process.env.EXPO_PUBLIC_API_URL;
-
-  const [isLoading, setIsLoading] = useState(false);
-
   const createDispatchRecord = async () => {
     if (!branchId || !nfeNumber || !bonusNumber || !sealNumber || !licensePlate) {
       showAlert({
@@ -41,51 +38,31 @@ export default function DispatchForm() {
       return;
     }
 
-    const token = await AsyncStorage.getItem("token");
-
     try {
       setIsLoading(true);
-      const response = await fetch(`${url}/dispatch-records`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          branch_id: branchId,
-          nfe_number: nfeNumber,
-          bonus_number: bonusNumber,
-          seal_number: sealNumber,
-          license_plate: licensePlate,
-        }),
+
+      await createDispatch({
+        branch_id: branchId,
+        nfe_number: nfeNumber,
+        bonus_number: bonusNumber,
+        seal_number: sealNumber,
+        license_plate: licensePlate,
       });
 
-      const responseData = await response.json();
-
-      if (response.ok) {
-        showAlert({
-          title: "Sucesso!",
-          text: "Registro de expedição cadastrado com sucesso!",
-          icon: "check-circle-outline",
-          color: "#13BE19",
-          onClose() {
-            (setBranchId(""), setNfeNumber(""), setBonusNumber(""), setSealNumber(""), setLicensePlate(""));
-          },
-          iconFamily: MaterialIcons,
-        });
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: "red",
-          iconFamily: MaterialIcons,
-        });
-      }
+      showAlert({
+        title: "Sucesso!",
+        text: "Registro de expedição cadastrado com sucesso!",
+        icon: "check-circle-outline",
+        color: "#13BE19",
+        onClose() {
+          (setBranchId(""), setNfeNumber(""), setBonusNumber(""), setSealNumber(""), setLicensePlate(""));
+        },
+        iconFamily: MaterialIcons,
+      });
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
         color: "red",
         iconFamily: MaterialIcons,

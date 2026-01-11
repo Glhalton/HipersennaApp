@@ -7,11 +7,19 @@ import { Input } from "@/components/UI/Input";
 import { RowItem } from "@/components/UI/RowItem";
 import { Screen } from "@/components/UI/Screen";
 import { useAlert } from "@/hooks/useAlert";
+import { getDispatch } from "@/services/dispatchRecords.services";
 import { branchesStore } from "@/store/branchesStore";
 import { FontAwesome6, MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 
 type DispatchRecord = {
   id: number;
@@ -29,7 +37,6 @@ type DispatchRecord = {
 };
 
 export default function DispatchSearch() {
-  const url = process.env.EXPO_PUBLIC_API_URL;
   const [isLoading, setIsLoading] = useState(false);
   const { alertData, hideAlert, showAlert, visible } = useAlert();
   const [noData, setNoData] = useState(false);
@@ -60,39 +67,22 @@ export default function DispatchSearch() {
   ];
 
   const getDispatchRecords = async () => {
-    const token = await AsyncStorage.getItem("token");
-    setIsLoading(true);
     try {
-      const response = await fetch(`${url}/dispatch-records?${filter}=${filterValue}&branch_id=${branchId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      setIsLoading(true);
 
-      const responseData = await response.json();
-      console.log(responseData);
+      const data = await getDispatch({ branchId, filter, filterValue });
 
-      if (response.ok) {
-        if (responseData.length > 0) {
-          setDispatchRecords(responseData);
-          setNoData(false);
-        } else {
-          setNoData(true);
-        }
+      if (data.length > 0) {
+        setDispatchRecords(data);
+        setNoData(false);
       } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: "red",
-          iconFamily: MaterialIcons,
-        });
+        setDispatchRecords([]);
+        setNoData(true);
       }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error.message}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
         color: "red",
         iconFamily: MaterialIcons,
@@ -161,10 +151,6 @@ export default function DispatchSearch() {
                     <RowItem label="• NFe: " value={item.nfe_number} />
                     <RowItem label="• Criado em: " value={new Date(item.created_at).toLocaleDateString("pt-BR")} />
                   </View>
-                  {/* <RowItem label="Filial: " value={item.branch_id} />
-                <RowItem label="Bônus: " value={item.bonus_number} />
-                <RowItem label="Lacre: " value={item.seal_number} />
-                <RowItem label="Veículo: " value={item.license_plate} /> */}
                   <View>
                     <Octicons name="chevron-right" size={30} />
                   </View>
@@ -217,27 +203,31 @@ export default function DispatchSearch() {
           setDispatchRecordModal(false);
         }}
       >
-        <View className="flex-1 items-center justify-center px-12 bg-[rgba(0,0,0,0.53)]">
-          <View className="w-full px-4 py-5 bg-white-500 rounded-xl gap-3 ">
-            <InfoItem label="Criado por:" value={dispatchRecordSelected?.employee?.name ?? "-"} />
-            <View className="flex-row ">
-              <View className="w-1/2 gap-3">
-                <InfoItem label="Filial:" value={dispatchRecordSelected?.branch_id ?? "-"} />
-                <InfoItem label="Nota Fiscal:" value={dispatchRecordSelected?.nfe_number ?? "-"} />
-                <InfoItem label="Veículo:" value={dispatchRecordSelected?.license_plate ?? "-"} />
-                <InfoItem
-                  label="Criado em: "
-                  value={new Date(dispatchRecordSelected?.created_at).toLocaleDateString("pt-BR")}
-                />
+        <TouchableWithoutFeedback onPress={() => setDispatchRecordModal(false)}>
+          <View className="flex-1 items-center justify-center px-12 bg-[rgba(0,0,0,0.53)]">
+            <TouchableWithoutFeedback>
+              <View className="w-full px-4 py-5 bg-white-500 rounded-xl gap-3 ">
+                <InfoItem label="Criado por:" value={dispatchRecordSelected?.employee?.name ?? "-"} />
+                <View className="flex-row ">
+                  <View className="w-1/2 gap-3">
+                    <InfoItem label="Filial:" value={dispatchRecordSelected?.branch_id ?? "-"} />
+                    <InfoItem label="Nota Fiscal:" value={dispatchRecordSelected?.nfe_number ?? "-"} />
+                    <InfoItem label="Veículo:" value={dispatchRecordSelected?.license_plate ?? "-"} />
+                    <InfoItem
+                      label="Criado em: "
+                      value={new Date(dispatchRecordSelected?.created_at).toLocaleDateString("pt-BR")}
+                    />
+                  </View>
+                  <View className="w-1/2 gap-3">
+                    <InfoItem label="Funcionário: " value={dispatchRecordSelected?.created_by_employee_id ?? "-"} />
+                    <InfoItem label="Bônus:" value={dispatchRecordSelected?.bonus_number ?? "-"} />
+                    <InfoItem label="Lacre:" value={dispatchRecordSelected?.seal_number ?? "-"} />
+                  </View>
+                </View>
               </View>
-              <View className="w-1/2 gap-3">
-                <InfoItem label="Funcionário: " value={dispatchRecordSelected?.created_by_employee_id ?? "-"} />
-                <InfoItem label="Bônus:" value={dispatchRecordSelected?.bonus_number ?? "-"} />
-                <InfoItem label="Lacre:" value={dispatchRecordSelected?.seal_number ?? "-"} />
-              </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
 
       {alertData && (

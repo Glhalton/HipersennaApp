@@ -18,9 +18,9 @@ export function SmallButton({ iconSize, IconFamily, iconName, ...rest }: Props) 
   return (
     <TouchableOpacity
       {...rest}
-      className=" shadow-lg  bg-[#F4F6F8] justify-center items-center border-hairline rounded-md  border-gray-400 size-11 "
+      className=" shadow-lg   bg-black-700 justify-center items-center border-hairline rounded-xl border-gray-400 h-12 w-14"
     >
-      <IconFamily name={iconName as any} size={iconSize} />
+      <IconFamily name={iconName as any} size={iconSize} color={"white"} />
     </TouchableOpacity>
   );
 }

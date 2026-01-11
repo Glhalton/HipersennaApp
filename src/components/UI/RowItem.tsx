@@ -2,10 +2,10 @@ import { Text, View } from "react-native";
 
 type Props = {
   value: string | string[] | number;
-  label: string;
+  label: string | number;
 };
 
-export function RowItem({ value, label, }: Props) {
+export function RowItem({ value, label }: Props) {
   return (
     <View className="flex-row">
       <Text>{label}</Text>

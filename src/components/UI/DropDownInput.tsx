@@ -8,9 +8,10 @@ type Props = {
   onChange: (value: string) => void;
   label?: string;
   listMode?: ListModeType;
+  zIndex?: number;
 };
 
-export function DropDownInput({ label, value, items, onChange, listMode }: Props) {
+export function DropDownInput({ label, value, items, onChange, listMode, zIndex = 1000 }: Props) {
   const [open, setOpen] = useState(false);
   const [dropDownItems, setDropDownItems] = useState(items);
 
@@ -41,7 +42,6 @@ export function DropDownInput({ label, value, items, onChange, listMode }: Props
 
 export const styles = StyleSheet.create({
   dropdownInput: {
-    zIndex: 1,
     backgroundColor: "#F4F6F8",
     minHeight: 45,
     borderWidth: 0.4,
@@ -54,6 +54,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 10,
     elevation: 10,
+    zIndex: 1,
   },
   optionsBox: {
     backgroundColor: "#F4F6F8",

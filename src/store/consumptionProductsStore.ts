@@ -20,13 +20,13 @@ type hsconsumptionProducts = {
   };
 };
 
-type consumptionProductsStore = {
+type consumptionProducts = {
   consumptionProducts: hsconsumptionProducts[] | null;
   setProductsList: (products: hsconsumptionProducts[]) => void;
   resetProductsList: () => void;
 };
 
-export const consumptionProductsStore = create<consumptionProductsStore>((set) => ({
+export const consumptionProductsStore = create<consumptionProducts>((set) => ({
   consumptionProducts: null,
 
   setProductsList: (products) => set({ consumptionProducts: products }),

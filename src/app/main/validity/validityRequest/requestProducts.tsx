@@ -2,11 +2,9 @@ import { RowItem } from "@/components/UI/RowItem";
 import { Screen } from "@/components/UI/Screen";
 import { validityDataStore } from "@/store/validityDataStore";
 import React from "react";
-import { FlatList, useColorScheme, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 export default function RequestProducts() {
-  const colorScheme = useColorScheme() ?? "light";
-
   const productsList = validityDataStore((state) => state.validity.products);
 
   return (

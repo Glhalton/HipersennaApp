@@ -1,23 +1,14 @@
 import { InfoItem } from "@/components/UI/InfoItem";
 import { Screen } from "@/components/UI/Screen";
-import { Colors } from "@/constants/colors";
-import * as Clipboard from "expo-clipboard";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { useColorScheme, View } from "react-native";
+import { View } from "react-native";
 
 export default function ProductData() {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
-
   const product = useLocalSearchParams();
   const [inativity, setInativity] = useState("");
   const [availableStock, setAvailableStock] = useState(0);
   const [availableStockDp6, setAvailableStockDp6] = useState(0);
-
-  const copyText = async (text: string) => {
-    await Clipboard.setStringAsync(text);
-  };
 
   const verifyInativity = (value: any) => {
     if (value == undefined) {

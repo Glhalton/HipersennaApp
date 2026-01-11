@@ -1,31 +1,24 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { Input } from "@/components/input";
-import ModalPopup from "@/components/modalPopup";
 import NoData from "@/components/noData";
 import { PermissionWrapper } from "@/components/permissionWrapper";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import ExitModal from "@/components/UI/ExitModal";
+import { Input } from "@/components/UI/Input";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
+import {
+  createConsumptionGroupsService,
+  deleteConsumptionGroupsService,
+  getConsumptionGroupsService,
+  updateConsumptionGroupsService,
+} from "@/services/consumptionGroups.services";
 import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { Ionicons, MaterialCommunityIcons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  Modal,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ActivityIndicator, FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function ConsumptionGroups() {
-  const url = process.env.EXPO_PUBLIC_API_URL;
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
   const [isLoading, setIsLoading] = useState(false);
 
   const consumptionGroups = consumptionGroupsStore((state) => state.consumptionGroups);
@@ -42,39 +35,22 @@ export default function ConsumptionGroups() {
   const [noData, setNoData] = useState(false);
 
   const getconsumptionGroups = async () => {
-    const token = await AsyncStorage.getItem("token");
-
-    setIsLoading(true);
-
     try {
-      const response = await fetch(`${url}/consumption-groups`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      setIsLoading(true);
+      const data = await getConsumptionGroupsService();
 
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setConsumptionGroups(responseData);
-      } else if (response.status === 404) {
-        setNoData(true);
+      if (data.length > 0) {
+        setConsumptionGroups(data);
+        setNoData(false);
       } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
+        setNoData(true);
       }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {
@@ -82,7 +58,47 @@ export default function ConsumptionGroups() {
     }
   };
 
-  const createconsumptionGroups = async () => {
+  const createConsumptionGroups = async () => {
+    if (!newconsumptionGroupDescription) {
+      showAlert({
+        title: "Atenção!",
+        text: "Preencha todos os campos obrigatórios!",
+        icon: "alert",
+        color: Colors.orange,
+        iconFamily: Octicons,
+      });
+      return;
+    }
+    try {
+      setIsLoading(true);
+
+      await createConsumptionGroupsService({ description: newconsumptionGroupDescription });
+
+      showAlert({
+        title: "Sucesso!",
+        text: "Grupo de consumo criado com sucesso!",
+        icon: "check-circle-outline",
+        color: "#13BE19",
+        onClose: () => {
+          getconsumptionGroups();
+          setNewconsumptionGroupDescription("");
+        },
+        iconFamily: MaterialIcons,
+      });
+    } catch (error: any) {
+      showAlert({
+        title: "Erro!",
+        text: error.message || "Erro inesperado",
+        icon: "error-outline",
+        color: "red",
+        iconFamily: MaterialIcons,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const updateConsumptionGroups = async () => {
     if (!newconsumptionGroupDescription) {
       showAlert({
         title: "Atenção!",
@@ -94,131 +110,52 @@ export default function ConsumptionGroups() {
       return;
     }
 
-    const token = await AsyncStorage.getItem("token");
-
     try {
-      const response = await fetch(`${url}/consumption-groups`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      setIsLoading(true);
+
+      await updateConsumptionGroupsService({ description: newconsumptionGroupDescription }, selectedconsumptionGroup);
+
+      showAlert({
+        title: "Sucesso!",
+        text: "Grupo de consumo editado com sucesso!",
+        icon: "check-circle-outline",
+        color: "#13BE19",
+        onClose: () => {
+          getconsumptionGroups();
+          setNewconsumptionGroupDescription("");
         },
-        body: JSON.stringify({ description: newconsumptionGroupDescription }),
+        iconFamily: MaterialIcons,
       });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        showAlert({
-          title: "Sucesso!",
-          text: "Grupo de consumo criado com sucesso!",
-          icon: "check-circle-outline",
-          color: "#13BE19",
-          onClose: () => {
-            getconsumptionGroups();
-            setNewconsumptionGroupDescription("");
-          },
-          iconFamily: MaterialIcons,
-        });
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const updateconsumptionGroups = async () => {
-    const token = await AsyncStorage.getItem("token");
-
+  const deleteConsumptionGroups = async () => {
     try {
-      const response = await fetch(`${url}/consumption-groups/${selectedconsumptionGroup}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ description: newconsumptionGroupDescription }),
-      });
+      setIsLoading(true);
 
-      const responseData = await response.json();
+      await deleteConsumptionGroupsService(selectedconsumptionGroup);
 
-      if (response.ok) {
-        showAlert({
-          title: "Sucesso!",
-          text: "Grupo de consumo editado com sucesso!",
-          icon: "check-circle-outline",
-          color: "#13BE19",
-          onClose: () => {
-            getconsumptionGroups();
-            setNewconsumptionGroupDescription("");
-          },
-          iconFamily: MaterialIcons,
-        });
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
+      getconsumptionGroups();
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
-    }
-  };
-
-  const deleteconsumptionGroups = async (id: number) => {
-    const token = await AsyncStorage.getItem("token");
-
-    try {
-      const response = await fetch(`${url}/consumption-groups/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        getconsumptionGroups();
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
-    } catch (error: any) {
-      showAlert({
-        title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
-        icon: "error-outline",
-        color: Colors.red,
-        iconFamily: MaterialIcons,
-      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -227,81 +164,70 @@ export default function ConsumptionGroups() {
   }, []);
 
   if (noData) {
-    return (
-      <SafeAreaView style={[styles.container]} edges={["bottom"]}>
-        <NoData />
-      </SafeAreaView>
-    );
+    return <NoData />;
   }
 
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size={60} color={theme.iconColor} />
+        <ActivityIndicator size={60} color={"black"} />
       </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container} edges={["bottom"]}>
-      <View style={styles.header}></View>
-      <View style={styles.main}>
+    <Screen>
+      <View className="flex-1">
         <FlatList
           data={consumptionGroups}
           showsVerticalScrollIndicator={false}
           keyExtractor={(_, index) => index.toString()}
-          style={[styles.flatList, { borderColor: theme.border }]}
           contentContainerStyle={{ paddingBottom: 90 }}
           renderItem={({ item, index }) => (
-            <View style={styles.card}>
-              <View style={styles.dataBox}>
-                <View style={styles.rowBox}>
-                  <Text style={[styles.label, { color: theme.title }]}>{item.id} - </Text>
-                  <Text style={[styles.text, { color: theme.title }]}>{item.description} </Text>
-                </View>
-                <View style={styles.rowButtonsBox}>
-                  <PermissionWrapper requiredPermissions={[44]}>
-                    <TouchableOpacity
-                      style={[styles.button]}
-                      onPress={() => {
-                        setEditOrCreateOption("Edit");
-                        setSelectedconsumptionGroup(item.id);
-                        setNewconsumptionGroupDescription(item.description);
-                        setEditOrCreateModal(true);
-                      }}
-                    >
-                      <MaterialCommunityIcons name="pencil-outline" color={theme.iconColor} size={27} />
-                    </TouchableOpacity>
-                  </PermissionWrapper>
+            <View className="border-b border-gray-300 py-1 flex-row items-center justify-between">
+              <Text>
+                {item.id} - {item.description}
+              </Text>
+              <View className="flex-row gap-2">
+                <PermissionWrapper requiredPermissions={[44]}>
+                  <TouchableOpacity
+                    className="p-1"
+                    onPress={() => {
+                      setEditOrCreateOption("Edit");
+                      setSelectedconsumptionGroup(item.id);
+                      setNewconsumptionGroupDescription(item.description);
+                      setEditOrCreateModal(true);
+                    }}
+                  >
+                    <MaterialCommunityIcons name="pencil-outline" size={24} />
+                  </TouchableOpacity>
+                </PermissionWrapper>
 
-                  <PermissionWrapper requiredPermissions={[45]}>
-                    <TouchableOpacity
-                      style={[styles.button, { borderColor: theme.cancel }]}
-                      onPress={() => {
-                        setSelectedconsumptionGroup(item.id);
-                        setConfirmDeleteModal(true);
-                      }}
-                    >
-                      <Ionicons name="trash-outline" size={27} color={theme.cancel} />
-                    </TouchableOpacity>
-                  </PermissionWrapper>
-                </View>
+                <PermissionWrapper requiredPermissions={[45]}>
+                  <TouchableOpacity
+                    className="p-1"
+                    onPress={() => {
+                      setSelectedconsumptionGroup(item.id);
+                      setConfirmDeleteModal(true);
+                    }}
+                  >
+                    <Ionicons name="trash-outline" size={24} color={"red"} />
+                  </TouchableOpacity>
+                </PermissionWrapper>
               </View>
             </View>
           )}
         />
         <PermissionWrapper requiredPermissions={[43]}>
-          <View>
-            <TouchableOpacity
-              style={[styles.addButton, { backgroundColor: theme.iconColor }]}
-              onPress={() => {
-                setEditOrCreateOption("Create");
-                setEditOrCreateModal(true);
-              }}
-            >
-              <Ionicons name="add-sharp" size={30} color={Colors.white} />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={[styles.addButton]}
+            onPress={() => {
+              setEditOrCreateOption("Create");
+              setEditOrCreateModal(true);
+            }}
+          >
+            <Ionicons name="add-sharp" size={30} color={"white"} />
+          </TouchableOpacity>
         </PermissionWrapper>
       </View>
 
@@ -314,8 +240,8 @@ export default function ConsumptionGroups() {
           setNewconsumptionGroupDescription("");
         }}
       >
-        <View style={styles.modalContainer}>
-          <View style={[styles.modalBox, { backgroundColor: theme.background }]}>
+        <View className="flex-1 items-center justify-center px-10 bg-[rgba(0,0,0,0.53)]">
+          <View className="w-full px-4 py-5 bg-white-500 rounded-xl gap-8 ">
             <View>
               <Input
                 label="Nome do grupo"
@@ -324,28 +250,31 @@ export default function ConsumptionGroups() {
                 onChangeText={setNewconsumptionGroupDescription}
               />
             </View>
-            <View style={styles.buttonsBox}>
-              <ButtonComponent
-                text="Concluir"
-                style={{ backgroundColor: theme.button, borderRadius: 12 }}
-                onPress={() => {
-                  if (editOrCreateOption == "Create") {
-                    createconsumptionGroups();
+            <View className="flex-row gap-4">
+              <View className="flex-1">
+                <Button
+                  text="Cancelar"
+                  type={2}
+                  onPress={() => {
                     setEditOrCreateModal(false);
-                  } else {
-                    updateconsumptionGroups();
-                    setEditOrCreateModal(false);
-                  }
-                }}
-              />
-              <ButtonComponent
-                text="Cancelar"
-                style={{ backgroundColor: theme.button2, borderRadius: 12 }}
-                onPress={() => {
-                  setEditOrCreateModal(false);
-                  setNewconsumptionGroupDescription("");
-                }}
-              />
+                    setNewconsumptionGroupDescription("");
+                  }}
+                />
+              </View>
+              <View className="flex-1">
+                <Button
+                  text="Concluir"
+                  onPress={() => {
+                    if (editOrCreateOption == "Create") {
+                      createConsumptionGroups();
+                      setEditOrCreateModal(false);
+                    } else {
+                      updateConsumptionGroups();
+                      setEditOrCreateModal(false);
+                    }
+                  }}
+                />
+              </View>
             </View>
           </View>
         </View>
@@ -363,7 +292,7 @@ export default function ConsumptionGroups() {
         />
       )}
 
-      <ModalPopup
+      <ExitModal
         visible={confirmDeleteModal}
         title="Aviso!"
         message="Deseja excluir esse item?"
@@ -374,59 +303,17 @@ export default function ConsumptionGroups() {
           setConfirmDeleteModal(false);
         }}
         ButtonComponentRight={() => {
-          (deleteconsumptionGroups(selectedconsumptionGroup), setConfirmDeleteModal(false));
+          (deleteConsumptionGroups(), setConfirmDeleteModal(false));
         }}
         messageButtonRight="Excluir"
       />
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  header: {},
-  main: {
-    flex: 1,
-  },
-  card: {
-    borderBottomWidth: 0.5,
-    paddingVertical: 8,
-    borderColor: Colors.gray,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontFamily: "Roboto-Bold",
-  },
-  label: {
-    fontFamily: "Roboto-SemiBold",
-    fontSize: 18,
-  },
-  text: {
-    color: Colors.gray,
-    fontFamily: "Roboto-Regular",
-    fontSize: 18,
-  },
-  dataBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  rowBox: {
-    flexDirection: "row",
-  },
-  flatList: {},
-  button: {
-    padding: 5,
-  },
-  rowButtonsBox: {
-    flexDirection: "row",
-    gap: 10,
-  },
   addButton: {
-    backgroundColor: "red",
+    backgroundColor: "black",
     position: "absolute",
     padding: 15,
     borderRadius: 22,
@@ -441,32 +328,5 @@ const styles = StyleSheet.create({
     shadowRadius: 6.27,
 
     elevation: 10,
-  },
-  modalContainer: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.53)",
-  },
-  modalBox: {
-    gap: 30,
-    maxHeight: 600,
-    width: "100%",
-    paddingHorizontal: 15,
-    paddingVertical: 20,
-    borderRadius: 12,
-    backgroundColor: "white",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
-  },
-  buttonsBox: {
-    gap: 10,
   },
 });

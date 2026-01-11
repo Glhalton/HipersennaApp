@@ -1,13 +1,15 @@
-import { ButtonComponent } from "@/components/buttonComponent";
-import { DropdownInput } from "@/components/dropdownInput";
-import { Input } from "@/components/input";
 import AlertModal from "@/components/UI/AlertModal";
+import Button from "@/components/UI/Button";
+import { DropDownInput } from "@/components/UI/DropDownInput";
+import { Input } from "@/components/UI/Input";
+import { Screen } from "@/components/UI/Screen";
 import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
+import { createConsumptionProduct } from "@/services/consumptionProducts";
+import { branchesStore } from "@/store/branchesStore";
 import { consumptionGroupsStore } from "@/store/consumptionGroupsStore";
 import { Ionicons, MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useState } from "react";
 import {
   ActivityIndicator,
@@ -20,12 +22,10 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ConsumptionForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const url = process.env.EXPO_PUBLIC_API_URL;
   const { alertData, hideAlert, showAlert, visible } = useAlert();
   const [isAPiLoading, setIsApiloading] = useState(false);
 
@@ -42,79 +42,53 @@ export default function ConsumptionForm() {
   const [consumptionGroupId, setconsumptionGroupId] = useState();
 
   const [branchId, setBranchId] = useState("");
+  const branches = branchesStore((state) => state.branches);
+  const branchItems = branches.map((item) => ({
+    label: item.description,
+    value: String(item.id),
+  }));
 
-  const branches = [
-    { label: "1 - Matriz", value: "1" },
-    { label: "2 - Faruk", value: "2" },
-    { label: "3 - Carajás", value: "3" },
-    { label: "4 - VS10", value: "4" },
-    { label: "5 - Xinguara", value: "5" },
-    { label: "6 - DP6", value: "6" },
-    { label: "7 - Cidade Jardim", value: "7" },
-    { label: "8 - Canaã dos Carajás", value: "8" },
-  ];
-
-  const createconsumptionProducts = async () => {
+  const createConsumptionProductsFetch = async () => {
     if (!branchId || !consumptionGroupId || !productCode || !quantity || !productData) {
       showAlert({
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
         icon: "alert",
-        color: Colors.orange,
+        color: "red",
         iconFamily: Octicons,
       });
       return;
     }
 
-    const token = await AsyncStorage.getItem("token");
-    setIsApiloading(true);
-
     try {
-      const response = await fetch(`${url}/consumption-products`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          branch_id: branchId,
-          group_id: consumptionGroupId,
-          product_code: productCode,
-          auxiliary_code: productData.codAuxiliar,
-          quantity,
-        }),
+      setIsApiloading(true);
+
+      await createConsumptionProduct({
+        branch_id: Number(branchId),
+        auxiliary_code: productData.codAuxiliar,
+        group_id: consumptionGroupId,
+        product_code: Number(productCode),
+        quantity: Number(quantity),
       });
 
-      const responseData = await response.json();
-
-      if (response.ok) {
-        showAlert({
-          title: "Sucesso!",
-          text: "Produto de consumo cadastrado com sucesso!",
-          icon: "check-circle-outline",
-          color: "#13BE19",
-          onClose: () => {
-            setProductCode("");
-            setQuantity("");
-            setProductData(null);
-          },
-          iconFamily: MaterialIcons,
-        });
-      } else {
-        showAlert({
-          title: "Erro!",
-          text: responseData.message,
-          icon: "error-outline",
-          color: Colors.red,
-          iconFamily: MaterialIcons,
-        });
-      }
+      showAlert({
+        title: "Sucesso!",
+        text: "Produto de consumo cadastrado com sucesso!",
+        icon: "check-circle-outline",
+        color: "#13BE19",
+        onClose: () => {
+          setProductCode("");
+          setQuantity("");
+          setProductData(null);
+        },
+        iconFamily: MaterialIcons,
+      });
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possível conectar ao servidor: ${error}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {
@@ -130,81 +104,66 @@ export default function ConsumptionForm() {
     listProductFilter,
     productData,
     setProductData,
-  } = useProduct(url!, showAlert);
+  } = useProduct(showAlert);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={["bottom"]}>
-      <View style={styles.header}></View>
-      <View style={styles.main}>
-        <View style={styles.formBox}>
-          <View>
-            <DropdownInput label={"Filial"} value={branchId} items={branches} onChange={(val) => setBranchId(val)} />
-          </View>
-          <View>
-            <DropdownInput
-              label={"Grupo de consumo"}
-              value={consumptionGroupId ?? ""}
-              items={dropdownItems}
-              onChange={(val: any) => setconsumptionGroupId(val)}
-            />
-          </View>
-          <View style={styles.productSearchBox}>
-            <View style={styles.productInputBox}>
-              <Input
-                label="Código do Produto"
-                placeholder="Ex: 2012"
-                keyboardType="numeric"
-                onChangeText={(codProd) => setProductCode(codProd.replace(/[^0-9]/g, ""))}
-                value={productCode}
-              />
-            </View>
+    <Screen>
+      <View className="gap-4">
+        <DropDownInput label={"Filial"} value={branchId} items={branchItems} onChange={(val) => setBranchId(val)} />
 
-            <TouchableOpacity
-              style={[styles.searchButtonComponent, { backgroundColor: theme.button }]}
-              onPress={() => {
-                productSearch("codprod", productCode, 1);
-              }}
-            >
-              {isLoading ? (
-                <ActivityIndicator color={Colors.white} />
-              ) : (
-                <Ionicons name="search" size={25} color={Colors.white} />
-              )}
-            </TouchableOpacity>
-          </View>
+        <DropDownInput
+          label={"Grupo de consumo"}
+          value={consumptionGroupId ?? ""}
+          items={dropdownItems}
+          onChange={(val: any) => setconsumptionGroupId(val)}
+        />
 
-          {productData?.descricao && (
-            <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
-              <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={{ fontSize: 14 }}>Cod.Auxiliar: </Text>
-                <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
-              </View>
-            </View>
-          )}
-
-          <View>
+        <View className="flex-row items-end gap-3">
+          <View className="flex-1">
             <Input
-              label="Quantidade"
-              placeholder="Ex: 10"
+              label="Código do Produto"
+              placeholder="0"
               keyboardType="numeric"
-              value={quantity}
-              onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
+              onChangeText={(codProd) => setProductCode(codProd.replace(/[^0-9]/g, ""))}
+              value={productCode}
             />
           </View>
 
-          <View style={styles.ButtonComponentsBox}>
-            <ButtonComponent
-              loading={isAPiLoading}
-              style={{ backgroundColor: theme.button }}
-              text="Enviar"
-              onPress={() => {
-                createconsumptionProducts();
-                Keyboard.dismiss();
-              }}
-            />
-          </View>
+          <TouchableOpacity
+            className="h-12 w-14 bg-black-700 justify-center items-center rounded-xl"
+            onPress={() => {
+              productSearch("codprod", productCode, 1);
+            }}
+          >
+            {isLoading ? <ActivityIndicator color={"white"} /> : <Ionicons name="search" size={25} color={"white"} />}
+          </TouchableOpacity>
         </View>
+
+        {productData?.descricao && (
+          <View className="bg-white-900 p-4 rounded-xl shadow">
+            <Text className="font-bold">{productData?.descricao}</Text>
+            <View className="flex-row">
+              <Text>Cod.Auxiliar: </Text>
+              <Text>{productData?.codAuxiliar}</Text>
+            </View>
+          </View>
+        )}
+
+        <Input
+          label="Quantidade"
+          placeholder="0"
+          keyboardType="numeric"
+          value={quantity}
+          onChangeText={(quantity) => setQuantity(quantity.replace(/[^0-9]/g, ""))}
+        />
+        <Button
+          loading={isAPiLoading}
+          text="Enviar"
+          onPress={() => {
+            createConsumptionProductsFetch();
+            Keyboard.dismiss();
+          }}
+        />
       </View>
 
       <Modal
@@ -255,56 +214,15 @@ export default function ConsumptionForm() {
           iconColor={alertData.color}
         />
       )}
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  header: {},
-  main: { flex: 1 },
-  formBox: {
-    gap: 20,
-  },
-  productSearchBox: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 15,
-  },
-  productInputBox: {
-    flex: 1,
-  },
-  searchButtonComponent: {
-    width: "15%",
-    height: 45,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 12,
-  },
-  productDataBox: {
-    borderRadius: 8,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-
-    elevation: 4,
-  },
   productNameText: {
     fontSize: 15,
     color: Colors.gray,
     fontFamily: "Roboto-Bold",
-  },
-  ButtonComponentsBox: {
-    marginVertical: 10,
   },
   modalContainerCenter: {
     flex: 1,

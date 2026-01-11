@@ -9,7 +9,7 @@ import { Colors } from "@/constants/colors";
 import { useAlert } from "@/hooks/useAlert";
 import { useProduct } from "@/hooks/useProduct";
 import { validityDataStore } from "@/store/validityDataStore";
-import { FontAwesome, FontAwesome6, Ionicons, MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
@@ -37,7 +37,6 @@ type InputOptions = {
 export default function ValidityForm() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const url = process.env.EXPO_PUBLIC_API_URL;
   const { alertData, hideAlert, showAlert, visible } = useAlert();
 
   const addProduct = validityDataStore((state) => state.addProduct);
@@ -69,7 +68,7 @@ export default function ValidityForm() {
     productData,
     setListProductsFilter,
     setProductData,
-  } = useProduct(url!, showAlert);
+  } = useProduct(showAlert);
 
   const [cameraModal, setCameraModal] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
@@ -189,41 +188,16 @@ export default function ValidityForm() {
 
   return (
     <Screen>
-      <View className="justify-end flex-row gap-3">
-        <SmallButton
-          IconFamily={MaterialCommunityIcons}
-          iconName="barcode-scan"
-          iconSize={30}
-          onPress={() => {
-            setOptionFilter("codauxiliar");
-            setCodProductInput("");
-            setProductData(undefined);
-            setInputOptions({
-              IconRight: FontAwesome,
-              iconRightName: "search",
-              label: "Código de barras:",
-              placeholder: "0",
-              keyboardType: "numeric",
-              onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
-            });
-            openCamera();
-          }}
-        />
-
-        <SmallButton
-          IconFamily={FontAwesome6}
-          iconName="sliders"
-          iconSize={25}
-          onPress={() => {
-            setFilterProductModal(true);
-          }}
-        />
-      </View>
-
       <View className="gap-5">
-        <View style={styles.productSearchBox}>
-          <View style={styles.productInputBox}>
-            <Input {...inputOptions} value={codProductInput} />
+        <View className="flex-row items-end gap-2">
+          <View className="flex-1">
+            <Input
+              {...inputOptions}
+              value={codProductInput}
+              iconRightName="sliders"
+              IconRightFamily={FontAwesome6}
+              onIconRightPress={() => setFilterProductModal(true)}
+            />
           </View>
 
           <TouchableOpacity
@@ -238,21 +212,41 @@ export default function ValidityForm() {
               <Ionicons name="search" size={25} color={Colors.white} />
             )}
           </TouchableOpacity>
+
+          <SmallButton
+            IconFamily={Ionicons}
+            iconName="camera"
+            iconSize={30}
+            onPress={() => {
+              setOptionFilter("codauxiliar");
+              setCodProductInput("");
+              setProductData(undefined);
+              setInputOptions({
+                IconRight: FontAwesome,
+                iconRightName: "search",
+                label: "Código de barras",
+                placeholder: "0",
+                keyboardType: "numeric",
+                onChangeText: (codProd) => setCodProductInput(codProd.replace(/[^0-9]/g, "")),
+              });
+              openCamera();
+            }}
+          />
         </View>
 
         {productData?.descricao && (
-          <View style={[styles.productDataBox, { backgroundColor: theme.itemBackground }]}>
-            <Text style={[styles.productNameText, { color: theme.text }]}>{productData?.descricao}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ fontSize: 14 }}>Cod.Auxiliar: </Text>
-              <Text style={[{ color: theme.text, fontSize: 14 }]}>{productData?.codAuxiliar}</Text>
+          <View className="bg-white-900 p-4 rounded-xl shadow">
+            <Text className="font-bold">{productData?.descricao}</Text>
+            <View className="flex-row">
+              <Text>Cod.Auxiliar: </Text>
+              <Text>{productData?.codAuxiliar}</Text>
             </View>
           </View>
         )}
 
         <View>
           <DateInput
-            label="Data de Validade:"
+            label="Data de Validade"
             placeholder="01/01/2026"
             value={validityDate}
             onChange={setValidityDate}
@@ -260,7 +254,7 @@ export default function ValidityForm() {
         </View>
         <View>
           <Input
-            label="Quantidade:"
+            label="Quantidade"
             placeholder="0"
             keyboardType="numeric"
             value={quantity}
@@ -386,7 +380,7 @@ export default function ValidityForm() {
                     setProductsListModal(false);
                   }}
                 >
-                  <Text style={[styles.productNameText, { color: theme.title }]}>
+                  <Text className="font-bold">
                     {item.codProd} - {item.descricao}
                   </Text>
                   <View style={{ flexDirection: "row" }}>
@@ -439,87 +433,6 @@ export default function ValidityForm() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
-  header: {
-    alignItems: "flex-end",
-    paddingBottom: 5,
-  },
-  headerButtonComponents: {
-    flexDirection: "row",
-    gap: 10,
-  },
-  filterIcon: {
-    width: 40,
-    height: 40,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-    elevation: 4,
-  },
-  main: {},
-  formBox: {
-    gap: 20,
-  },
-  productSearchBox: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    gap: 15,
-  },
-  productInputBox: {
-    flex: 1,
-  },
-  searchButtonComponent: {
-    width: "15%",
-    height: 45,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-  },
-  searchText: {
-    fontFamily: "Roboto-Regular",
-    fontSize: 16,
-  },
-  productDataBox: {
-    borderRadius: 8,
-    padding: 15,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-
-    elevation: 4,
-  },
-  textBold: {
-    fontFamily: "Roboto-Bold",
-  },
-  label: {
-    fontFamily: "Roboto-Regular",
-  },
-  productNameText: {
-    fontSize: 15,
-    color: Colors.gray,
-    fontFamily: "Roboto-Bold",
-  },
-  ButtonComponentsBox: {
-    marginVertical: 10,
-  },
-  summaryButtonComponent: {
-    marginBottom: 10,
-  },
   modalContainerCenter: {
     flex: 1,
     justifyContent: "center",

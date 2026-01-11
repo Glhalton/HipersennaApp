@@ -1,20 +1,29 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
-export async function apiFetch(endpoint: string, options: RequestInit = {}) {
-  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
-  const token = await AsyncStorage.getItem("token");
+type ApiFetchOptions = RequestInit & {
+  auth?: boolean;
+};
 
-  const response = await fetch(`${apiUrl}${endpoint}`, {
+export async function apiFetch(endpoint: string, { auth = true, headers, ...options }: ApiFetchOptions = {}) {
+  const token = auth ? await AsyncStorage.getItem("token") : null;
+
+  const hasBody = !!options.body;
+
+  const response = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers: {
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
+      ...(hasBody ? { "Content-Type": "application/json" } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
     },
   });
 
-  if(response.status === 401){
-    throw new Error('Não ')
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data?.message || "Erro na requisição");
   }
 
+  return data;
 }

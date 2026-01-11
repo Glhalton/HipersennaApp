@@ -218,8 +218,9 @@ export default function ValidityRequestProducts() {
 
   return (
     <Screen>
-      <Text className="pb-3 font-bold text-2xl">Selecione o produto e digite a quantidade:</Text>
-
+      <View className="gap-3 pb-2">
+        <Text className="font-semibold text-lg" >Selecione o produto e digite a quantidade:</Text>
+      </View>
       <View className="flex-1">
         <FlatList
           data={productsList}

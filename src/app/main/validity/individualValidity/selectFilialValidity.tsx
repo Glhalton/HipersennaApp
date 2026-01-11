@@ -41,10 +41,9 @@ export default function SelectFilialValidity() {
       <View className="gap-6">
         <Text className="font-bold text-2xl text-center">Selecione a filial desejada:</Text>
 
-        <View className="gap-8">
-          <View>
-            <DropDownInput value={branchId} items={dropdownItems} onChange={(val) => setBranchId(val)} />
-          </View>
+        <View className="gap-5">
+          <DropDownInput value={branchId} items={dropdownItems} onChange={(val) => setBranchId(val)} />
+
           {branchId && (
             <Button
               text="Continuar"

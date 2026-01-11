@@ -1,6 +1,5 @@
-import { Colors } from "@/constants/colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Linking, Modal, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Linking, Modal, Text, View } from "react-native";
 import Button from "./Button";
 
 type ModalProps = {
@@ -11,8 +10,6 @@ export default function UpdateModal({ visible }: ModalProps) {
   const openPlayStore = () => {
     Linking.openURL("https://play.google.com/store/apps/details?id=com.hipersenna.GHSApp");
   };
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
 
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
@@ -31,4 +28,3 @@ export default function UpdateModal({ visible }: ModalProps) {
     </Modal>
   );
 }
-const styles = StyleSheet.create({});

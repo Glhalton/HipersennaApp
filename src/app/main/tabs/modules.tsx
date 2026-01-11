@@ -18,14 +18,14 @@ export default function Modules() {
             route="../product/searchProduct"
           />
 
-          {/* <ItemList
+          <ItemList
             IconFamily={Ionicons}
             iconName="clipboard-outline"
             label="Controle de Consumos"
             requiredPermissions={[34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45]}
             mode="ANY"
             route="../consumption-control/consumptionHome"
-          /> */}
+          />
 
           <ItemList
             IconFamily={MaterialCommunityIcons}

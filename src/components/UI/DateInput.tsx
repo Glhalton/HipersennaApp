@@ -1,7 +1,6 @@
-import { Colors } from "@/constants/colors";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { Pressable, Text, useColorScheme, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 interface DateInputProps {
   label?: string;
@@ -11,9 +10,6 @@ interface DateInputProps {
 }
 
 export function DateInput({ label, placeholder, value, onChange }: DateInputProps) {
-  const colorScheme = useColorScheme() ?? "light";
-  const theme = Colors[colorScheme];
-
   const [show, setShow] = useState(false);
 
   const handleChange = (_event: any, selectedDate?: Date) => {

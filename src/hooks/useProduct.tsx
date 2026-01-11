@@ -1,5 +1,5 @@
+import { getProducts } from "@/services/products.services";
 import { MaterialIcons, Octicons } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { Colors } from "../constants/colors";
 
@@ -27,14 +27,14 @@ type Product = {
   qtBloqueadaDp6: number;
 };
 
-export function useProduct(url: string, showAlert: any) {
+export function useProduct(showAlert: any) {
   const [isLoading, setIsLoading] = useState(false);
   const [listProductFilter, setListProductsFilter] = useState<Product[]>();
   const [productData, setProductData] = useState<Product>();
   const [productsListModal, setProductsListModal] = useState(false);
 
-  const productSearch = async (optionFilter: string, codProductInput: string, branchId: number) => {
-    if (!branchId || !codProductInput) {
+  const productSearch = async (filter: string, filterValue: string, branchId: number) => {
+    if (!branchId || !filterValue) {
       showAlert({
         title: "Atenção!",
         text: "Preencha todos os campos obrigatórios!",
@@ -45,48 +45,31 @@ export function useProduct(url: string, showAlert: any) {
       return;
     }
 
-    const token = await AsyncStorage.getItem("token");
-
     try {
       setIsLoading(true);
-      const response = await fetch(`${url}/products/?${optionFilter}=${codProductInput}&codfilial=${branchId}`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      const data = await response.json();
-      if (response.ok) {
-        if (data.length > 0) {
-          if (optionFilter == "descricao") {
+      const data = await getProducts({ branchId, filter, filterValue });
+
+      if (data.length > 0) {
+        if (filter === "descricao") {
+          setListProductsFilter(data);
+          setProductsListModal(true);
+          return null;
+        } else {
+          if (data.length > 1) {
             setListProductsFilter(data);
             setProductsListModal(true);
             return null;
           } else {
-            if (data.length > 1) {
-              setListProductsFilter(data);
-              setProductsListModal(true);
-              return null;
-            } else {
-              setProductData(data[0]);
-              const product: Product = data[0];
-              return product;
-            }
+            setProductData(data[0]);
+            const product: Product = data[0];
+            return product;
           }
-        } else if (data.length == 0) {
-          showAlert({
-            title: "Erro",
-            text: "Produto não encontrado.",
-            icon: "error-outline",
-            color: Colors.red,
-            iconFamily: MaterialIcons,
-          });
         }
-      } else {
+      } else if (data.length === 0) {
         showAlert({
-          title: "Erro!",
-          text: `${data.message}`,
+          title: "Erro",
+          text: "Produto não encontrado.",
           icon: "error-outline",
           color: Colors.red,
           iconFamily: MaterialIcons,
@@ -95,9 +78,9 @@ export function useProduct(url: string, showAlert: any) {
     } catch (error: any) {
       showAlert({
         title: "Erro!",
-        text: `Não foi possivel conectar ao servidor: ${error.message}`,
+        text: error.message || "Erro inesperado",
         icon: "error-outline",
-        color: Colors.red,
+        color: "red",
         iconFamily: MaterialIcons,
       });
     } finally {

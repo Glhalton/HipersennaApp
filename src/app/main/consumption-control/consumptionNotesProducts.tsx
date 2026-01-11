@@ -1,13 +1,12 @@
 import { Colors } from "@/constants/colors";
 import { consumptionProductsStore } from "@/store/consumptionProductsStore";
-import React, { useState } from "react";
+import React from "react";
 import { FlatList, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ConsumptionNotesProducts() {
   const colorScheme = useColorScheme() ?? "light";
   const theme = Colors[colorScheme];
-  const [isLoading, setIsLoading] = useState();
 
   const products = consumptionProductsStore((state) => state.consumptionProducts);
 

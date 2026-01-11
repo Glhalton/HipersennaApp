@@ -54,7 +54,7 @@ export default function ValidityForm() {
     productData,
     setListProductsFilter,
     setProductData,
-  } = useProduct(url!, showAlert);
+  } = useProduct(showAlert);
 
   const [cameraModal, setCameraModal] = useState(false);
   const { hasPermission, requestPermission } = useCameraPermission();
